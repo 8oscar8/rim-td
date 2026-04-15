@@ -1,0 +1,275 @@
+import { SpriteManager } from '../engine/SpriteManager.js';
+import { SoundManager } from '../engine/SoundManager.js';
+
+/**
+ * Enemy.js
+ * 전장을 따라 이동하며 유닛의 공격을 받는 적들의 베이스 클래스
+ */
+export class Enemy {
+  // 전역 보스 피해 배율 (훈련 등에 의해 변동 가능)
+  static bossBonus = 1.0; 
+
+  constructor(waypoints, hp, reward, type = 'organic', isBoss = false) {
+    this.waypoints = waypoints;
+    this.currentWaypointIndex = 0;
+    
+    this.x = waypoints[0].x;
+    this.y = waypoints[0].y;
+    
+    this.isBoss = isBoss;
+    this.maxHp = hp;
+    this.hp = hp;
+    this.armor = isBoss ? Math.floor(hp * 0.2) : Math.floor(hp * 0.1); 
+    this.reward = reward;
+    this.speed = isBoss ? 60 : 80; 
+    this.radius = isBoss ? 20 : 8;
+    this.active = true;
+    this.type = type; // 'organic' (생체) 또는 'mech' (기계)
+    this.name = isBoss ? 'CENTIPEDE' : ''; 
+    
+    // 상태 이상 변수
+    this.stunTimer = 0;
+    this.slowTimer = 0;
+    this.fearTimer = 0;
+    this.activeDots = []; // { damagePerSec, duration }
+    this.distanceTraveled = 0;
+    
+    // 특수 기믹 변수
+    this.shield = 0;
+    this.shieldMax = 0;
+    this.shieldRegenTimer = 0;
+    this.hpRegen = 0;
+    this.gradeFilter = null; 
+  }
+
+  update(dt) {
+    if (!this.active) return;
+
+    // 재생 로직 처리
+    if (this.hpRegen > 0 && this.hp < this.maxHp) {
+      this.hp = Math.min(this.maxHp, this.hp + this.hpRegen * dt);
+    }
+
+    if (this.shieldMax > 0 && this.shield < this.shieldMax) {
+      this.shieldRegenTimer -= dt;
+      if (this.shieldRegenTimer <= 0) {
+        this.shield = Math.min(this.shieldMax, this.shield + (this.shieldMax * 0.1 * dt));
+      }
+    }
+    
+    // 도트 데미지 처리
+    for (let i = this.activeDots.length - 1; i >= 0; i--) {
+      const dot = this.activeDots[i];
+      const damageTick = dot.damagePerSec * dt;
+      this.hp -= damageTick * (this.isBoss ? Enemy.bossBonus : 1.0);
+      dot.duration -= dt;
+      if (dot.duration <= 0) this.activeDots.splice(i, 1);
+    }
+    
+    if (this.hp <= 0) {
+      this.active = false;
+      return;
+    }
+
+    // 경직(스턴) 처리
+    if (this.stunTimer > 0) {
+      this.stunTimer -= dt;
+      return;
+    }
+
+    if (this.slowTimer > 0) this.slowTimer -= dt;
+    if (this.fearTimer > 0) this.fearTimer -= dt;
+
+    let moveDist = this.speed * dt;
+    if (this.slowTimer > 0) moveDist *= 0.5;
+
+    // 공포 상태 역주행 로직
+    if (this.fearTimer > 0) {
+      const target = this.waypoints[this.currentWaypointIndex];
+      const dx = target.x - this.x;
+      const dy = target.y - this.y;
+      const distance = Math.hypot(dx, dy);
+
+      if (distance <= moveDist) {
+        this.x = target.x;
+        this.y = target.y;
+        this.distanceTraveled = Math.max(0, this.distanceTraveled - distance);
+        this.currentWaypointIndex = (this.currentWaypointIndex - 1 + this.waypoints.length) % this.waypoints.length;
+      } else {
+        this.x += (dx / distance) * moveDist;
+        this.y += (dy / distance) * moveDist;
+        this.distanceTraveled = Math.max(0, this.distanceTraveled - moveDist);
+      }
+    } else {
+      // 일반 경로 주행 로직
+      const nextIndex = (this.currentWaypointIndex + 1) % this.waypoints.length;
+      const target = this.waypoints[nextIndex];
+      const dx = target.x - this.x;
+      const dy = target.y - this.y;
+      const distance = Math.hypot(dx, dy);
+
+      if (distance <= moveDist) {
+        this.x = target.x;
+        this.y = target.y;
+        this.currentWaypointIndex = nextIndex;
+        this.distanceTraveled += distance;
+      } else {
+        this.x += (dx / distance) * moveDist;
+        this.y += (dy / distance) * moveDist;
+        this.distanceTraveled += moveDist;
+      }
+    }
+  }
+
+  /**
+   * 데미지 피격 처리
+   */
+  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common') {
+    if (!this.active) return false;
+
+    // 유닛 등급 기반 방어 기믹
+    if (this.gradeFilter) {
+      const grades = ['Common', 'Uncommon', 'Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
+      const shooterIdx = grades.indexOf(shooterGrade);
+      const limitIdx = grades.indexOf(this.gradeFilter.grade);
+      if (this.gradeFilter.mode === 'below' && shooterIdx > limitIdx) return false;
+      if (this.gradeFilter.mode === 'above' && shooterIdx < limitIdx) return false;
+    }
+
+    // SoundManager.playSFX('assets/audio/hit.mp3', 0.3); // 파일 부재로 인한 주석 처리
+
+    let finalDamage = 0;
+
+    // 특수 효과(즉사 등) 처리
+    if (effect === 'instakill' && !this.isBoss) {
+      if (Math.random() < 0.1) {
+         this.hp = 0;
+         this.active = false;
+         return true;
+      }
+    }
+
+    if (effect === 'max_hp_percent') {
+      finalDamage = (this.maxHp * 0.015) + amount;
+    } else {
+      const effectiveArmor = Math.max(0, this.armor * (1 - ap));
+      const damageMultiplier = 100 / (effectiveArmor + 100);
+      finalDamage = amount * damageMultiplier * (this.isBoss ? Enemy.bossBonus : 1.0);
+    }
+
+    // 보호막 차감 및 전환 처리
+    if (this.shield > 0) {
+      this.shieldRegenTimer = 3.0;
+      if (this.shield >= finalDamage) {
+        this.shield -= finalDamage;
+        return false;
+      } else {
+        const remainingDmg = finalDamage - this.shield;
+        this.shield = 0;
+        this.hp -= remainingDmg;
+      }
+    } else {
+      this.hp -= finalDamage;
+    }
+
+    // 상태 이상 적용
+    this.handleStatusEffect(effect);
+
+    if (this.hp <= 0) {
+      this.active = false;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * 투사체 효과에 따른 상태 이상 분기 처리
+   */
+  handleStatusEffect(effect) {
+    if (effect === 'stun') {
+      this.stunTimer = 0.5;
+    } else if (effect === 'stun_long') {
+      this.stunTimer = 5.0;
+    } else if (effect === 'emp' && this.type === 'mech') {
+      this.stunTimer = 3.0;
+    } else if (effect === 'smoke') {
+      this.slowTimer = Math.max(this.slowTimer, 3.0);
+    } else if (effect === 'burn_fear' && this.type === 'organic') {
+      this.fearTimer = Math.max(this.fearTimer, 2.0);
+      this.activeDots.push({ damagePerSec: 15, duration: 3.0 });
+    } else if (effect === 'toxin' && this.type !== 'mech') {
+      this.activeDots.push({ damagePerSec: 5, duration: 2.0 });
+    } else if (effect === 'burn') {
+      if (Math.random() < 0.5) this.activeDots.push({ damagePerSec: 10, duration: 3.0 });
+    } else if (effect === 'burn_percent') {
+      this.hp -= this.hp * 0.03;
+      if (Math.random() < 0.8) this.activeDots.push({ damagePerSec: 15, duration: 2.0 });
+    } else if (effect === 'armor_break') {
+      this.armor = Math.max(0, Math.floor(this.armor * 0.5));
+    } else if (effect && effect.includes('knockback')) {
+      this.distanceTraveled = Math.max(0, this.distanceTraveled - 15);
+      this.stunTimer = 0.2;
+    }
+  }
+
+  applyEffect(effect, duration = 1.0) {
+    if (!this.active) return;
+    if (effect === 'stun') this.stunTimer = Math.max(this.stunTimer, duration);
+    else if (effect === 'smoke') this.slowTimer = Math.max(this.slowTimer, duration);
+    else if ((effect === 'fear' || effect === 'burn_fear') && this.type === 'organic') {
+      this.fearTimer = Math.max(this.fearTimer, duration);
+    }
+  }
+
+  render(ctx) {
+    if (!this.active) return;
+    
+    ctx.fillStyle = this.type === 'mech' ? '#7f8c8d' : SpriteManager.getColor('enemy');
+    
+    if (this.isBoss) {
+      ctx.save();
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = 'red';
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    } else {
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
+    }
+
+    // 체력 및 보호막바 렌더링
+    this.drawHealthBar(ctx);
+
+    if (this.isBoss) {
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 12px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(this.name, this.x, (this.y - 40));
+      
+      if (this.type === 'mech' && Math.random() < 0.1) {
+        ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(this.x + (Math.random()-0.5)*40, this.y + (Math.random()-0.5)*40);
+        ctx.lineTo(this.x + (Math.random()-0.5)*20, this.y + (Math.random()-0.5)*20);
+        ctx.stroke();
+      }
+    }
+  }
+
+  drawHealthBar(ctx) {
+    const hpPercent = Math.max(this.hp / this.maxHp, 0);
+    const barWidth = this.isBoss ? 60 : 20;
+    const barHeight = this.isBoss ? 8 : 4;
+    const barY = this.y - (this.isBoss ? 35 : 20);
+    
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(this.x - barWidth / 2, barY, barWidth, barHeight);
+    
+    ctx.fillStyle = 'red';
+    ctx.fillRect(this.x - barWidth / 2, barY, barWidth * hpPercent, barHeight);
+
+    if (this.shieldMax > 0 && this.shield > 0) {
+      ctx.fillStyle = '#00ffff';
+      ctx.fillRect(this.x - barWidth / 2, barY - 6, barWidth * (this.shield / this.shieldMax), 3);
+    }
+  }
+}

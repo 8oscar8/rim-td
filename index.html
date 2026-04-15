@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RimWorld TD: 메운디 에디션</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div id="app-container">
+        <!-- 1. 왼쪽 사이드바: 정착지 상태 -->
+        <aside id="left-sidebar" class="sidebar glass-panel">
+            <div class="speed-control-container">
+                <div class="speed-controls">
+                    <button class="speed-btn active">1x</button>
+                    <button class="speed-btn">2x</button>
+                    <button class="speed-btn">4x</button>
+                </div>
+            </div>
+
+            <div class="status-section">
+                <h3 class="section-title">정착지 상태</h3>
+                
+                <div class="status-card">
+                    <span class="label">웨이브</span>
+                    <span class="value"><span id="wave-val">1</span> / 100</span>
+                </div>
+                <div class="status-card">
+                    <span class="label">다음 웨이브</span>
+                    <span class="value" id="timer-val">01:59</span>
+                </div>
+                <div class="status-card highlight">
+                    <span class="label">인구</span>
+                    <span class="value" id="pop-val">3</span>
+                </div>
+                <div class="status-card">
+                    <span class="label">적 수</span>
+                    <span class="value" id="enemy-val">1</span>
+                </div>
+                <div class="status-card">
+                    <span class="label">은</span>
+                    <span class="value" id="silver-val">100</span>
+                </div>
+            </div>
+
+                <div class="resource-list">
+                    <div class="res-row">
+                        <img src="assets/food.png" class="res-mini-icon"> <span>식량</span>
+                        <span id="res-food">0</span>
+                    </div>
+                    <div class="res-row">
+                        <img src="assets/research.png" class="res-mini-icon"> <span>연구</span>
+                        <span id="res-research">0</span>
+                    </div>
+                    <div class="res-row">
+                        <img src="assets/wood.png" class="res-mini-icon"> <span>목재</span>
+                        <span id="res-wood">0</span>
+                    </div>
+                <div class="res-row">
+                    <img src="assets/steel.png" class="res-mini-icon"> <span>강철</span>
+                    <span id="res-steel">0</span>
+                </div>
+                <div class="res-row">
+                    <img src="assets/plasteel.png" class="res-mini-icon"> <span>플라스틸</span>
+                    <span id="res-plasteel">0</span>
+                </div>
+                <div class="res-row">
+                    <img src="assets/uranium.png" class="res-mini-icon"> <span>우라늄</span>
+                    <span id="res-uranium">0</span>
+                </div>
+                <div class="res-row">
+                    <img src="assets/jade.png" class="res-mini-icon"> <span>비취</span>
+                    <span id="res-jade">0</span>
+                </div>
+                <div class="res-row">
+                    <img src="assets/component.png" class="res-mini-icon"> <span>부품</span>
+                    <span id="res-component">0</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 2. 중앙 메인: 게임 화면 -->
+        <main id="game-main">
+            <div class="canvas-container">
+                <canvas id="game-canvas"></canvas>
+            </div>
+            <!-- 알림 배너 (연구 결과 등) -->
+            <div id="notification-banner" class="hidden">
+                <div class="notif-content">
+                    <h4 id="notif-title">연구 결과</h4>
+                    <p id="notif-text">작업 완료: 연구 +26, 부품 +2</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- 3. 오른쪽 사이드바: 작업 관리 및 정보 -->
+        <aside id="right-sidebar" class="sidebar glass-panel">
+            <!-- 유닛 정보 섹션 -->
+            <section class="unit-info-section">
+                <h3 class="section-title">유닛 정보 및 제작</h3>
+                <div id="unit-detail-box" class="info-box dark-box">
+                    <div class="unit-stats-grid">
+                        <div class="unit-name-col">
+                            <span id="detail-grade">[강철]</span>
+                            <h4 id="detail-name">평범한 단검</h4>
+                        </div>
+                        <div class="unit-detail-col">
+                            <div class="stat-row">병종: <span id="detail-type">날붙이</span> (Lv.<span id="detail-up-lv">0</span>)</div>
+                            <div class="stat-row dps">DPS: <span id="detail-dps">0.0</span></div>
+                            <div class="stat-row">공격력: <span id="detail-atk">0</span> <span id="detail-atk-bonus" class="bonus">(+0 훈련)</span></div>
+                        </div>
+                        <div class="unit-meta-col">
+                            <div class="stat-row">방관: <span id="detail-ap">0%</span></div>
+                            <div class="stat-row">사거리: <span id="detail-range">100</span></div>
+                            <div class="stat-row">공속: <span id="detail-spd">1.00/s</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 탭 메뉴 -->
+            <nav class="action-tabs">
+                <button class="tab-btn active" data-tab="shop">🎁 상점</button>
+                <button class="tab-btn" data-tab="craft">🛠️ 제작</button>
+                <button class="tab-btn" data-tab="train">🎓 훈련</button>
+            </nav>
+            
+            <!-- 탭 콘텐츠 영역 -->
+            <div id="tab-container">
+                <!-- 상점 탭 -->
+                <div id="tab-shop" class="tab-pane active">
+                    <div class="button-list">
+                        <button id="btn-buy-random" class="shop-btn">
+                            <span class="icon">🪨</span>
+                            <span class="text">무작위 유닛 구매 (50 은)</span>
+                        </button>
+                        <button id="btn-buy-advanced" class="shop-btn gold">
+                            <span class="icon">🪨</span>
+                            <span class="text">고급 무기 상자 (1000 은)</span>
+                        </button>
+                        <button id="btn-sell-units" class="shop-btn sell">
+                            <span class="icon">👤</span>
+                            <span class="text">판매 (5개 250)</span>
+                        </button>
+                    </div>
+                    <p class="shop-desc">무작위 유닛을 획득하거나 진귀한 비취옥을 은으로 환전합니다.</p>
+                </div>
+
+                <!-- 제작 탭 -->
+                <div id="tab-craft" class="tab-pane">
+                    <!-- 기술 수준 표시 및 업그레이드 -->
+                    <div class="tech-level-box glass-panel">
+                        <div class="tech-info">
+                            <span class="label">기술 수준:</span>
+                            <span id="tech-level-val" class="value">원시 (Primitive)</span>
+                        </div>
+                        <button id="btn-tech-upgrade" class="tech-up-btn">
+                            기술 업그레이드 (<img src="assets/silver.png" class="inline-icon"> <span id="tech-cost-silver">200</span>, <img src="assets/research.png" class="inline-icon"> <span id="tech-cost-research">100</span>)
+                        </button>
+                    </div>
+
+                    <div class="button-list craft-list">
+                        <button class="shop-btn craft" data-grade="Rare">
+                            <span class="text">Rare 제작 (<img src="assets/wood.png" class="inline-icon"> 30, <img src="assets/steel.png" class="inline-icon"> 30)</span>
+                        </button>
+                        <button class="shop-btn craft" data-grade="Epic">
+                            <span class="text">Epic 제작 (<img src="assets/component.png" class="inline-icon"> 50, <img src="assets/plasteel.png" class="inline-icon"> 10)</span>
+                        </button>
+                        <button class="shop-btn craft gold" data-grade="Legendary">
+                            <span class="text">Legendary 제작 (<img src="assets/plasteel.png" class="inline-icon"> 30, <img src="assets/uranium.png" class="inline-icon"> 20, <img src="assets/component.png" class="inline-icon"> 100)</span>
+                        </button>
+                        <button class="shop-btn craft mythic" data-grade="Mythic">
+                            <span class="text">Mythic 제작 (<img src="assets/plasteel.png" class="inline-icon"> 50, <img src="assets/uranium.png" class="inline-icon"> 30, <img src="assets/component.png" class="inline-icon"> 300)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 훈련 탭 -->
+                <div id="tab-train" class="tab-pane">
+                    <div class="upgrade-list">
+                        <button id="up-blunt" class="upgrade-btn">
+                            <div class="up-info">
+                                <span class="up-name">둔기</span>
+                                <span class="up-dpm">(Total.DPM: <span id="blunt-dpm">0</span>)</span>
+                            </div>
+                            <div class="up-effect">+10%</div>
+                            <div class="up-cost">
+                                (<img src="assets/silver.png" class="inline-icon"> <span id="blunt-cost-1">1</span> | <img src="assets/steel.png" class="inline-icon"> <span id="blunt-cost-2">1</span>)
+                            </div>
+                        </button>
+                        <button id="up-melee" class="upgrade-btn">
+                            <div class="up-info">
+                                <span class="up-name">날붙이</span>
+                                <span class="up-dpm">(Total.DPM: <span id="sharp-dpm">0</span>)</span>
+                            </div>
+                            <div class="up-effect">+10%</div>
+                            <div class="up-cost">
+                                (<img src="assets/wood.png" class="inline-icon"> <span id="sharp-cost-1">1</span> | <img src="assets/silver.png" class="inline-icon"> <span id="sharp-cost-2">1</span>)
+                            </div>
+                        </button>
+                        <button id="up-ranged" class="upgrade-btn">
+                            <div class="up-info">
+                                <span class="up-name">원거리</span>
+                                <span class="up-dpm">(Total.DPM: <span id="ranged-dpm">0</span>)</span>
+                            </div>
+                            <div class="up-effect">+10%</div>
+                            <div class="up-cost">
+                                (<img src="assets/plasteel.png" class="inline-icon"> <span id="ranged-cost-1">1</span> | <img src="assets/silver.png" class="inline-icon"> <span id="ranged-cost-2">1</span>)
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 작업 관리 -->
+            <section class="work-management glass-panel">
+                <h3 class="section-title">정착민 파견 관리</h3>
+                <div class="work-list">
+                    <!-- 벌목 -->
+                    <div class="work-item-v2">
+                        <div class="work-row-top">
+                            <span class="work-name">벌목 (목재)</span>
+                            <span class="work-mul">x1.0</span>
+                            <span class="work-percent">0%</span>
+                            <div class="work-ctrl-v2">
+                                <button class="btn-circle minus" data-type="logging">-</button>
+                                <span class="count" id="work-logging">0</span>
+                                <button class="btn-circle plus" data-type="logging">+</button>
+                            </div>
+                        </div>
+                        <div class="work-progress-bar"><div class="fill" id="bar-logging"></div></div>
+                    </div>
+                    <!-- 채광 -->
+                    <div class="work-item-v2">
+                        <div class="work-row-top">
+                            <span class="work-name">채광 (강철)</span>
+                            <span class="work-mul">x1.0</span>
+                            <span class="work-percent">0%</span>
+                            <div class="work-ctrl-v2">
+                                <button class="btn-circle minus" data-type="mining">-</button>
+                                <span class="count" id="work-mining">0</span>
+                                <button class="btn-circle plus" data-type="mining">+</button>
+                            </div>
+                        </div>
+                        <div class="work-progress-bar"><div class="fill" id="bar-mining"></div></div>
+                    </div>
+                    <!-- 농사 -->
+                    <div class="work-item-v2">
+                        <div class="work-row-top">
+                            <span class="work-name">농사 (식량)</span>
+                            <span class="work-mul">x1.0</span>
+                            <span class="work-percent">0%</span>
+                            <div class="work-ctrl-v2">
+                                <button class="btn-circle minus" data-type="farming">-</button>
+                                <span class="count" id="work-farming">0</span>
+                                <button class="btn-circle plus" data-type="farming">+</button>
+                            </div>
+                        </div>
+                        <div class="work-progress-bar"><div class="fill" id="bar-farming"></div></div>
+                    </div>
+                    <!-- 연구 -->
+                    <div class="work-item-v2">
+                        <div class="work-row-top">
+                            <span class="work-name">연구 (기술)</span>
+                            <span class="work-mul">x1.0</span>
+                            <span class="work-percent">0%</span>
+                            <div class="work-ctrl-v2">
+                                <button class="btn-circle minus" data-type="research">-</button>
+                                <span class="count" id="work-research">0</span>
+                                <button class="btn-circle plus" data-type="research">+</button>
+                            </div>
+                        </div>
+                        <div class="work-progress-bar"><div class="fill" id="bar-research"></div></div>
+                    </div>
+                    <!-- 교역 -->
+                    <div class="work-item-v2">
+                        <div class="work-row-top">
+                            <span class="work-name">교역 (은화)</span>
+                            <span class="work-mul">x1.0</span>
+                            <span class="work-percent">0%</span>
+                            <div class="work-ctrl-v2">
+                                <button class="btn-circle minus" data-type="trading">-</button>
+                                <span class="count" id="work-trading">0</span>
+                                <button class="btn-circle plus" data-type="trading">+</button>
+                            </div>
+                        </div>
+                        <div class="work-progress-bar"><div class="fill" id="bar-trading"></div></div>
+                    </div>
+                </div>
+                <div class="wait-count">대기 인원: <span id="idle-pop-val">1</span></div>
+            </section>
+        </aside>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

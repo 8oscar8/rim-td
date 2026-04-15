@@ -1,0 +1,136 @@
+/**
+ * Projectile.js
+ * 유닛이 발사하는 모든 투사체(Projectile)의 베이스 클래스
+ */
+export class Projectile {
+  constructor(x, y, target, damage, ap, effect, color, shooterGrade = 'Common') {
+    this.x = x;
+    this.y = y;
+    this.target = target;
+    this.damage = damage;
+    this.ap = ap;
+    this.effect = effect;
+    this.color = color;
+    this.shooterGrade = shooterGrade;
+
+    // 에너지탄 계열 발사체는 더욱 빠른 이동 속도와 작은 반경을 가짐
+    this.speed = (this.effect === 'multi_bullet') ? 800 : 300; 
+    this.radius = (this.effect === 'multi_bullet') ? 2 : 4;
+    this.active = true;
+    this.history = []; // 잔상(Tail) 효과 구현을 위한 이동 이력
+  }
+
+  update(dt, enemies = [], fieldEffects = []) {
+    if (!this.active) return;
+
+    // 특수 잔상 효과 기록
+    if (this.effect === 'multi_bullet') {
+      this.history.unshift({ x: this.x, y: this.y });
+      if (this.history.length > 5) this.history.pop();
+    }
+    
+    // 대상이 무력화되었을 때 투사체 소멸 (메운디 기본 로직)
+    if (!this.target || !this.target.active) {
+      this.active = false;
+      return;
+    }
+
+    const dx = this.target.x - this.x;
+    const dy = this.target.y - this.y;
+    const distance = Math.hypot(dx, dy);
+    const moveDist = this.speed * dt;
+
+    if (distance <= moveDist) {
+      this.active = false;
+      this.handleImpact(enemies, fieldEffects);
+    } else if (distance > 0) {
+      this.x += (dx / distance) * moveDist;
+      this.y += (dy / distance) * moveDist;
+    } else {
+      this.active = false;
+      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade);
+    }
+  }
+
+  /**
+   * 투사체가 적에게 명중했을 때의 처리 분기
+   */
+  handleImpact(enemies, fieldEffects) {
+    const aoeEffects = ['aoe_dmg', 'emp', 'smoke', 'burn_fear', 'toxin', 'splash', 'splash_knockback'];
+    const isAOE = aoeEffects.includes(this.effect);
+    
+    if (isAOE) {
+      // 60픽셀 이내의 모든 적에게 범위 데미지/효과 적용
+      enemies.forEach(en => {
+         if (en.active && Math.hypot(en.x - this.x, en.y - this.y) <= 60) {
+            en.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade);
+         }
+      });
+      
+      // 연막 또는 독성 장판(Field Effect) 생성
+      this.createFieldEffect(fieldEffects);
+    } else {
+      // 단일 적에게 타격
+      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade);
+    }
+  }
+
+  /**
+   * 특정 투사체 효과에 따른 잔존 필드 효과 생성
+   */
+  createFieldEffect(fieldEffects) {
+    if (this.effect === 'smoke') {
+       fieldEffects.push({ 
+         type: 'smoke', x: this.x, y: this.y, radius: 80, duration: 5.0,
+         render: (ctx) => {
+           ctx.save();
+           ctx.fillStyle = 'rgba(150, 150, 150, 0.3)';
+           ctx.beginPath(); ctx.arc(this.x, this.y, 80, 0, Math.PI*2); ctx.fill();
+           ctx.restore();
+         }
+       });
+    } else if (this.effect === 'toxin') {
+       fieldEffects.push({ 
+         type: 'toxin', x: this.x, y: this.y, radius: 60, duration: 5.0,
+         render: (ctx) => {
+           ctx.save();
+           ctx.fillStyle = 'rgba(155, 89, 182, 0.3)';
+           ctx.beginPath(); ctx.arc(this.x, this.y, 60, 0, Math.PI*2); ctx.fill();
+           ctx.restore();
+         }
+       });
+    }
+  }
+
+  render(ctx) {
+    if (!this.active) return;
+    
+    // 에너지탄 계열의 특수 잔상 렌더링
+    if (this.effect === 'multi_bullet' && this.history.length > 1) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = this.color;
+      ctx.lineWidth = this.radius;
+      ctx.lineCap = 'round';
+      ctx.moveTo(this.history[0].x, this.history[0].y);
+      for (let i = 1; i < this.history.length; i++) {
+        ctx.lineTo(this.history[i].x, this.history[i].y);
+      }
+      ctx.globalAlpha = 0.5;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    ctx.fillStyle = this.color;
+    if (this.effect === 'multi_bullet') {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = this.color;
+      ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    } else {
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+}

@@ -1,0 +1,81 @@
+/* --------------------------------------------------
+   Tutorial Overlay (림월드 테마 가이드)
+--------------------------------------------------- */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998 !important; /* 시나리오 오버레이보다 낮게 설정 */
+    display: none; 
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* 기본적으로 모든 클릭 통과 */
+}
+
+/* 튜토리얼 안내 상자 */
+.tutorial-guide-box {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    background: rgba(44, 62, 80, 0.95);
+    border: 2px solid #34495e;
+    border-top: 5px solid #3498db;
+    padding: 20px;
+    border-radius: 8px;
+    color: #ecf0f1;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    pointer-events: auto; /* 버튼 조작을 위해 auto */
+}
+
+.step-tag {
+    display: inline-block;
+    background: #3498db;
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.tutorial-guide-box h3 { margin: 0 0 10px 0; font-size: 1.1rem; }
+.tutorial-guide-box p { margin: 0 0 20px 0; font-size: 0.95rem; line-height: 1.6; color: #bdc3c7; }
+
+.tutorial-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.tutorial-actions .btn-action {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* 가이드 화살표 애니메이션 */
+.tutorial-pointer {
+    position: absolute;
+    font-size: 32px;
+    color: #f1c40f;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    animation: bounce 0.8s infinite ease-in-out alternate;
+    z-index: 10001;
+}
+
+@keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+}
+
+/* UI 특정 영역 하이라이트 효과 커스터마이징 */
+.tutorial-highlight {
+    outline: 4px solid #f1c40f !important;
+    box-shadow: 0 0 20px rgba(241, 196, 15, 0.6) !important;
+    z-index: 9999 !important;
+    position: relative;
+    transition: outline 0.3s;
+}
