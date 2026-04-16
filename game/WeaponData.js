@@ -8,7 +8,7 @@ export const WEAPON_DB = {
   '철퇴': { type: 'blunt', tech: 'primitive', grade: 'Uncommon', dmg: 35, spd: 0.5, ap: 0, effect: null },
   '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'splash' },
   '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None' },
-  '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Special', dmg: 35, spd: 0.38, ap: 0, range: 200, effect: 'aura_cd', fixedMaterial: 'None' },
+  '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Special', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
 
   // 날붙이
   '단검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 12, spd: 1.0, ap: 0, effect: null },
