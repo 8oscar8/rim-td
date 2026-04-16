@@ -438,6 +438,7 @@ export class UIManager {
 
   showUnitDetail(tower) {
     if (!tower || !tower.weaponData) return;
+    this.selectedUnit = tower; // 현재 선택된 유닛 추적
     try {
       // 품질 이름 매핑
       const qualNames = { awful: '끔찍', normal: '평범', excellent: '완벽', legendary: '전설' };

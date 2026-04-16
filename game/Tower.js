@@ -41,7 +41,7 @@ export class Tower {
     
     this.baseAttackSpeed = baseSpd * spdMul;
     this.ap = Math.min(1.0, baseAp * apMul);
-    this.range = this.weaponData.range || (isRanged ? 250 : (this.weaponType === 'sharp' ? 100 : 80));
+    this.baseRange = this.weaponData.range || (isRanged ? 250 : (this.weaponType === 'sharp' ? 100 : 80));
 
     console.log(`[Tower] ${this.weaponName} 생성: ATK ${this.baseDamage}, SPD ${this.baseAttackSpeed.toFixed(2)}, Type ${this.weaponType}`);
 
@@ -101,6 +101,15 @@ export class Tower {
     }
 
     return this.baseAttackSpeed * auraMul * globalMul * luciSpdMul;
+  }
+
+  /**
+   * 실시간 사거리 반환 (인카운터 배율 반영)
+   */
+  get range() {
+    const encounterManager = this.gameCore.encounterManager;
+    const globalMul = encounterManager ? encounterManager.getGlobalRangeMultiplier() : 1.0;
+    return this.baseRange * globalMul;
   }
 
   update(dt, enemies, addProjectile, globalEffects = { emi: false, luciferium: false }) {
