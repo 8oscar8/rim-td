@@ -270,7 +270,6 @@ export class UIManager {
         const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
         this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
       } else {
-        SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.4);
         alert("자원이 부족합니다!");
       }
       this.updateDisplays(s);
@@ -326,6 +325,7 @@ export class UIManager {
                 s[res] -= amt;
             }
             s.upgrades[type] = curLv + 1;
+            SoundManager.playSFX('assets/audio/upgrade.mp3', 0.6);
             const name = btn.querySelector('.up-name').textContent;
             this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
             this.updateDisplays(s);
