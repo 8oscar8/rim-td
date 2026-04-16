@@ -107,10 +107,11 @@ class App {
         baseAmount = Math.floor(8 * getBonus(up.mining)); 
         resName = "강철"; 
         // 채광 보너스 (심층 채굴 레벨 반영): 플라스틸(5+2%*lv), 우라늄(10+2%*lv), 비취(5+2%*lv)
-        const mineBonus = up.mining * 0.02;
+        // 채광 보너스 (심층 채굴 레벨 반영): 플라스틸 상향 (12+4%*lv)
+        const mineBonus = up.mining * 0.04;
         if (!isFailure) {
-            if (Math.random() < 0.05 + mineBonus) { 
-                const amt = Math.floor(Math.random() * 2) + 1; 
+            if (Math.random() < 0.12 + mineBonus) { 
+                const amt = Math.floor(Math.random() * 3) + 2; // 2 ~ 4개 
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
             if (Math.random() < 0.10 + mineBonus) { 
@@ -130,10 +131,11 @@ class App {
         baseAmount = Math.floor(12 * getBonus(up.trade)); 
         resName = "은화"; 
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률(10+5%*lv) 및 획득량 증가
-        const tradeBonus = up.trade * 0.05;
+        // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률 상향 (20+8%*lv)
+        const tradeBonus = up.trade * 0.08;
         if (!isFailure) {
-            if (Math.random() < 0.10 + tradeBonus) { 
-                const amt = Math.floor((Math.random() * 3 + 1) * getBonus(up.trade)); 
+            if (Math.random() < 0.20 + tradeBonus) { 
+                const amt = Math.floor((Math.random() * 4 + 2) * getBonus(up.trade)); // 획득량 상향
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
             if (Math.random() < 0.05) { 
