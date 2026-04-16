@@ -89,7 +89,8 @@ export class Tower {
    */
   get attackSpeed() {
     const auraMul = (this.auraBuffTimer > 0) ? 1.4 : 1.0;
-    return this.baseAttackSpeed * (this.isBuffed ? 1.4 : 1.0) * auraMul;
+    const globalMul = (this.gameCore && this.gameCore.encounterManager) ? this.gameCore.encounterManager.getGlobalAttackSpeedMultiplier() : 1.0;
+    return this.baseAttackSpeed * (this.isBuffed ? 1.4 : 1.0) * auraMul * globalMul;
   }
 
   update(dt, enemies, addProjectile, globalEffects = { emi: false, luciferium: false }) {

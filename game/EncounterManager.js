@@ -54,13 +54,28 @@ export class EncounterManager {
     return multiplier;
   }
 
+  // 글로벌 공격 속도 배율 계산 (정신적 안정파 등 반영)
+  getGlobalAttackSpeedMultiplier() {
+    let multiplier = 1.0;
+    if (this.activeEvents.some(e => e.id === 'psychic_soothe')) {
+        multiplier *= 1.5; // 50% 공속 보너스
+    }
+    return multiplier;
+  }
+
   updateActiveEvents(dt) {
     let uiHtml = "";
     this.activeEvents = this.activeEvents.filter(event => {
       event.duration -= dt;
       
-      const borderColor = (event.type === 'positive') ? "#a855f7" : "#ef4444";
-      const bgColor = (event.type === 'positive') ? "rgba(168, 85, 247, 0.1)" : "rgba(239, 68, 68, 0.1)";
+      let borderColor = (event.type === 'positive') ? "#a855f7" : "#ef4444";
+      let bgColor = (event.type === 'positive') ? "rgba(168, 85, 247, 0.1)" : "rgba(239, 68, 68, 0.1)";
+
+      // 특정 이벤트 색상 커스텀
+      if (event.id === 'psychic_soothe') {
+          borderColor = "#22d3ee"; // Cyan
+          bgColor = "rgba(34, 211, 238, 0.1)";
+      }
 
       // UI 요소 생성
       uiHtml += `
@@ -99,6 +114,10 @@ export class EncounterManager {
       { 
         name: '암브로시아 발아', weight: 12, type: 'positive', id: 'ambrosia_sprout',
         desc: "정착지 근처에서 희귀한 암브로시아 나무들이 발아했습니다! 120초 동안 모든 은화(Silver) 획득량이 2배로 증가합니다."
+      },
+      { 
+        name: '정신적 안정파', weight: 12, type: 'positive', id: 'psychic_soothe',
+        desc: "행성 전체에 기분 좋은 정신적 안정파가 흐릅니다! 60초 동안 모든 아군 유닛의 공격 속도가 대폭 상승합니다."
       },
       { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
@@ -148,6 +167,9 @@ export class EncounterManager {
         break;
       case 'ambrosia_sprout':
         this.handleAmbrosiaSprout();
+        break;
+      case 'psychic_soothe':
+        this.handlePsychicSoothe();
         break;
       case 'toxic_fallout':
         this.handleToxicFallout();
@@ -200,6 +222,16 @@ export class EncounterManager {
         name: '암브로시아 발아',
         type: 'positive',
         duration: 120 // 120초간 지속
+    });
+  }
+
+  // 5. 정신적 안정파 (공속 상향)
+  handlePsychicSoothe() {
+    this.activeEvents.push({
+        id: 'psychic_soothe',
+        name: '정신적 안정파',
+        type: 'positive',
+        duration: 60 // 60초간 지속
     });
   }
 
