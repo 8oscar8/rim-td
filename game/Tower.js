@@ -24,18 +24,20 @@ export class Tower {
     // 2. 기본 수치 및 보정치 확보
     const baseDmg = Number(this.weaponData.dmg) || 10;
     const baseSpd = Number(this.weaponData.spd) || 0.5;
-    const baseAp = Number(this.weaponData.ap) || 0;
     
-    const matData = MATERIAL_DB[this.material] || MATERIAL_DB['강철'] || { matMul: 1, spdMul: 1, apMul: 1 };
+    // 재질 데이터 (비취옥 등 오타 방지 포함)
+    const matName = this.material;
+    const matData = MATERIAL_DB[matName] || MATERIAL_DB['강철'];
     const qualMod = QUALITY_COEFFS[this.quality] || 1.0;
     
+    // 원거리(ranged)가 아닌 모든 무기(blunt, sharp 등)는 재질 배율 적용
     const isRanged = this.weaponType === 'ranged';
-    const dmgMul = isRanged ? 1.0 : (matData.matMul || 1.0);
-    const spdMul = isRanged ? 1.0 : (matData.spdMul || 1.0);
-    const apMul = isRanged ? 1.0 : (matData.apMul || 1.0);
+    const dmgMul = !isRanged ? (matData.matMul || 1.0) : 1.0;
+    const spdMul = !isRanged ? (matData.spdMul || 1.0) : 1.0;
 
-    // 3. 최종 스탯 계산 및 검증 (0 방지)
+    // 3. 최종 스탯 계산
     let calcDmg = baseDmg * dmgMul * qualMod;
+    let calcSpd = baseSpd * spdMul;
     if (baseDmg > 0 && calcDmg < 1) calcDmg = 1;
     this.baseDamage = Math.floor(calcDmg) || 1; // 최소 1 보장
     
@@ -80,7 +82,9 @@ export class Tower {
     
     const lv = this.gameCore.state.upgrades[typeKey] || 0;
     const upgradeMul = 1 + (lv * 0.1);
-    const luciMul = this.isLuciferiumActive ? 1.5 : 1.0;
+    const encounterManager = this.gameCore.encounterManager;
+    const luciMul = encounterManager ? encounterManager.getGlobalLuciferiumMultiplier() : 1.0;
+    
     return Math.floor(this.baseDamage * upgradeMul * luciMul);
   }
 
@@ -89,8 +93,16 @@ export class Tower {
    */
   get attackSpeed() {
     const auraMul = (this.auraBuffTimer > 0) ? 1.4 : 1.0;
-    const globalMul = (this.gameCore && this.gameCore.encounterManager) ? this.gameCore.encounterManager.getGlobalAttackSpeedMultiplier() : 1.0;
-    return this.baseAttackSpeed * (this.isBuffed ? 1.4 : 1.0) * auraMul * globalMul;
+    const encounterManager = this.gameCore.encounterManager;
+    const globalMul = encounterManager ? encounterManager.getGlobalAttackSpeedMultiplier() : 1.0;
+    
+    // 루시페륨 자체 공속 보너스 (2배)
+    let luciSpdMul = 1.0;
+    if (encounterManager && encounterManager.activeEvents && encounterManager.activeEvents.some(e => e.id === 'luciferium')) {
+        luciSpdMul = 2.0;
+    }
+
+    return this.baseAttackSpeed * auraMul * globalMul * luciSpdMul;
   }
 
   update(dt, enemies, addProjectile, globalEffects = { emi: false, luciferium: false }) {

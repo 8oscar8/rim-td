@@ -65,6 +65,15 @@ export class EncounterManager {
     return multiplier;
   }
 
+  // 글로벌 루시페륨 효과 배율 계산 (공속/데미지)
+  getGlobalLuciferiumMultiplier() {
+    let multiplier = 1.0;
+    if (this.activeEvents.some(e => e.id === 'luciferium')) {
+        multiplier *= 1.5; // 데미지 1.5배, 공속은 Tower.js에서 별도 처리
+    }
+    return multiplier;
+  }
+
   // 글로벌 공격 속도 배율 계산 (정신적 안정파 등 반영)
   getGlobalAttackSpeedMultiplier() {
     let multiplier = 1.0;
@@ -89,6 +98,9 @@ export class EncounterManager {
       } else if (event.id === 'work_inspiration') {
           borderColor = "#facc15"; // Gold
           bgColor = "rgba(250, 204, 21, 0.1)";
+      } else if (event.id === 'luciferium') {
+          borderColor = "#991b1b"; // Deep Red (Crimson)
+          bgColor = "rgba(153, 27, 27, 0.1)";
       }
 
       // UI 요소 생성
@@ -101,6 +113,12 @@ export class EncounterManager {
 
       if (event.duration <= 0) {
         this.app.ui.addMiniNotification(`이벤트 종료: ${event.name}`, 'info');
+        
+        // 루시페륨 종료 시 페널티 적용
+        if (event.id === 'luciferium') {
+            this.app.destroyRandomTower();
+        }
+
         return false;
       }
       return true;
@@ -140,6 +158,10 @@ export class EncounterManager {
       { 
         name: '작업 영감', weight: 10, type: 'positive', id: 'work_inspiration',
         desc: "정착민들이 특정 작업에 깊은 영감을 얻었습니다! 90초 동안 무작위 한 종류의 작업 수득량이 3배로 증가합니다."
+      },
+      { 
+        name: '루시페륨 투여', weight: 10, type: 'negative', id: 'luciferium',
+        desc: "금지된 약물인 루시페륨을 전원에게 투여했습니다! 60초간 폭발적인 화력을 얻지만, 약효가 끝나면 정착민 한 명이 미쳐버려 타워 하나가 무작위로 파괴됩니다."
       },
       { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
@@ -198,6 +220,9 @@ export class EncounterManager {
         break;
       case 'work_inspiration':
         this.handleWorkInspiration(event);
+        break;
+      case 'luciferium':
+        this.handleLuciferium();
         break;
       case 'toxic_fallout':
         this.handleToxicFallout();
@@ -305,6 +330,16 @@ export class EncounterManager {
 
     event.desc = `정착민들이 [${job.name}] 작업에서 신들린 지혜를 발휘하기 시작했습니다! \n\n90초 동안 [${job.name}] 자원 획득량이 3배가 됩니다.`;
     this.modalText.innerText = event.desc;
+  }
+
+  // 8. 루시페륨 투여 (폭풍 공속/데미지 + 타워 파괴)
+  handleLuciferium() {
+    this.activeEvents.push({
+        id: 'luciferium',
+        name: '루시페륨 투여',
+        type: 'negative',
+        duration: 60 // 60초간 지속
+    });
   }
 
   // 2. 독성 낙진 (파견 효율 감소)

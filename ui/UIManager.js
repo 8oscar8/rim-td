@@ -438,8 +438,8 @@ export class UIManager {
       const qualText = qualNames[tower.quality.toLowerCase()] || tower.quality;
       
       const isRanged = tower.weaponType === 'ranged';
-      // 재질 표시 여부 결정 (None, 나무, 혹은 무기명이 '맨손/목재'인 경우 생략)
-      const skipMaterial = tower.material === 'None' || tower.material === '나무' || tower.weaponName === '맨손/목재';
+      // 원거리 무기가 아니거나, 재질이 'None'이 아니고, 무기명이 '맨손/목재'가 아니면 재질 표시
+      const skipMaterial = (tower.material === 'None') || (tower.weaponName === '맨손/목재');
       
       if (isRanged || skipMaterial) {
         this.detailName.textContent = `${qualText} ${tower.weaponName}`;

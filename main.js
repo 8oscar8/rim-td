@@ -638,6 +638,19 @@ class App {
         // 화면 흔들림 효과 등 추가 가능
     }
   }
+
+  /**
+   * 무작위 타워 하나를 파괴 (루시페륨 페널티 등)
+   */
+  destroyRandomTower() {
+    if (this.units.length <= 0) return;
+    const randomIndex = Math.floor(Math.random() * this.units.length);
+    const tower = this.units[randomIndex];
+    
+    // 타워 제거 및 알림
+    this.ui.addMiniNotification(`금단 증상으로 인해 [${tower.weaponName}] 타워가 파괴되었습니다!`, 'failure');
+    this.units.splice(randomIndex, 1);
+  }
 }
 
 // 창 로드 시 앱 시작
