@@ -180,7 +180,7 @@ export class UIManager {
           this.app.state.silver -= sCost;
           this.app.state.researchPoints -= rCost;
           this.app.state.techLevel = levels[currIdx + 1];
-          this.app.showNotification(`기술 발전 완료`, `기술 수준이 ${this.app.state.techLevel}로 업그레이드되었습니다.`);
+          this.addMiniNotification(`기술 업그레이드 완료: ${this.app.state.techLevel}`, 'jackpot');
         } else {
           alert("자원이 부족합니다!");
         }
@@ -268,7 +268,8 @@ export class UIManager {
         
         // 업그레이드 레벨 증가
         s.upgrades[type]++;
-        this.showNotification(`${type} 훈련 완료`, `공격력이 10% 증가했습니다. (현재 Lv.${s.upgrades[type]})`);
+        const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
+        this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
       } else {
         alert("자원이 부족합니다!");
       }
