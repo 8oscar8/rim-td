@@ -289,15 +289,29 @@ export class UIManager {
     });
   }
 
-  showNotification(title, text) {
+  showNotification(title, text, grade = 'Common') {
     const banner = document.getElementById('notification-banner');
     const t = document.getElementById('notif-title');
     const x = document.getElementById('notif-text');
     if (banner && t && x) {
-      t.textContent = title;
+      // 등급 확률 매핑
+      const probs = {
+        Common: '50.0%', Uncommon: '30.0%', Rare: '13.0%', Epic: '5.0%', 
+        Special: '1.0%', Legendary: '0.8%', Mythic: '0.19%', Hidden: '0.01%'
+      };
+      const probStr = probs[grade] ? `<span class="prob-tag">(확률: ${probs[grade]})</span>` : '';
+
+      t.innerHTML = `${title} ${probStr}`;
       x.textContent = text;
+      
+      // 기존 등급 클래스 제거 및 신규 추가
+      banner.className = 'grade-banner'; // 초기화
+      const gradeClass = grade.toLowerCase() === 'hidden' ? 'hidden-grade' : grade.toLowerCase();
+      banner.classList.add(gradeClass);
+      
       banner.classList.remove('hidden');
-      setTimeout(() => banner.classList.add('hidden'), 3500);
+      if (this.notifTimeout) clearTimeout(this.notifTimeout);
+      this.notifTimeout = setTimeout(() => banner.classList.add('hidden'), 3500);
     }
   }
 

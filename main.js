@@ -323,7 +323,8 @@ class App {
     
     this.placementMode = false;
     this.pendingGachaResult = null;
-    this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 전장에 배치되었습니다.`);
+    const grade = tower.weaponData.grade || 'Common';
+    this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 전장에 배치되었습니다.`, grade);
   }
 
   handleEnemyDeath(reward, isBoss) {

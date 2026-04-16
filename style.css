@@ -240,26 +240,43 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .up-cost { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
 
 
-/* Notification Banner */
+/* Notification Banner & Grade Visuals */
 #notification-banner {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: rgba(20, 21, 23, 0.9);
-    border: 1px solid var(--accent-blue);
-    border-top: 4px solid var(--accent-blue);
-    padding: 20px 40px;
+    border: 2px solid #ccc; /* Default border */
+    padding: 24px 48px;
     border-radius: 8px;
     backdrop-filter: blur(15px);
     z-index: 1000;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    pointer-events: none; /* 게임 플레이 방해 금지 */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    transition: all 0.3s ease;
 }
+
+#notification-banner.common { border-color: #ffffff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+#notification-banner.uncommon { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+#notification-banner.rare { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+#notification-banner.epic { border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
+#notification-banner.special { border-color: #fbbf24; border-style: dashed; }
+#notification-banner.legendary { border-color: #f59e0b; box-shadow: 0 0 25px rgba(245, 158, 11, 0.6); }
+#notification-banner.mythic { border-color: #ff00ff; box-shadow: 0 0 30px rgba(255, 0, 255, 0.7); }
+#notification-banner.hidden-grade { border-color: #ef4444; border-width: 4px; animation: pulse-red 1s infinite; }
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.8); }
+    100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+}
+
 #notification-banner.hidden { display: none; }
-#notification-banner h4 { font-size: 14px; color: var(--accent-blue); margin-bottom: 2px; }
-#notification-banner p { font-size: 12px; color: #fff; }
+#notification-banner h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+#notification-banner p { font-size: 18px; font-weight: 700; color: #fff; }
+#notification-banner .prob-tag { font-size: 11px; opacity: 0.7; margin-left: 8px; font-weight: normal; }
 
 /* Main Area */
 #game-main { flex: 1; position: relative; background: #000; display: flex; align-items: center; justify-content: center; }
