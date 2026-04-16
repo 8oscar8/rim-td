@@ -223,13 +223,38 @@ class App {
     }
   }
 
+  calculateSellPrice(u) {
+    if (!u || !u.weaponData) return 5;
+    const grade = u.weaponData.grade || 'Common';
+    const isJade = u.material === '비취옥' || u.material === 'Jade';
+    
+    // 등급별 기본 가격 매핑
+    const basePrices = {
+        Common: 5,
+        Uncommon: 10,
+        Rare: 25,
+        Epic: 50,
+        Legendary: 200,
+        Mythic: 500
+    };
+    
+    let price = basePrices[grade] || 5;
+    // 비취옥 프리미엄 (5배)
+    if (isJade) price *= 5;
+    
+    return price;
+  }
+
   sellSelectedUnit() {
     const selectedIdx = this.units.findIndex(u => u.selected);
     if (selectedIdx !== -1) {
       const u = this.units[selectedIdx];
+      const price = this.calculateSellPrice(u);
+      
       this.units.splice(selectedIdx, 1);
-      this.state.silver += 5;
-      this.ui.showNotification("유닛 판매 완료", `${u.weaponName}을(를) 판매하여 5 은을 획득했습니다.`);
+      this.state.silver += price;
+      
+      this.ui.showNotification("유닛 판매 완료", `${u.weaponName}을(를) 판매하여 ${price} 은을 획득했습니다.`);
       this.ui.updateDisplays(this.state);
       return true;
     }

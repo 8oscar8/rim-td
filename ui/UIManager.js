@@ -428,6 +428,25 @@ export class UIManager {
         this.exchangeJadeBtn.style.opacity = canExchangeJade ? "1" : "0.4";
     }
 
+    // 3.5 판매 버튼 동적 활성화 및 가격 표시
+    if (this.sellUnitsBtn) {
+        const selectedUnit = this.app.units.find(u => u.selected);
+        const sellText = this.sellUnitsBtn.querySelector('.text');
+        
+        if (selectedUnit) {
+            const price = this.app.calculateSellPrice(selectedUnit);
+            this.sellUnitsBtn.disabled = false;
+            this.sellUnitsBtn.style.opacity = "1";
+            this.sellUnitsBtn.style.filter = "none";
+            if (sellText) sellText.textContent = `판매 (${price} 은)`;
+        } else {
+            this.sellUnitsBtn.disabled = true;
+            this.sellUnitsBtn.style.opacity = "0.4";
+            this.sellUnitsBtn.style.filter = "grayscale(1)";
+            if (sellText) sellText.textContent = `판매 (유닛 선택 필요)`;
+        }
+    }
+
     // 기술 업그레이드 버튼 및 비용 업데이트
     if (this.techUpBtn) {
         const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
