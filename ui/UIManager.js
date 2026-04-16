@@ -621,7 +621,7 @@ export class UIManager {
             this.sellUnitsBtn.disabled = false;
             this.sellUnitsBtn.style.opacity = "1";
             this.sellUnitsBtn.style.filter = "none";
-            if (sellText) sellText.textContent = `판매 (${price} 은)`;
+            if (sellText) sellText.textContent = `판매 (${price})`;
         } else {
             this.sellUnitsBtn.disabled = true;
             this.sellUnitsBtn.style.opacity = "0.4";
