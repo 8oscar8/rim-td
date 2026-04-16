@@ -488,8 +488,15 @@ export class UIManager {
       if (this.combineUnitBtn) {
         if (tower.isCombinable) {
           this.combineUnitBtn.classList.remove('hidden');
+          
+          // 연구 포인트 부족 시 비활성화
+          const canAfford = (this.app.state.researchPoints >= 200);
+          this.combineUnitBtn.disabled = !canAfford;
+          this.combineUnitBtn.style.opacity = canAfford ? "1" : "0.5";
+          this.combineUnitBtn.style.pointerEvents = canAfford ? "auto" : "none";
+
           this.combineUnitBtn.onclick = () => {
-            this.app.combineUnits(tower);
+            if (canAfford) this.app.combineUnits(tower);
           };
         } else {
           this.combineUnitBtn.classList.add('hidden');
