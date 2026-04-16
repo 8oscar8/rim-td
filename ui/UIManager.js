@@ -192,6 +192,12 @@ export class UIManager {
     // 5. 무기 제작
     this.craftBtns.forEach(btn => {
       btn.onclick = () => {
+        // 파업 체크
+        if (this.app.encounterManager && this.app.encounterManager.isStrikeActive()) {
+          alert("정착민들이 파업 중입니다! 상점을 이용할 수 없습니다.");
+          return;
+        }
+
         const grade = btn.getAttribute('data-grade');
         const state = this.app.state;
         

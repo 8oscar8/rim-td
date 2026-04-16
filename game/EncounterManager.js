@@ -116,6 +116,9 @@ export class EncounterManager {
       } else if (event.id === 'food_rot') {
           borderColor = "#78350f"; // Brown
           bgColor = "rgba(120, 53, 15, 0.1)";
+      } else if (event.id === 'labor_strike') {
+          borderColor = "#475569"; // Slate Grey
+          bgColor = "rgba(71, 85, 105, 0.1)";
       }
 
       // UI 요소 생성
@@ -193,6 +196,10 @@ export class EncounterManager {
       { 
         name: '정신적 파동', weight: 20, type: 'negative', id: 'psychic_drone',
         desc: "불쾌한 정신적 파동이 정착지를 휩쓸고 있습니다! 정착민들이 극심한 두통과 집중력 저하를 겪으며 60초 동안 모든 타워의 사거리가 20% 감소합니다."
+      },
+      { 
+        name: '파업', weight: 12, type: 'negative', id: 'labor_strike',
+        desc: "정착민들이 처우 개선과 휴식을 요구하며 파업을 선언했습니다! 60초 동안 상점을 이용하거나 새로운 타워를 배치할 수 없습니다."
       },
       { 
         name: '방화광', weight: 10, type: 'negative', id: 'pyromaniac',
@@ -276,6 +283,9 @@ export class EncounterManager {
         break;
       case 'food_rot':
         this.handleFoodRot(event);
+        break;
+      case 'labor_strike':
+        this.handleStrike();
         break;
     }
   }
@@ -478,6 +488,16 @@ export class EncounterManager {
     this.app.ui.updateDisplays(this.app.state);
   }
 
+  // 14. 파업 (상점/배치 금지)
+  handleStrike() {
+    this.activeEvents.push({
+        id: 'labor_strike',
+        name: '노동 파업',
+        type: 'negative',
+        duration: 60
+    });
+  }
+
   // 2. 독성 낙진 (파견 효율 감소)
   handleToxicFallout() {
     this.activeEvents.push({
@@ -515,5 +535,10 @@ export class EncounterManager {
       multiplier *= 0.8; // 사거리 20% 감소
     }
     return multiplier;
+  }
+
+  // 파업 상태 확인
+  isStrikeActive() {
+    return this.activeEvents.some(e => e.id === 'labor_strike');
   }
 }

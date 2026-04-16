@@ -356,6 +356,12 @@ class App {
    * 유닛 배치 대기 모드 진입
    */
   startPlacement(gachaResult) {
+    // 파업 체크
+    if (this.encounterManager && this.encounterManager.isStrikeActive()) {
+      this.ui.addMiniNotification("파업 중에는 유닛 배치가 불가능합니다!", "failure");
+      return;
+    }
+
     this.placementMode = true;
     this.pendingGachaResult = gachaResult;
     this.ui.showNotification("INFO", "맵에서 배치할 위치를 클릭하세요.", "info");
