@@ -95,9 +95,9 @@ class App {
     let isFailure = rand >= 0.1 && rand < 0.15;
     
     switch(type) {
-      case 'logging': baseAmount = 5; resName = "목재"; break;
+      case 'logging': baseAmount = 8; resName = "목재"; break;
       case 'mining': 
-        baseAmount = 3; resName = "강철"; 
+        baseAmount = 5; resName = "강철"; 
         // 채광 보너스: 플라스틸(5%), 우라늄(10%), 비취(5%)
         if (!isFailure) {
             if (Math.random() < 0.05) { 
@@ -114,9 +114,9 @@ class App {
             }
         }
         break;
-      case 'farming': baseAmount = 5; resName = "식량"; break;
+      case 'farming': baseAmount = 8; resName = "식량"; break;
       case 'trading': 
-        baseAmount = 10; resName = "은화"; 
+        baseAmount = 15; resName = "은화"; 
         // 교역 보너스: 플라스틸(10%), 비취(5%)
         if (!isFailure) {
             if (Math.random() < 0.1) { 
@@ -130,7 +130,7 @@ class App {
         }
         break;
       case 'research': 
-        baseAmount = 10; resName = "연구"; 
+        baseAmount = 15; resName = "연구"; 
         if (!isFailure && Math.random() < 0.2) {
             const amt = Math.floor(Math.random() * 2) + 1; // 1~2
             bonusComponent = amt;
@@ -142,12 +142,13 @@ class App {
 
     let finalAmount = 0;
     if (isJackpot) {
-        finalAmount = baseAmount * 3;
+        finalAmount = baseAmount * 5; // 3 -> 5 상향
     } else if (isFailure) {
         finalAmount = 0;
         bonusComponent = 0;
     } else {
-        finalAmount = Math.floor(baseAmount * (0.8 + Math.random() * 0.4));
+        // 랜덤성 대폭 강화 (50% ~ 200%)
+        finalAmount = Math.floor(baseAmount * (0.5 + Math.random() * 1.5));
         if (finalAmount < 1 && baseAmount > 0) finalAmount = 1;
     }
 
