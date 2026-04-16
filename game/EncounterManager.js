@@ -419,7 +419,8 @@ export class EncounterManager {
         { key: 'steel', name: '강철' },
         { key: 'plasteel', name: '플라스틸' },
         { key: 'uranium', name: '우라늄' },
-        { key: 'component', name: '부품' }
+        { key: 'component', name: '부품' },
+        { key: 'research', name: '연구 데이터' }
     ];
 
     const target = resources[Math.floor(Math.random() * resources.length)];
