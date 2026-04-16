@@ -178,13 +178,47 @@ export class UIManager {
     this.craftBtns.forEach(btn => {
       btn.onclick = () => {
         const grade = btn.getAttribute('data-grade');
-        // 간소화된 제작 체크 로직 (실제 자원 소모 로직 추가 필요)
-        if (this.app.state.silver >= 500) { 
-           this.app.state.silver -= 500;
+        const state = this.app.state;
+        
+        // 기술 수준 체크
+        const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
+        const techIdx = levels.indexOf(state.techLevel);
+        let techMet = true;
+        if (grade === 'Rare' && techIdx < 1) techMet = false;
+        else if (grade === 'Epic' && techIdx < 2) techMet = false;
+        else if (grade === 'Legendary' && techIdx < 3) techMet = false;
+        else if (grade === 'Mythic' && techIdx < 3) techMet = false;
+
+        if (!techMet) {
+          alert("기술 수준이 부족합니다!");
+          return;
+        }
+
+        let canCraft = false;
+        if (grade === 'Rare') {
+          if (state.wood >= 30 && state.steel >= 30 && state.component >= 1) {
+            state.wood -= 30; state.steel -= 30; state.component -= 1; canCraft = true;
+          }
+        } else if (grade === 'Epic') {
+          if (state.steel >= 50 && state.plasteel >= 10 && state.component >= 5) {
+            state.steel -= 50; state.plasteel -= 10; state.component -= 5; canCraft = true;
+          }
+        } else if (grade === 'Legendary') {
+          if (state.plasteel >= 30 && state.uranium >= 20 && state.researchPoints >= 100 && state.component >= 10) {
+            state.plasteel -= 30; state.uranium -= 20; state.researchPoints -= 100; state.component -= 10; canCraft = true;
+          }
+        } else if (grade === 'Mythic') {
+          if (state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20) {
+            state.plasteel -= 50; state.uranium -= 30; state.researchPoints -= 300; state.component -= 20; canCraft = true;
+          }
+        }
+
+        if (canCraft) {
            const result = GachaSystem.drawSpecificGrade(grade, 1);
            if (result) {
              this.app.startPlacement(result);
            }
+           this.updateDisplays(state);
         } else {
            alert("자원이 부족합니다!");
         }
@@ -404,12 +438,21 @@ export class UIManager {
     if (this.craftBtns) {
       this.craftBtns.forEach(btn => {
         const grade = btn.getAttribute('data-grade');
-        let canCraft = false;
-        if (grade === 'Rare') canCraft = state.wood >= 30 && state.steel >= 30;
-        else if (grade === 'Epic') canCraft = state.component >= 50 && state.plasteel >= 10;
-        else if (grade === 'Legendary') canCraft = state.plasteel >= 30 && state.uranium >= 20 && state.component >= 100;
-        else if (grade === 'Mythic') canCraft = state.plasteel >= 50 && state.uranium >= 30 && state.component >= 300;
+        const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
+        const techIdx = levels.indexOf(state.techLevel);
+        let techMet = true;
+        if (grade === 'Rare' && techIdx < 1) techMet = false;
+        else if (grade === 'Epic' && techIdx < 2) techMet = false;
+        else if (grade === 'Legendary' && techIdx < 3) techMet = false;
+        else if (grade === 'Mythic' && techIdx < 3) techMet = false;
+
+        let resMet = false;
+        if (grade === 'Rare') resMet = state.wood >= 30 && state.steel >= 30 && state.component >= 1;
+        else if (grade === 'Epic') resMet = state.steel >= 50 && state.plasteel >= 10 && state.component >= 5;
+        else if (grade === 'Legendary') resMet = state.plasteel >= 30 && state.uranium >= 20 && state.researchPoints >= 100 && state.component >= 10;
+        else if (grade === 'Mythic') resMet = state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20;
         
+        const canCraft = techMet && resMet;
         btn.disabled = !canCraft;
         btn.style.opacity = canCraft ? "1" : "0.4";
         btn.style.pointerEvents = canCraft ? "auto" : "none";
