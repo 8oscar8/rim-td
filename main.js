@@ -476,6 +476,7 @@ class App {
 
   handleWaveStart(num) {
     this.state.waveNumber = num;
+    SoundManager.playSFX('assets/audio/raid_alert.mp3');
   }
 
   /**
