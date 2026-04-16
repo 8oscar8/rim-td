@@ -274,9 +274,49 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 }
 
 #notification-banner.hidden { display: none; }
-#notification-banner h4 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-#notification-banner p { font-size: 18px; font-weight: 700; color: #fff; }
-#notification-banner .prob-tag { font-size: 11px; opacity: 0.7; margin-left: 8px; font-weight: normal; }
+#notification-banner.grade-banner {
+    animation: dopamine-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#notification-banner h4 { 
+    font-size: 20px; 
+    margin-bottom: 8px; 
+    color: var(--text-muted); 
+    letter-spacing: 4px;
+}
+#notification-banner p { 
+    font-size: 52px; 
+    font-weight: 900; 
+    color: #fff; 
+    text-shadow: 0 0 20px rgba(255,255,255,0.5);
+    margin: 10px 0;
+}
+#notification-banner .prob-tag { 
+    display: block;
+    font-size: 24px; 
+    color: var(--accent-gold);
+    font-weight: 800;
+    margin-top: 10px;
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+/* 도파민 유발 애니메이션 */
+@keyframes dopamine-pop {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+#notification-banner.legendary, #notification-banner.mythic, #notification-banner.hidden-grade {
+    animation: dopamine-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    25% { transform: translate(-51%, -49%) rotate(1deg); }
+    50% { transform: translate(-49%, -51%) rotate(-1deg); }
+    75% { transform: translate(-51%, -51%) rotate(1deg); }
+    100% { transform: translate(-50%, -50%) rotate(0deg); }
+}
 
 /* Main Area */
 #game-main { flex: 1; position: relative; background: #000; display: flex; align-items: center; justify-content: center; }

@@ -299,10 +299,15 @@ export class UIManager {
         Common: '50.0%', Uncommon: '30.0%', Rare: '13.0%', Epic: '5.0%', 
         Special: '1.0%', Legendary: '0.8%', Mythic: '0.19%', Hidden: '0.01%'
       };
-      const probStr = probs[grade] ? `<span class="prob-tag">(확률: ${probs[grade]})</span>` : '';
+      
+      // 도파민 모드: 제목에 등급, 내용에 무기 이름, 밑에 확률 표시
+      const gradeStr = grade.toUpperCase();
+      const probStr = probs[grade] ? `<div class="prob-tag">${probs[grade]} CHANCE</div>` : '';
 
-      t.innerHTML = `${title} ${probStr}`;
-      x.textContent = text;
+      t.innerHTML = `${gradeStr}`;
+      // 배치 문구 제거하고 무기 이름만 크게 표시
+      const cleanName = text.split('이(가)')[0] || text;
+      x.innerHTML = `${cleanName}${probStr}`;
       
       // 기존 등급 클래스 제거 및 신규 추가
       banner.className = 'grade-banner'; // 초기화
