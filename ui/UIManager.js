@@ -404,7 +404,7 @@ export class UIManager {
       
       banner.classList.remove('hidden');
       if (this.notifTimeout) clearTimeout(this.notifTimeout);
-      this.notifTimeout = setTimeout(() => banner.classList.add('hidden'), 1800);
+      this.notifTimeout = setTimeout(() => banner.classList.add('hidden'), 1100); // 1.8s -> 1.1s로 단축
     }
   }
 
