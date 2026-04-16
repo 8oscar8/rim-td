@@ -307,7 +307,6 @@ class App {
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     } else {
-      SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.4);
       alert("은화가 부족합니다! (1,000 은 필요)");
     }
   }
@@ -321,7 +320,6 @@ class App {
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     } else {
-      SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.4);
       alert("은화가 부족합니다! (50 은 필요)");
     }
   }
