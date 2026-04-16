@@ -500,7 +500,22 @@ export class UIManager {
     }
     if (this.popVal) this.popVal.textContent = state.population;
     if (this.silverVal) this.silverVal.textContent = Math.floor(state.silver);
-    if (this.enemyVal) this.enemyVal.textContent = state.enemies ? state.enemies.length : 0;
+    if (this.enemyVal) {
+      const enemyCount = this.app.enemies ? this.app.enemies.length : 0;
+      this.enemyVal.textContent = `${enemyCount} / 100`;
+      
+      // 위험도에 따른 색상 강조
+      if (enemyCount >= 80) {
+        this.enemyVal.style.color = "var(--accent-red)";
+        this.enemyVal.style.textShadow = "0 0 10px rgba(239, 68, 68, 0.6)";
+      } else if (enemyCount >= 50) {
+        this.enemyVal.style.color = "var(--accent-gold)";
+        this.enemyVal.style.textShadow = "none";
+      } else {
+        this.enemyVal.style.color = "";
+        this.enemyVal.style.textShadow = "none";
+      }
+    }
     if (this.techLevelVal) {
       const names = { primitive: '원시 (Primitive)', advanced: '산업 (Advanced)', spacer: '우주 (Spacer)', ultra: '초월 (Ultra)' };
       this.techLevelVal.textContent = names[state.techLevel] || state.techLevel;
