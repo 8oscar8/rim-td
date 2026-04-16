@@ -113,6 +113,9 @@ export class EncounterManager {
       } else if (event.id === 'pyromaniac') {
           borderColor = "#ea580c"; // Orange-Red
           bgColor = "rgba(234, 88, 12, 0.1)";
+      } else if (event.id === 'food_rot') {
+          borderColor = "#78350f"; // Brown
+          bgColor = "rgba(120, 53, 15, 0.1)";
       }
 
       // UI 요소 생성
@@ -194,6 +197,10 @@ export class EncounterManager {
       { 
         name: '방화광', weight: 10, type: 'negative', id: 'pyromaniac',
         desc: "정착지에 방화광 정착민이 화풀이로 불을 질렀습니다! 창고에 보관 중이던 무작위 자원 중 일부가 소실되었습니다."
+      },
+      { 
+        name: '식량 부패', weight: 15, type: 'negative', id: 'food_rot',
+        desc: "보관 중이던 식량이 상해버렸습니다! 덥고 습한 날씨 혹은 관리 소홀로 인해 보관 중인 식량의 상당수가 부패했습니다."
       }
     ];
 
@@ -266,6 +273,9 @@ export class EncounterManager {
         break;
       case 'pyromaniac':
         this.handlePyromaniac(event);
+        break;
+      case 'food_rot':
+        this.handleFoodRot(event);
         break;
     }
   }
@@ -439,6 +449,29 @@ export class EncounterManager {
         this.app.ui.addMiniNotification(`자원 소실: ${target.name} -${lossAmount}`, 'failure');
     } else {
         event.desc = `방화광이 불을 지르려 했으나, 다행히도 대상 자원 창고가 비어있어 피해가 미미했습니다.`;
+        this.modalText.innerText = event.desc;
+    }
+
+    this.app.ui.updateDisplays(this.app.state);
+  }
+
+  // 13. 식량 부패 (식량 자원 소실)
+  handleFoodRot(event) {
+    const currentFood = this.app.state.resources.food || 0;
+    
+    if (currentFood > 0) {
+        // 30% ~ 70% 소실 (부패는 피해가 큼)
+        const lossPercent = 30 + Math.random() * 40;
+        const lossAmount = Math.ceil(currentFood * (lossPercent / 100));
+        
+        this.app.state.resources.food -= lossAmount;
+        if (this.app.state.resources.food < 0) this.app.state.resources.food = 0;
+
+        event.desc = `창고의 식량이 부패했습니다! \n\n소실된 식량: -${lossAmount}`;
+        this.modalText.innerText = event.desc;
+        this.app.ui.addMiniNotification(`식량 부패: -${lossAmount}`, 'failure');
+    } else {
+        event.desc = `창고가 비어있어 부패할 식량이 없었습니다.`;
         this.modalText.innerText = event.desc;
     }
 
