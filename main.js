@@ -15,6 +15,7 @@ import { EncounterManager } from './game/EncounterManager.js';
  */
 class App {
   constructor() {
+    window.app = this; // 전역 접근 허용 (UI 이벤트용)
     this.state = new GameState();
     this.renderer = new Renderer('game-canvas');
     this.ui = new UIManager(this);
