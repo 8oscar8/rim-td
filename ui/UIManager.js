@@ -320,6 +320,27 @@ export class UIManager {
     }
   }
 
+  /**
+   * 림월드 스타일 미니 알림 (5시 방향)
+   */
+  addMiniNotification(text) {
+    const container = document.getElementById('mini-notif-container');
+    if (!container) return;
+
+    const notif = document.createElement('div');
+    notif.className = 'mini-notif';
+    notif.textContent = text;
+    
+    container.appendChild(notif);
+
+    // 4초 후 요소 제거
+    setTimeout(() => {
+        if (notif.parentNode) {
+            container.removeChild(notif);
+        }
+    }, 4000);
+  }
+
   showUnitDetail(tower) {
     if (!tower || !tower.weaponData) return;
     try {

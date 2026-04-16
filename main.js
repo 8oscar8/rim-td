@@ -79,7 +79,7 @@ class App {
 
   handleWorkComplete(type) {
     if (type === 'population_up') {
-        this.showNotification("작업 알림", "새로운 정착민이 합류했습니다! (인구 +1)");
+        this.ui.addMiniNotification("새로운 정착민 합류! (인구 +1)");
         return;
     }
 
@@ -165,30 +165,15 @@ class App {
 
     // 자원 추가
     if (finalAmount > 0) {
-        if (type === 'logging') s.wood += finalAmount;
-        else if (type === 'mining') s.steel += finalAmount;
-        else if (type === 'farming') s.food += finalAmount;
-        else if (type === 'trading') s.silver += finalAmount;
-        else if (type === 'research') s.researchPoints += finalAmount;
+      s.addResource(type === 'logging' ? 'wood' : (type === 'mining' ? 'steel' : (type === 'farming' ? 'food' : (type === 'trading' ? 'silver' : 'research'))), finalAmount);
+      this.ui.addMiniNotification(`${resName} +${finalAmount}${bonusLoot}`);
+    } else if (isFailure) {
+      this.ui.addMiniNotification(`${resName} 채집 실패...`);
+    } else if (type === 'research') {
+      s.researchPoints += finalAmount;
     }
-    if (bonusComponent > 0) s.component += bonusComponent;
-
-    let msg = `${statusMsg} ${finalAmount > 0 ? '(' + resName + ' +' + finalAmount + ')' : '(자원 손실)'}`;
-    if (bonusLoot) msg += bonusLoot;
     
-    this.showNotification("정착지 긴급 보고", msg);
-  }
-
-  showNotification(titleText, bodyText) {
-    const banner = document.getElementById('notification-banner');
-    const title = document.getElementById('notif-title');
-    const text = document.getElementById('notif-text');
-    if (banner && title && text) {
-      title.textContent = titleText;
-      text.textContent = bodyText;
-      banner.classList.remove('hidden');
-      setTimeout(() => banner.classList.add('hidden'), 3000);
-    }
+    if (bonusComponent > 0) s.component += bonusComponent;
   }
 
   handleMouseMove(e) {
