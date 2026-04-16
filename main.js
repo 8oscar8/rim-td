@@ -6,6 +6,7 @@ import { WaveManager } from './game/WaveManager.js';
 import { Tower } from './game/Tower.js';
 import { SpriteManager } from './engine/SpriteManager.js';
 import { SoundManager } from './engine/SoundManager.js';
+import { GachaSystem } from './game/GachaSystem.js';
 
 /**
  * Main Application Class

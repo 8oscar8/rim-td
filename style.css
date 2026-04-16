@@ -267,32 +267,63 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .up-cost { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
 
 
-/* Notification Banner & Grade Visuals */
+/* Notification Banner & Grade Visuals (Premium Design) */
 #notification-banner {
     position: absolute;
-    top: 50%;
+    top: 45%; /* 살짝 위쪽으로 배치하여 중앙을 덜 가림 */
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(20, 21, 23, 0.9);
-    border: 2px solid #ccc; /* Default border */
-    padding: 24px 48px;
-    border-radius: 8px;
-    backdrop-filter: blur(15px);
-    z-index: 1000;
+    background: rgba(10, 11, 12, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 60px;
+    border-radius: 12px;
+    backdrop-filter: blur(20px) saturate(180%);
+    z-index: 2000;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255,255,255,0.05) inset;
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 400px;
 }
 
-#notification-banner.common { border-color: #ffffff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
-#notification-banner.uncommon { border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
-#notification-banner.rare { border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
-#notification-banner.epic { border-color: #a855f7; box-shadow: 0 0 15px rgba(168, 85, 247, 0.5); }
-#notification-banner.special { border-color: #fbbf24; border-style: dashed; }
-#notification-banner.legendary { border-color: #f59e0b; box-shadow: 0 0 25px rgba(245, 158, 11, 0.6); }
-#notification-banner.mythic { border-color: #ff00ff; box-shadow: 0 0 30px rgba(255, 0, 255, 0.7); }
-#notification-banner.hidden-grade { border-color: #ef4444; border-width: 4px; animation: pulse-red 1s infinite; }
+#notification-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 12px;
+    padding: 2px; 
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+#notification-banner.common { box-shadow: 0 0 30px rgba(255, 255, 255, 0.1); }
+#notification-banner.uncommon { box-shadow: 0 0 40px rgba(16, 185, 129, 0.2); }
+#notification-banner.uncommon::before { background: linear-gradient(135deg, #10b981, rgba(16, 185, 129, 0.1)); }
+
+#notification-banner.rare { box-shadow: 0 0 50px rgba(59, 130, 246, 0.3); }
+#notification-banner.rare::before { background: linear-gradient(135deg, #3b82f6, rgba(59, 130, 246, 0.1)); }
+
+#notification-banner.epic { box-shadow: 0 0 60px rgba(168, 85, 247, 0.4); }
+#notification-banner.epic::before { background: linear-gradient(135deg, #a855f7, rgba(168, 85, 247, 0.1)); }
+
+#notification-banner.special { border-style: none; }
+#notification-banner.special::before { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+
+#notification-banner.legendary { box-shadow: 0 0 80px rgba(245, 158, 11, 0.5); }
+#notification-banner.legendary::before { background: linear-gradient(135deg, #f59e0b, #ea580c); }
+
+#notification-banner.mythic { box-shadow: 0 0 100px rgba(255, 0, 255, 0.6); }
+#notification-banner.mythic::before { background: linear-gradient(135deg, #ff00ff, #7e22ce); }
+
+#notification-banner.hidden-grade { border-width: 0; animation: pulse-red 1s infinite, shake 0.5s infinite; }
+#notification-banner.hidden-grade::before { background: linear-gradient(135deg, #ef4444, #7f1d1d); }
 
 /* 안내 전용 스타일 (작은 크기) */
 #notification-banner.info {
@@ -316,25 +347,32 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 }
 
 #notification-banner h4 { 
-    font-size: 20px; 
-    margin-bottom: 8px; 
+    font-size: 14px; 
+    margin-bottom: 4px; 
     color: var(--text-muted); 
-    letter-spacing: 4px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 400;
 }
 #notification-banner p { 
-    font-size: 52px; 
-    font-weight: 900; 
+    font-size: 42px; 
+    font-weight: 800; 
     color: #fff; 
-    text-shadow: 0 0 20px rgba(255,255,255,0.5);
-    margin: 10px 0;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    margin: 5px 0;
+    font-family: 'Outfit', sans-serif;
 }
 #notification-banner .prob-tag { 
     display: block;
-    font-size: 24px; 
+    font-size: 16px; 
     color: var(--accent-gold);
-    font-weight: 800;
-    margin-top: 10px;
-    text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    font-weight: 600;
+    margin-top: 15px;
+    letter-spacing: 1px;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 /* 도파민 유발 애니메이션 */
