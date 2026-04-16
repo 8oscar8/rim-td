@@ -228,8 +228,8 @@ class App {
     if (selectedIdx !== -1) {
       const u = this.units[selectedIdx];
       this.units.splice(selectedIdx, 1);
-      this.state.silver += 50;
-      this.ui.showNotification("유닛 판매 완료", `${u.weaponName}을(를) 판매하여 50 은을 획득했습니다.`);
+      this.state.silver += 5;
+      this.ui.showNotification("유닛 판매 완료", `${u.weaponName}을(를) 판매하여 5 은을 획득했습니다.`);
       this.ui.updateDisplays(this.state);
       return true;
     }
