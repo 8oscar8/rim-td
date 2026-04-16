@@ -63,7 +63,7 @@ export class GameState {
 
     // 6. 소모성 특수 아이템 수량
     this.items = {
-        orbital_strike: 0,
+        orbital_strike: 1, // 테스트를 위해 1개 제공
         frag_grenade: 0,
         pulse_grenade: 0,
         molotov: 0,
