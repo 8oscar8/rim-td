@@ -165,12 +165,20 @@ class App {
 
     // 자원 추가
     if (finalAmount > 0) {
-      s.addResource(type === 'logging' ? 'wood' : (type === 'mining' ? 'steel' : (type === 'farming' ? 'food' : (type === 'trading' ? 'silver' : 'research'))), finalAmount);
-      this.ui.addMiniNotification(`${resName} +${finalAmount}${bonusLoot}`);
+      this.state.addResource(type === 'logging' ? 'wood' : (type === 'mining' ? 'steel' : (type === 'farming' ? 'food' : (type === 'trading' ? 'silver' : 'research'))), finalAmount);
+      
+      if (isJackpot) {
+          // 대박은 중앙 배너로 강조 (도파민!)
+          this.ui.showNotification(statusMsg, `${resName} +${finalAmount}${bonusLoot}`, 'legendary');
+      } else {
+          // 일반 성공은 미니 알림
+          this.ui.addMiniNotification(`${resName} +${finalAmount}${bonusLoot}`);
+      }
     } else if (isFailure) {
-      this.ui.addMiniNotification(`${resName} 채집 실패...`);
+      // 실패도 중앙 배너로 경고
+      this.ui.showNotification(statusMsg, `${resName} 작업 중 사고 발생!`, 'hidden-grade');
     } else if (type === 'research') {
-      s.researchPoints += finalAmount;
+      this.state.researchPoints += finalAmount;
     }
     
     if (bonusComponent > 0) s.component += bonusComponent;
