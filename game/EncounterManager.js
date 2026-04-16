@@ -77,6 +77,10 @@ export class EncounterManager {
         desc: "무역 상선이 궤도를 통과하며 보존된 무기 상자를 투하했습니다! Rare 이상의 무기를 획득합니다."
       },
       { 
+        name: '화물 낙하기', weight: 15, type: 'positive', id: 'cargo_pods',
+        desc: "궤도상에서 정체를 알 수 없는 화물 보급품들이 낙하했습니다! 유용한 자원들을 확보했습니다."
+      },
+      { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
         desc: "지독한 독성 낙진이 대기를 뒤덮었습니다! 외부 활동이 제한되어 모든 파견 임무의 효율이 50% 감소합니다."
       }
@@ -116,6 +120,9 @@ export class EncounterManager {
       case 'trade_ship':
         this.handleTradeShip();
         break;
+      case 'cargo_pods':
+        this.handleCargoPods(event);
+        break;
       case 'toxic_fallout':
         this.handleToxicFallout();
         break;
@@ -130,12 +137,27 @@ export class EncounterManager {
     const result = GachaSystem.drawSpecificGrade(grade, this.app.state.upgrades.artisan || 0);
     if (result) {
       this.app.startPlacement(result);
-      this.app.ui.showNotification(
-        "상선 통과", 
-        `무역 상선이 Rare/Epic 무기를 투하하고 떠났습니다!`, 
-        grade
-      );
     }
+  }
+
+  // 2. 화물 낙하기 (무작위 자원 보급)
+  handleCargoPods(event) {
+    const resources = [
+        { key: 'steel', name: '강철', min: 40, max: 80 },
+        { key: 'plasteel', name: '플라스틸', min: 20, max: 50 },
+        { key: 'uranium', name: '우라늄', min: 15, max: 40 },
+        { key: 'component', name: '부품', min: 2, max: 6 },
+        { key: 'silver', name: '은화', min: 100, max: 300 }
+    ];
+
+    const res = resources[Math.floor(Math.random() * resources.length)];
+    const amount = Math.floor(res.min + Math.random() * (res.max - res.min));
+    
+    this.app.state.addResource(res.key, amount);
+    
+    // 모달 텍스트 업데이트 (실제 획득한 자원 표시)
+    event.desc = `궤도에서 떨어진 낙하기를 회수했습니다! \n\n보상: ${res.name} +${amount}`;
+    this.modalText.innerText = event.desc;
   }
 
   // 2. 독성 낙진 (파견 효율 감소)
