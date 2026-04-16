@@ -444,6 +444,7 @@ export class EncounterManager {
 
   // 12. 방화광 (무작위 자원 소실)
   handlePyromaniac(event) {
+    const s = this.app.state;
     const resources = [
         { key: 'silver', name: '은화' },
         { key: 'steel', name: '강철' },
@@ -454,48 +455,41 @@ export class EncounterManager {
     ];
 
     const target = resources[Math.floor(Math.random() * resources.length)];
-    const currentAmount = this.app.state[target.key] || 0;
+    const currentAmount = s[target.key] || 0;
     
     if (currentAmount > 0) {
-        // 현재 보유량의 20% ~ 50% 소실
         const lossPercent = 20 + Math.random() * 30;
         const lossAmount = Math.ceil(currentAmount * (lossPercent / 100));
         
-        this.app.state[target.key] -= lossAmount;
-        if (this.app.state[target.key] < 0) this.app.state[target.key] = 0;
+        s.addResource(target.key, -lossAmount);
 
         event.desc = `방화광이 창고에 불을 질러 [${target.name}] 자원 ${lossAmount}개를 태워버렸습니다! \n\n보유 중인 자원이 크게 소실되었습니다.`;
-        this.modalText.innerText = event.desc;
+        if (this.modalText) this.modalText.innerText = event.desc;
         this.app.ui.addMiniNotification(`자원 소실: ${target.name} -${lossAmount}`, 'failure');
     } else {
         event.desc = `방화광이 불을 지르려 했으나, 다행히도 대상 자원 창고가 비어있어 피해가 미미했습니다.`;
-        this.modalText.innerText = event.desc;
+        if (this.modalText) this.modalText.innerText = event.desc;
     }
-
-    this.app.ui.updateDisplays(this.app.state);
   }
 
   // 13. 식량 부패 (식량 자원 소실)
   handleFoodRot(event) {
-    const currentFood = this.app.state.food || 0;
+    const s = this.app.state;
+    const currentFood = s.food || 0;
     
     if (currentFood > 0) {
-        // 30% ~ 70% 소실 (부패는 피해가 큼)
         const lossPercent = 30 + Math.random() * 40;
         const lossAmount = Math.ceil(currentFood * (lossPercent / 100));
         
-        this.app.state.food -= lossAmount;
-        if (this.app.state.food < 0) this.app.state.food = 0;
+        s.addResource('food', -lossAmount);
 
         event.desc = `창고의 식량이 부패했습니다! \n\n소실된 식량: -${lossAmount}`;
-        this.modalText.innerText = event.desc;
+        if (this.modalText) this.modalText.innerText = event.desc;
         this.app.ui.addMiniNotification(`식량 부패: -${lossAmount}`, 'failure');
     } else {
         event.desc = `창고가 비어있어 부패할 식량이 없었습니다.`;
-        this.modalText.innerText = event.desc;
+        if (this.modalText) this.modalText.innerText = event.desc;
     }
-
-    this.app.ui.updateDisplays(this.app.state);
   }
 
   // 14. 파업 (상점/배치 금지)
