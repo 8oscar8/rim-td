@@ -433,6 +433,21 @@ class App {
 
     // UI 동기화
     this.ui.updateDisplays(this.state);
+
+    // [New] 보스 시간 초과 체크 (게임 오버)
+    const timedOutBoss = this.enemies.find(e => e.active && e.isBoss && e.bossTimer <= 0);
+    if (timedOutBoss) {
+        this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
+    }
+  }
+
+  /**
+   * 게임 오버 처리
+   */
+  handleGameOver(reason) {
+    this.loop.stop();
+    alert(`[GAME OVER]\n${reason}`);
+    location.reload(); // 간단한 재시작 로직
   }
 
   /**

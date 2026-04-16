@@ -40,6 +40,12 @@ export class Enemy {
     this.shieldRegenTimer = 0;
     this.hpRegen = 0;
     this.gradeFilter = null; 
+    
+    // 보스 제한 시간 기믹 (550초)
+    if (this.isBoss) {
+      this.bossTimerMax = 550;
+      this.bossTimer = 550;
+    }
   }
 
   update(dt) {
@@ -117,6 +123,15 @@ export class Enemy {
         this.x += (dx / distance) * moveDist;
         this.y += (dy / distance) * moveDist;
         this.distanceTraveled += moveDist;
+      }
+    }
+
+    // 보스 제한 시간 차감 (550초)
+    if (this.isBoss && this.active) {
+      this.bossTimer -= dt;
+      if (this.bossTimer <= 0) {
+        this.bossTimer = 0;
+        // 게임 오버 상태는 App.update에서 체크
       }
     }
   }
@@ -278,6 +293,18 @@ export class Enemy {
     if (this.shieldMax > 0 && this.shield > 0) {
       ctx.fillStyle = '#00ffff';
       ctx.fillRect(this.x - barWidth / 2, barY - 6, barWidth * (this.shield / this.shieldMax), 3);
+    }
+
+    // 보스 제한 시간 게이지 (보라색/파란색)
+    if (this.isBoss && this.bossTimer > 0) {
+      const timerPercent = Math.max(this.bossTimer / this.bossTimerMax, 0);
+      const timerBarY = barY + barHeight + 2;
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(this.x - barWidth / 2, timerBarY, barWidth, 4);
+      
+      // 시간에 따라 색상 변경 (안정: 파랑 -> 촉박: 보라)
+      ctx.fillStyle = timerPercent > 0.3 ? '#3498db' : '#9b59b6';
+      ctx.fillRect(this.x - barWidth / 2, timerBarY, barWidth * timerPercent, 4);
     }
   }
 }
