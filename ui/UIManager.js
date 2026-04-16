@@ -397,8 +397,8 @@ export class UIManager {
     if (banner && t && x) {
       // 등급 확률 매핑
       const probs = {
-        Common: '50.0%', Uncommon: '30.0%', Rare: '13.0%', Epic: '5.0%', 
-        Special: '1.0%', Legendary: '0.8%', Mythic: '0.19%', Hidden: '0.01%'
+        Common: '50.9%', Uncommon: '30.0%', Rare: '13.0%', Epic: '5.0%', 
+        Special: '0.1%', Legendary: '0.8%', Mythic: '0.19%', Hidden: '0.01%'
       };
       
       // 도파민 모드: 제목에 등급, 내용에 무기 이름, 밑에 확률 표시

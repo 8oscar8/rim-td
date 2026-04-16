@@ -74,11 +74,11 @@ export const QUALITY_COEFFS = {
 };
 
 export const GRADE_PROBABILITIES = {
-  Common: 50.0,
+  Common: 50.9,
   Uncommon: 30.0,
   Rare: 13.0,
   Epic: 5.0,
-  Special: 1.0,
+  Special: 0.1,
   Legendary: 0.8,
   Mythic: 0.19,
   Hidden: 0.01
