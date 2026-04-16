@@ -450,19 +450,19 @@ export class EncounterManager {
         { key: 'plasteel', name: '플라스틸' },
         { key: 'uranium', name: '우라늄' },
         { key: 'component', name: '부품' },
-        { key: 'research', name: '연구 데이터' }
+        { key: 'researchPoints', name: '연구 데이터' }
     ];
 
     const target = resources[Math.floor(Math.random() * resources.length)];
-    const currentAmount = this.app.state.resources[target.key] || 0;
+    const currentAmount = this.app.state[target.key] || 0;
     
     if (currentAmount > 0) {
         // 현재 보유량의 20% ~ 50% 소실
         const lossPercent = 20 + Math.random() * 30;
         const lossAmount = Math.ceil(currentAmount * (lossPercent / 100));
         
-        this.app.state.resources[target.key] -= lossAmount;
-        if (this.app.state.resources[target.key] < 0) this.app.state.resources[target.key] = 0;
+        this.app.state[target.key] -= lossAmount;
+        if (this.app.state[target.key] < 0) this.app.state[target.key] = 0;
 
         event.desc = `방화광이 창고에 불을 질러 [${target.name}] 자원 ${lossAmount}개를 태워버렸습니다! \n\n보유 중인 자원이 크게 소실되었습니다.`;
         this.modalText.innerText = event.desc;
@@ -477,15 +477,15 @@ export class EncounterManager {
 
   // 13. 식량 부패 (식량 자원 소실)
   handleFoodRot(event) {
-    const currentFood = this.app.state.resources.food || 0;
+    const currentFood = this.app.state.food || 0;
     
     if (currentFood > 0) {
         // 30% ~ 70% 소실 (부패는 피해가 큼)
         const lossPercent = 30 + Math.random() * 40;
         const lossAmount = Math.ceil(currentFood * (lossPercent / 100));
         
-        this.app.state.resources.food -= lossAmount;
-        if (this.app.state.resources.food < 0) this.app.state.resources.food = 0;
+        this.app.state.food -= lossAmount;
+        if (this.app.state.food < 0) this.app.state.food = 0;
 
         event.desc = `창고의 식량이 부패했습니다! \n\n소실된 식량: -${lossAmount}`;
         this.modalText.innerText = event.desc;
