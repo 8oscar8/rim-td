@@ -101,6 +101,9 @@ export class EncounterManager {
       } else if (event.id === 'luciferium') {
           borderColor = "#991b1b"; // Deep Red (Crimson)
           bgColor = "rgba(153, 27, 27, 0.1)";
+      } else if (event.id === 'solar_flare') {
+          borderColor = "#ea580c"; // Orange
+          bgColor = "rgba(234, 88, 12, 0.1)";
       }
 
       // UI 요소 생성
@@ -166,6 +169,10 @@ export class EncounterManager {
       { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
         desc: "지독한 독성 낙진이 대기를 뒤덮었습니다! 외부 활동이 제한되어 모든 파견 임무의 효율이 50% 감소합니다."
+      },
+      { 
+        name: '흑점 폭발', weight: 15, type: 'negative', id: 'solar_flare',
+        desc: "강렬한 태양 활동으로 인해 흑점 폭발이 발생했습니다! 전자기기들이 먹통이 되어 60초 동안 모든 원거리 타워의 공격이 불가능해집니다."
       }
     ];
 
@@ -226,6 +233,9 @@ export class EncounterManager {
         break;
       case 'toxic_fallout':
         this.handleToxicFallout();
+        break;
+      case 'solar_flare':
+        this.handleSolarFlare();
         break;
     }
   }
@@ -339,6 +349,16 @@ export class EncounterManager {
         name: '루시페륨 투여',
         type: 'negative',
         duration: 60 // 60초간 지속
+    });
+  }
+
+  // 9. 흑점 폭발 (원거리 공격 중단)
+  handleSolarFlare() {
+    this.activeEvents.push({
+        id: 'solar_flare',
+        name: '흑점 폭발',
+        type: 'negative',
+        duration: 60
     });
   }
 

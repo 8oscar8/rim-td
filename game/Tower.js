@@ -104,6 +104,14 @@ export class Tower {
   }
 
   update(dt, enemies, addProjectile, globalEffects = { emi: false, luciferium: false }) {
+    // 흑점 폭발 체크 (원거리 타워 무력화)
+    const isSolarFlare = (this.gameCore.encounterManager && this.gameCore.encounterManager.activeEvents.some(e => e.id === 'solar_flare'));
+    const isRanged = this.weaponType === 'ranged';
+    
+    if (isSolarFlare && isRanged) {
+        return; // 원거리 타워는 흑점 폭발 시 작동 중지
+    }
+
     if (this.isBlueprint) return;
 
     // 외부 효과 반영 (EMI 등)
