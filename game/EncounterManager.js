@@ -3,6 +3,7 @@
  * 림월드 스타일의 랜덤 이벤트(인카운터) 시스템을 관리합니다.
  */
 import { GachaSystem } from './GachaSystem.js';
+import { WEAPON_DB } from './WeaponData.js';
 
 export class EncounterManager {
   constructor(app) {
@@ -120,6 +121,10 @@ export class EncounterManager {
         desc: "행성 전체에 기분 좋은 정신적 안정파가 흐릅니다! 60초 동안 모든 아군 유닛의 공격 속도가 대폭 상승합니다."
       },
       { 
+        name: '고대의 유물', weight: 5, type: 'positive', id: 'ancient_relic',
+        desc: "미개척지에서 고대 기술로 만들어진 강력한 유물이 발견되었습니다! 전설적인 근접 무기 중 하나를 확보합니다."
+      },
+      { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
         desc: "지독한 독성 낙진이 대기를 뒤덮었습니다! 외부 활동이 제한되어 모든 파견 임무의 효율이 50% 감소합니다."
       }
@@ -170,6 +175,9 @@ export class EncounterManager {
         break;
       case 'psychic_soothe':
         this.handlePsychicSoothe();
+        break;
+      case 'ancient_relic':
+        this.handleAncientRelic(event);
         break;
       case 'toxic_fallout':
         this.handleToxicFallout();
@@ -233,6 +241,27 @@ export class EncounterManager {
         type: 'positive',
         duration: 60 // 60초간 지속
     });
+  }
+
+  // 6. 고대의 유물 (전설템 획득)
+  handleAncientRelic(event) {
+    const relics = ['제우스망치', '플라즈마검', '단분자검'];
+    const pName = relics[Math.floor(Math.random() * relics.length)];
+    
+    // 강제로 전설 품질로 생성
+    const result = {
+        weaponName: pName,
+        weaponData: WEAPON_DB[pName],
+        quality: 'legendary',
+        material: '플라스틸'
+    };
+
+    if (result.weaponData) {
+        this.app.startPlacement(result);
+        event.desc = `유적 깊숙한 곳에서 빛나는 상자를 발견했습니다. \n\n득템: 전설 등급의 [${pName}]`;
+        this.modalText.innerText = event.desc;
+        this.app.ui.showNotification("전설적 유물 발견", `${pName}을(를) 획득했습니다!`, "Legendary");
+    }
   }
 
   // 2. 독성 낙진 (파견 효율 감소)
