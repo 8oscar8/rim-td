@@ -316,7 +316,7 @@ export class UIManager {
       
       banner.classList.remove('hidden');
       if (this.notifTimeout) clearTimeout(this.notifTimeout);
-      this.notifTimeout = setTimeout(() => banner.classList.add('hidden'), 3500);
+      this.notifTimeout = setTimeout(() => banner.classList.add('hidden'), 1800);
     }
   }
 
