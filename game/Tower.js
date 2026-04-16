@@ -62,7 +62,7 @@ export class Tower {
     this.maxHeat = 100;
     this.isOverheated = false;
     this.overheatTimer = 0;
-    this.overheatDuration = 3.0; 
+    this.overheatDuration = 5.0; 
     
     // 특수 버프 상태
     this.isLuciferiumActive = false;
@@ -216,7 +216,7 @@ export class Tower {
 
       // 미니건 전용 과열 로직
       if (this.weaponName === '미니건') {
-        this.heat += burstCount * 3.0;
+        this.heat += burstCount * 3.5;
         if (this.heat >= this.maxHeat) {
           this.isOverheated = true;
           this.overheatTimer = this.overheatDuration;
@@ -328,8 +328,21 @@ export class Tower {
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
       ctx.fillRect(bx, by, barW, barH);
       const heatRatio = Math.min(1.0, this.heat / this.maxHeat);
-      ctx.fillStyle = `rgb(${150 + heatRatio * 105}, ${255 - heatRatio * 200}, 50)`;
+      
+      // 과열 시 강렬한 붉은색, 아닐 시 오렌지->레드 그라데이션
+      ctx.fillStyle = this.isOverheated ? '#ff0000' : `rgb(255, ${200 - heatRatio * 200}, 0)`;
       ctx.fillRect(bx, by, barW * heatRatio, barH);
+
+      if (this.isOverheated) {
+        const bounce = Math.sin(Date.now() * 0.01) * 3;
+        ctx.fillStyle = '#ff4444';
+        ctx.font = 'bold 12px Inter';
+        ctx.textAlign = 'center';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#ff0000';
+        ctx.fillText('OVERHEATED!', this.x, by + 18 + bounce);
+        ctx.shadowBlur = 0;
+      }
     }
   }
 }
