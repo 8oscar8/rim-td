@@ -261,6 +261,13 @@ export class EncounterManager {
     this.modalTitle.style.color = (event.type === 'positive') ? "#4ade80" : "#ef4444";
     this.modalText.innerText = event.desc;
     this.modal.classList.remove('hidden');
+
+    // [Sound] 이벤트 타입에 따른 효과음 설정
+    if (event.type === 'negative') {
+        SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.8);
+    } else {
+        SoundManager.playSFX('assets/audio/encounter_success.mp3', 0.8);
+    }
     
     this.app.state.isPaused = true; // 게임 일시정지
   }
