@@ -258,12 +258,12 @@ export class WaveManager {
         { name: '메가스파이더', hpMul: 2.2, spdMul: 0.8, size: 22, color: '#1e293b' }
     ];
 
-    let count = 0;
+    const count = { val: 0 };
     const maxCount = 12 + Math.floor(Math.random() * 8); // 12~20마리
-    const baseHp = this.getCurrentWaveHp();
+    const baseHp = this.currentEnemyHp || 50;
 
     const intervalId = setInterval(() => {
-        if (count >= maxCount) {
+        if (count.val >= maxCount) {
             clearInterval(intervalId);
             return;
         }
@@ -275,13 +275,15 @@ export class WaveManager {
         else if (rand > 0.5) config = insectTypes[1]; // 스펠로피드
 
         const insect = new Enemy(
-            config.name,
+            this.waypoints,
             baseHp * config.hpMul,
-            this.speed * config.spdMul,
+            this.currentReward || 1,
             'organic'
         );
         
-        // 곤충 외형 커스텀
+        // 곤충 개별 커스텀
+        insect.name = config.name;
+        insect.speed *= config.spdMul;
         insect.size = config.size;
         insect.color = config.color;
 
@@ -295,7 +297,7 @@ export class WaveManager {
         const spawnEvent = new CustomEvent('spawnSpecial', { detail: insect });
         document.dispatchEvent(spawnEvent);
 
-        count++;
+        count.val++;
     }, 250);
   }
 }
