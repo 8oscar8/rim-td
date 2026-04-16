@@ -267,6 +267,16 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 #notification-banner.mythic { border-color: #ff00ff; box-shadow: 0 0 30px rgba(255, 0, 255, 0.7); }
 #notification-banner.hidden-grade { border-color: #ef4444; border-width: 4px; animation: pulse-red 1s infinite; }
 
+/* 안내 전용 스타일 (작은 크기) */
+#notification-banner.info {
+    border-color: var(--accent-blue);
+    padding: 12px 24px;
+    animation: none;
+}
+#notification-banner.info h4 { font-size: 13px; letter-spacing: 1px; margin-bottom: 2px; color: var(--accent-blue); }
+#notification-banner.info p { font-size: 15px; font-weight: 500; margin: 0; text-shadow: none; }
+#notification-banner.info .prob-tag { display: none; }
+
 @keyframes pulse-red {
     0% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
     50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.8); }
