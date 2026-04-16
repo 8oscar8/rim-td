@@ -119,7 +119,7 @@ class App {
                 const amt = Math.floor(Math.random() * 3) + 1; 
                 s.uranium += amt; bonusLoot += ` (우라늄 +${amt}!)`; 
             }
-            if (Math.random() < 0.05 + mineBonus) { 
+            if (Math.random() < 0.02 + (up.mining * 0.02)) { 
                 s.jade += 1; bonusLoot += ` (비취 +1!)`; 
             }
         }
@@ -129,7 +129,8 @@ class App {
         resName = "식량"; 
         break;
       case 'trading': 
-        baseAmount = Math.floor(12 * getBonus(up.trade)); 
+        // 기본량 하향 (12 -> 6), 하지만 레벨당 기본 효율 증가 추가
+        baseAmount = Math.floor((6 + (up.trade * 6)) * getBonus(up.trade)); 
         resName = "은화"; 
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률(10+5%*lv) 및 획득량 증가
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률 상향 (20+8%*lv)
@@ -139,7 +140,7 @@ class App {
                 const amt = Math.floor((Math.random() * 4 + 2) * getBonus(up.trade)); // 획득량 상향
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
-            if (Math.random() < 0.05) { 
+            if (Math.random() < 0.015) { 
                 const amt = Math.floor(Math.random() * 2) + 1; 
                 s.jade += amt; bonusLoot += ` (비취 +${amt}!)`; 
             }
