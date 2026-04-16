@@ -500,7 +500,7 @@ export class UIManager {
     
     // 자원 업데이트
     if (this.resWood) this.resWood.textContent = Math.floor(state.wood || 0);
-    if (this.resSteel) this.resSteel.textContent = Math.floor(state.steel || 0);
+        if (this.resSteel) this.resSteel.textContent = Math.floor(state.steel || 0);
     if (this.resPlasteel) this.resPlasteel.textContent = Math.floor(state.plasteel || 0);
     if (this.resUranium) this.resUranium.textContent = Math.floor(state.uranium || 0);
     if (this.resJade) this.resJade.textContent = Math.floor(state.jade || 0);
@@ -510,7 +510,34 @@ export class UIManager {
     }
     if (this.resResearch) this.resResearch.textContent = Math.floor(state.researchPoints || 0);
 
+    // 생산 업그레이드 버튼 활성/비활성 상태 갱신
+    if (this.prodUpBtns) {
+        const prodCosts = {
+            education: { silver: 200, wood: 100 },
+            artisan: { silver: 200, steel: 100 },
+            farming: { silver: 200, food: 100 },
+            mining: { silver: 200, steel: 100 },
+            logging: { silver: 200, wood: 100 },
+            trade: { silver: 300, researchPoints: 150 }
+        };
 
+        this.prodUpBtns.forEach(btn => {
+            const type = btn.getAttribute('data-type');
+            const cost = prodCosts[type];
+            let canAfford = true;
+            if (cost) {
+                for (const [res, amt] of Object.entries(cost)) {
+                    if (state[res] < amt) {
+                        canAfford = false;
+                        break;
+                    }
+                }
+            }
+            btn.disabled = !canAfford;
+            btn.style.opacity = canAfford ? "1" : "0.4";
+            btn.style.cursor = canAfford ? "pointer" : "not-allowed";
+        });
+    }
 
     // DPM 합계 계산 및 업데이트
     let bluntDpm = 0;
