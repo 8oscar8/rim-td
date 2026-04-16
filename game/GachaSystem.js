@@ -217,34 +217,43 @@ export class GachaSystem {
    * 조합 성공 시 상위 등급 중 하나를 무작위로 리롤하여 반환
    */
   static drawForCombination(currentGrade, artisanLevel = 0) {
-    const grades = ['Common', 'Uncommon', 'Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
-    const curIdx = grades.indexOf(currentGrade);
-    if (curIdx === -1 || curIdx >= grades.length - 1) return null;
+    try {
+        const grades = ['Common', 'Uncommon', 'Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
+        const curIdx = grades.indexOf(currentGrade);
+        if (curIdx === -1 || curIdx >= grades.length - 1) {
+            console.error(`Invalid grade for combination: ${currentGrade}`);
+            return null;
+        }
 
-    // 1. 상위 등급들에 대한 새로운 확률 분포 설정 (계획서 기준)
-    let dist = {};
-    if (currentGrade === 'Common') {
-      dist = { Uncommon: 70, Rare: 20, Epic: 7, Legendary: 2, Mythic: 1 };
-    } else if (currentGrade === 'Uncommon') {
-      dist = { Rare: 65, Epic: 25, Legendary: 8, Mythic: 2 };
-    } else {
-      // 그 이상 등급 조합 (필요시) - 단순히 한 등급 위 확률 높게 설정
-      const nextGrade = grades[curIdx + 1];
-      dist[nextGrade] = 100;
+        // 1. 상위 등급들에 대한 새로운 확률 분포 설정 (계획서 기준)
+        let dist = {};
+        if (currentGrade === 'Common') {
+            dist = { Uncommon: 70, Rare: 20, Epic: 7, Legendary: 2, Mythic: 1 };
+        } else if (currentGrade === 'Uncommon') {
+            dist = { Rare: 65, Epic: 25, Legendary: 8, Mythic: 2 };
+        } else {
+            // 그 이상 등급 조합 (필요시) - 단순히 한 등급 위 확률 높게 설정
+            const nextGrade = grades[curIdx + 1];
+            dist[nextGrade] = 100;
+        }
+
+        const rand = Math.random() * 100;
+        let targetGrade = grades[curIdx + 1]; // 기본값
+        let cumulative = 0;
+        for (const [gName, prob] of Object.entries(dist)) {
+            cumulative += prob;
+            if (rand <= cumulative) {
+                targetGrade = gName;
+                break;
+            }
+        }
+
+        console.log(`[Combine] Target Grade Determined: ${targetGrade} (from ${currentGrade})`);
+        return this.drawSpecificGrade(targetGrade, artisanLevel);
+    } catch (e) {
+        console.error("GachaSystem.drawForCombination Error:", e);
+        return null;
     }
-
-    const rand = Math.random() * 100;
-    let targetGrade = grades[curIdx + 1]; // 기본값
-    let cumulative = 0;
-    for (const [grade, prob] of Object.entries(dist)) {
-      cumulative += prob;
-      if (rand <= cumulative) {
-        targetGrade = grade;
-        break;
-      }
-    }
-
-    return this.drawSpecificGrade(targetGrade, artisanLevel);
   }
 
   // [복구] 특정 무기를 강제로 생성하여 반환 (시나리오 지급 전용)
