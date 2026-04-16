@@ -169,6 +169,11 @@ export class UIManager {
           this.app.state.silver -= sCost;
           this.app.state.researchPoints -= rCost;
           this.app.state.techLevel = levels[currIdx + 1];
+          // [Sound] 기술 업그레이드 효과음
+          const audio = new Audio('assets/audio/upgrade.mp3');
+          audio.volume = 1.0;
+          audio.play().catch(e => console.log("Audio play deferred"));
+
           this.addMiniNotification(`기술 업그레이드 완료: ${this.app.state.techLevel}`);
         } else {
           alert("자원이 부족합니다!");
@@ -265,8 +270,13 @@ export class UIManager {
         
         // 업그레이드 레벨 증가
         s.upgrades[type]++;
-        console.log(`[UIManager] Upgrade success: ${type} Lv.${s.upgrades[type]}`);
-        SoundManager.playSFX('assets/audio/upgrade.mp3', 1.0);
+        console.log(`[UIManager] Upgrade SUCCESS: ${type} is now Lv.${s.upgrades[type]}`);
+        
+        // [Critical Fix] 가장 직접적인 방식으로 사운드 재생 강제 시도
+        const audio = new Audio('assets/audio/upgrade.mp3');
+        audio.volume = 1.0;
+        audio.play().catch(err => console.error("Audio play failed:", err));
+
         const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
         this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
       } else {
@@ -325,7 +335,12 @@ export class UIManager {
                 s[res] -= amt;
             }
             s.upgrades[type] = curLv + 1;
-            SoundManager.playSFX('assets/audio/upgrade.mp3', 1.0);
+            
+            // [Critical Fix] 가장 직접적인 방식으로 사운드 재생 강제 시도
+            const audio = new Audio('assets/audio/upgrade.mp3');
+            audio.volume = 1.0;
+            audio.play().catch(err => console.error("Audio play failed:", err));
+
             const name = btn.querySelector('.up-name').textContent;
             this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
             this.updateDisplays(s);
