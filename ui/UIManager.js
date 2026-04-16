@@ -226,7 +226,7 @@ export class UIManager {
         if (canCraft) {
            const result = GachaSystem.drawSpecificGrade(grade, 1);
            if (result) {
-             this.app.playGachaSound(grade);
+             SoundManager.playSFX('assets/audio/buy.mp3');
              this.app.startPlacement(result);
            }
            this.updateDisplays(state);
@@ -356,7 +356,7 @@ export class UIManager {
             s.component -= cost.component;
             
             const result = GachaSystem.createSpecificWeapon(weaponName);
-            this.app.playGachaSound(result.weaponData.grade);
+            SoundManager.playSFX('assets/audio/buy.mp3');
             this.app.startPlacement(result);
             this.updateDisplays(s);
         } else {
