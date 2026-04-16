@@ -512,13 +512,11 @@ class App {
         if (isSuccess) {
             const result = GachaSystem.drawForCombination(grade, this.state.upgrades.artisan || 0);
             if (result) {
-                const newTower = new Tower(targetUnit.x, targetUnit.y, result, this);
-                newTower.isBlueprint = false;
-                this.units.push(newTower);
-                this.ui.showNotification("조합 성공!", `${name} 4개를 합쳐 ${result.weaponName}(${result.weaponData.grade}) 획득!`, result.weaponData.grade);
+                // [Fix] 자동 생성이 아닌, 상점처럼 직접 배치 모드로 전환
+                this.startPlacement(result);
+                this.ui.showNotification("조합 성공!", `${name} 4개를 합쳐 새로운 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
             } else {
                 console.error("[Combine] Gacha result was null!");
-                // 결과 생성 실패 시 포인트 환불 (옵션)
             }
         } else {
             this.ui.showNotification("조합 실패", `${name} 4개가 전부 파괴되었습니다...`, 'failure');

@@ -219,20 +219,24 @@ export class GachaSystem {
   static drawForCombination(currentGrade, artisanLevel = 0) {
     try {
         const grades = ['Common', 'Uncommon', 'Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
-        const curIdx = grades.indexOf(currentGrade);
+        // 대소문자 무시 정규화 (예: common -> Common)
+        const g = currentGrade.charAt(0).toUpperCase() + currentGrade.slice(1).toLowerCase();
+        const curIdx = grades.indexOf(g);
+        
         if (curIdx === -1 || curIdx >= grades.length - 1) {
-            console.error(`Invalid grade for combination: ${currentGrade}`);
+            console.error(`Invalid grade for combination: ${currentGrade} (normalized: ${g})`);
             return null;
         }
 
+        const effectiveGrade = grades[curIdx];
+
         // 1. 상위 등급들에 대한 새로운 확률 분포 설정 (계획서 기준)
         let dist = {};
-        if (currentGrade === 'Common') {
+        if (effectiveGrade === 'Common') {
             dist = { Uncommon: 70, Rare: 20, Epic: 7, Legendary: 2, Mythic: 1 };
-        } else if (currentGrade === 'Uncommon') {
+        } else if (effectiveGrade === 'Uncommon') {
             dist = { Rare: 65, Epic: 25, Legendary: 8, Mythic: 2 };
         } else {
-            // 그 이상 등급 조합 (필요시) - 단순히 한 등급 위 확률 높게 설정
             const nextGrade = grades[curIdx + 1];
             dist[nextGrade] = 100;
         }
