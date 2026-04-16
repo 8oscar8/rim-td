@@ -129,6 +129,25 @@ export class Projectile {
       ctx.shadowColor = this.color;
       ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
+    } else if (this.effect === 'arrow') {
+      // 화살/투창형 (실 같은 선 모양)
+      if (this.target && this.target.active) {
+        const dx = this.target.x - this.x;
+        const dy = this.target.y - this.y;
+        const angle = Math.atan2(dy, dx);
+        const length = 15; // 선의 길이
+        
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(angle);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-length / 2, 0);
+        ctx.lineTo(length / 2, 0);
+        ctx.stroke();
+        ctx.restore();
+      }
     } else {
       ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
     }
