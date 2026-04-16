@@ -119,6 +119,9 @@ export class EncounterManager {
       } else if (event.id === 'labor_strike') {
           borderColor = "#475569"; // Slate Grey
           bgColor = "rgba(71, 85, 105, 0.1)";
+      } else if (event.id === 'manhunter_pack') {
+          borderColor = "#b91c1c"; // Blood Red
+          bgColor = "rgba(185, 28, 28, 0.1)";
       }
 
       // UI 요소 생성
@@ -209,9 +212,9 @@ export class EncounterManager {
         name: '식량 부패', weight: 15, type: 'negative', id: 'food_rot',
         desc: "보관 중이던 식량이 상해버렸습니다! 덥고 습한 날씨 혹은 관리 소홀로 인해 보관 중인 식량의 상당수가 부패했습니다."
       },
-      { 
-        name: '식인 동물 무리', weight: 15, type: 'negative', id: 'manhunter_pack',
-        desc: "식인 동물 무리가 정착지 근처에서 당신의 냄새를 맡았습니다! 수십 마리의 굶주린 동물들이 당신의 정착지로 돌진합니다."
+      {
+        name: '식인 동물 무리', weight: 18, type: 'negative', id: 'manhunter_pack',
+        desc: "정착지 주변에서 미친 듯이 굶주린 동물 무리가 습격해왔습니다! 매우 빠른 속도로 달려오는 동물들을 제거해야 합니다."
       }
     ];
 
@@ -292,7 +295,7 @@ export class EncounterManager {
         this.handleStrike();
         break;
       case 'manhunter_pack':
-        this.handleManhunterPack(event);
+        this.handleManhunterPack();
         break;
     }
   }
@@ -505,31 +508,11 @@ export class EncounterManager {
     });
   }
 
-  // 15. 식인 동물 무리 (적 대량 스폰)
-  handleManhunterPack(event) {
-    const wave = this.app.state.waveNumber;
-    let type = 'Yorkshire';
-    let count = 20 + Math.floor(Math.random() * 15);
-
-    if (wave > 30) {
-        type = 'Thrumbo';
-        count = 3 + Math.floor(Math.random() * 3);
-    } else if (wave > 10) {
-        type = 'Wolf';
-        count = 12 + Math.floor(Math.random() * 10);
-    }
-
-    // 팝업 메시지 업데이트
-    const animalName = (type === 'Yorkshire') ? "식인 요크셔테리어" : (type === 'Wolf' ? "식인 늑대" : "식인 트럼보");
-    event.desc = `정착지 냄새를 맡은 [${animalName}] 무리 ${count}마리가 몰려옵니다! 방어 태세를 갖추십시오.`;
-    this.modalText.innerText = event.desc;
-
-    // 즉시 스폰 실행
+  // 15. 식인 동물 무리 (적 추가 스폰)
+  handleManhunterPack() {
     if (this.app.waveManager) {
-        this.app.waveManager.spawnManhunterPack(type, count, this.app.enemies);
+        this.app.waveManager.spawnManhunterPack();
     }
-    
-    this.app.ui.addMiniNotification(`위협: ${animalName} 무리 습격!`, 'failure');
   }
 
   // 2. 독성 낙진 (파견 효율 감소)

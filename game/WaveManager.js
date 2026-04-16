@@ -29,10 +29,6 @@ export class WaveManager {
     // 보스 구성 정보
     this.bossToSpawn = 0;
     this.bossNames = ['CENTIPEDE', 'WARQUEEN', 'DIABOLUS', 'APOLLYON', 'MECHASILISK', 'SCYTHER PRINCE', 'BRAYER'];
-
-    // [New] 특수 스폰 대기열 (식인 동물 등 차례대로 소환)
-    this.specialSpawnQueue = [];
-    this.specialSpawnTimer = 0;
   }
 
   reset() {
@@ -95,21 +91,11 @@ export class WaveManager {
           }
         } 
         // 웨이브 종료 체크
-        else if (enemiesList.length === 0 && !this.isWaveCompleted && this.specialSpawnQueue.length === 0) {
+        else if (enemiesList.length === 0 && !this.isWaveCompleted) {
           this.isWaveCompleted = true;
           if (this.nextWaveTimer > 10) this.nextWaveTimer = 10; // 잔여 적 소탕 시 타이머 단축
           if (this.onWaveComplete) this.onWaveComplete();
         }
-      }
-
-      // [New] 특수 스폰 대기열 처리 (일반 시작점에서 차례대로 스폰)
-      if (this.specialSpawnQueue.length > 0) {
-          this.specialSpawnTimer += dt;
-          if (this.specialSpawnTimer >= 0.2) { // 0.2초 간격으로 스폰
-              this.specialSpawnTimer = 0;
-              const data = this.specialSpawnQueue.shift();
-              this.spawnEnemyFromData(data, enemiesList);
-          }
       }
     } catch (e) {
       console.error("WaveManager Update Error:", e);
@@ -144,9 +130,6 @@ export class WaveManager {
   /**
    * 보스 적 인스턴스 생성 및 리스트 추가
    */
-  /**
-   * 보스 적 인스턴스 생성 및 리스트 추가
-   */
   spawnBossEnemy(enemiesList) {
     const bossHp = this.currentEnemyHp * 15;
     const bossReward = this.currentReward * 50;
@@ -162,24 +145,6 @@ export class WaveManager {
       if (died) this.onEnemyDeath(enemy.reward, true);
       return died;
     };
-    enemiesList.push(enemy);
-  }
-
-  /**
-   * 데이터 기반 적 생성 (대기열 전용)
-   */
-  spawnEnemyFromData(data, enemiesList) {
-    const enemy = new Enemy(this.waypoints, data.hp, data.reward, data.type || 'organic');
-    enemy.name = data.name;
-    if (data.speed) enemy.speed = data.speed;
-    
-    const originalTakeDamage = enemy.takeDamage.bind(enemy);
-    enemy.takeDamage = (amount, ap, effect) => {
-        const died = originalTakeDamage(amount, ap, effect);
-        if (died) this.onEnemyDeath(enemy.reward, false);
-        return died;
-    };
-    
     enemiesList.push(enemy);
   }
 
@@ -248,45 +213,35 @@ export class WaveManager {
             }
             return died;
         };
-        // [New] 이벤트 기반 대신 직접 리스트 관리 방안 사용 가능하나, 일관성을 위해 customEvent 유지 혹은 직접 추가
-        if (window.app && window.app.enemies) {
-            window.app.enemies.push(boss);
-        }
+        document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: boss }));
     }
   }
 
   /**
-   * 식인 동물 무리 스폰 (대기열 주입)
+   * [New] 식인 동물 무리 소환
    */
-  spawnManhunterPack(animalType, count) {
-    for (let i = 0; i < count; i++) {
-        let hp = (this.currentEnemyHp || this.baseEnemyHp);
-        let speed = 80;
-        let name = "식인 동물";
-        let reward = 0;
-
-        switch(animalType) {
-            case 'Yorkshire':
-                name = "식인 요크셔테리어";
-                hp *= 0.35;
-                speed = 130;
-                break;
-            case 'Wolf':
-                name = "식인 늑대";
-                hp *= 1.2;
-                speed = 105;
-                break;
-            case 'Thrumbo':
-                name = "식인 트럼보";
-                hp *= 15.0;
-                speed = 65;
-                reward = 100;
-                break;
-        }
-
-        this.specialSpawnQueue.push({
-            name, hp, reward, speed, type: 'organic'
-        });
-    }
+  spawnManhunterPack() {
+    const animalCount = 15 + Math.floor(this.waveNumber / 5);
+    const animalHp = this.currentEnemyHp * 0.6; // 다람쥐/쥐 컨셉이라 체력은 낮음
+    const animalReward = 1 + Math.floor(this.waveNumber / 20); // 보상은 미미함
+    
+    let spawnCount = 0;
+    const interval = setInterval(() => {
+        const animal = new Enemy(this.waypoints, animalHp, animalReward, 'organic');
+        animal.name = Math.random() < 0.5 ? '식인 다람쥐' : '식인 멧돼지';
+        animal.speed *= 1.6; // 매우 빠름
+        
+        const originalDeath = animal.takeDamage.bind(animal);
+        animal.takeDamage = (amount, ap, effect) => {
+            const died = originalDeath(amount, ap, effect);
+            if (died) this.onEnemyDeath(animal.reward, false);
+            return died;
+        };
+        
+        document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: animal }));
+        
+        spawnCount++;
+        if (spawnCount >= animalCount) clearInterval(interval);
+    }, 200); // 0.2초 간격으로 쏟아져 나옴
   }
 }

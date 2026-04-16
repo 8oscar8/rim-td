@@ -50,6 +50,11 @@ class App {
     // 6. 입력 이벤트 (타워 선택 및 배치)
     this.renderer.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
     this.renderer.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+    
+    // [New] 특수 적 스폰 이벤트 수신
+    document.addEventListener('spawnSpecial', (e) => {
+        if (e.detail) this.enemies.push(e.detail);
+    });
 
     this.init();
   }
