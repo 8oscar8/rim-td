@@ -45,16 +45,28 @@ export class EncounterManager {
     this.updateActiveEvents(dt);
   }
 
+  // 글로벌 은화 배율 계산 (암브로시아 등 반영)
+  getGlobalSilverMultiplier() {
+    let multiplier = 1.0;
+    if (this.activeEvents.some(e => e.id === 'ambrosia_sprout')) {
+        multiplier *= 2.0;
+    }
+    return multiplier;
+  }
+
   updateActiveEvents(dt) {
     let uiHtml = "";
     this.activeEvents = this.activeEvents.filter(event => {
       event.duration -= dt;
       
+      const borderColor = (event.type === 'positive') ? "#a855f7" : "#ef4444";
+      const bgColor = (event.type === 'positive') ? "rgba(168, 85, 247, 0.1)" : "rgba(239, 68, 68, 0.1)";
+
       // UI 요소 생성
       uiHtml += `
-        <div class="event-tag">
+        <div class="event-tag" style="border-left-color: ${borderColor}; background: ${bgColor}">
             <span>${event.name}</span>
-            <span class="time">${Math.ceil(event.duration)}s</span>
+            <span class="time" style="color: ${borderColor}">${Math.ceil(event.duration)}s</span>
         </div>
       `;
 
@@ -83,6 +95,10 @@ export class EncounterManager {
       { 
         name: '공동체 합류', weight: 10, type: 'positive', id: 'wanderer_joins',
         desc: "지나 가던 길잃은 정착민이 우리 정착지의 안전함에 이끌려 합류를 요청했습니다! 인구가 1 증가합니다."
+      },
+      { 
+        name: '암브로시아 발아', weight: 12, type: 'positive', id: 'ambrosia_sprout',
+        desc: "정착지 근처에서 희귀한 암브로시아 나무들이 발아했습니다! 120초 동안 모든 은화(Silver) 획득량이 2배로 증가합니다."
       },
       { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
@@ -130,6 +146,9 @@ export class EncounterManager {
       case 'wanderer_joins':
         this.handleWandererJoins();
         break;
+      case 'ambrosia_sprout':
+        this.handleAmbrosiaSprout();
+        break;
       case 'toxic_fallout':
         this.handleToxicFallout();
         break;
@@ -174,11 +193,22 @@ export class EncounterManager {
     this.app.ui.addMiniNotification("새로운 정착민 합류! (인구 +1)");
   }
 
+  // 4. 암브로시아 발아 (은환 2배)
+  handleAmbrosiaSprout() {
+    this.activeEvents.push({
+        id: 'ambrosia_sprout',
+        name: '암브로시아 발아',
+        type: 'positive',
+        duration: 120 // 120초간 지속
+    });
+  }
+
   // 2. 독성 낙진 (파견 효율 감소)
   handleToxicFallout() {
     this.activeEvents.push({
       id: 'toxic_fallout',
       name: '독성 낙진',
+      type: 'negative',
       duration: 60 // 60초간 지속
     });
 

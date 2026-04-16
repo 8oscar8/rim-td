@@ -177,6 +177,12 @@ class App {
         if (finalAmount < 1 && baseAmount > 0) finalAmount = 1;
     }
 
+    // [New] 암브로시아 보너스 (은화 2배) 반영
+    if (resName === "은화") {
+        const silverMult = this.encounterManager.getGlobalSilverMultiplier();
+        finalAmount = Math.floor(finalAmount * silverMult);
+    }
+
     // 테마별 메시지 맵핑
     const themeMessages = {
         logging: { jackpot: "🌳 거대 수목 발견!", success: "🪓 벌목 완료", failure: "⚙️ 장비 파손" },
@@ -394,7 +400,8 @@ class App {
     // 0. 기본 자금 수입 (2초당 1은)
     this.passiveSilverTimer += scaledDt;
     if (this.passiveSilverTimer >= 2.0) {
-      this.state.silver += 1;
+      const silverMult = this.encounterManager.getGlobalSilverMultiplier();
+      this.state.silver += Math.floor(1 * silverMult);
       this.passiveSilverTimer -= 2.0;
     }
 
