@@ -110,6 +110,9 @@ export class EncounterManager {
       } else if (event.id === 'psychic_drone') {
           borderColor = "#a21caf"; // Purple/Fuchsia
           bgColor = "rgba(162, 28, 175, 0.1)";
+      } else if (event.id === 'pyromaniac') {
+          borderColor = "#ea580c"; // Orange-Red
+          bgColor = "rgba(234, 88, 12, 0.1)";
       }
 
       // UI 요소 생성
@@ -187,6 +190,10 @@ export class EncounterManager {
       { 
         name: '정신적 파동', weight: 20, type: 'negative', id: 'psychic_drone',
         desc: "불쾌한 정신적 파동이 정착지를 휩쓸고 있습니다! 정착민들이 극심한 두통과 집중력 저하를 겪으며 60초 동안 모든 타워의 사거리가 20% 감소합니다."
+      },
+      { 
+        name: '방화광', weight: 10, type: 'negative', id: 'pyromaniac',
+        desc: "정착지에 방화광 정착민이 화풀이로 불을 질렀습니다! 창고에 보관 중이던 무작위 자원 중 일부가 소실되었습니다."
       }
     ];
 
@@ -256,6 +263,9 @@ export class EncounterManager {
         break;
       case 'psychic_drone':
         this.handlePsychicDrone();
+        break;
+      case 'pyromaniac':
+        this.handlePyromaniac(event);
         break;
     }
   }
@@ -400,6 +410,38 @@ export class EncounterManager {
         type: 'negative',
         duration: 60
     });
+  }
+
+  // 12. 방화광 (무작위 자원 소실)
+  handlePyromaniac(event) {
+    const resources = [
+        { key: 'silver', name: '은화' },
+        { key: 'steel', name: '강철' },
+        { key: 'plasteel', name: '플라스틸' },
+        { key: 'uranium', name: '우라늄' },
+        { key: 'component', name: '부품' }
+    ];
+
+    const target = resources[Math.floor(Math.random() * resources.length)];
+    const currentAmount = this.app.state.resources[target.key] || 0;
+    
+    if (currentAmount > 0) {
+        // 현재 보유량의 20% ~ 50% 소실
+        const lossPercent = 20 + Math.random() * 30;
+        const lossAmount = Math.ceil(currentAmount * (lossPercent / 100));
+        
+        this.app.state.resources[target.key] -= lossAmount;
+        if (this.app.state.resources[target.key] < 0) this.app.state.resources[target.key] = 0;
+
+        event.desc = `방화광이 창고에 불을 질러 [${target.name}] 자원 ${lossAmount}개를 태워버렸습니다! \n\n보유 중인 자원이 크게 소실되었습니다.`;
+        this.modalText.innerText = event.desc;
+        this.app.ui.addMiniNotification(`자원 소실: ${target.name} -${lossAmount}`, 'failure');
+    } else {
+        event.desc = `방화광이 불을 지르려 했으나, 다행히도 대상 자원 창고가 비어있어 피해가 미미했습니다.`;
+        this.modalText.innerText = event.desc;
+    }
+
+    this.app.ui.updateDisplays(this.app.state);
   }
 
   // 2. 독성 낙진 (파견 효율 감소)
