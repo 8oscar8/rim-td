@@ -66,6 +66,7 @@ export class Tower {
     
     // 특수 버프 상태
     this.isLuciferiumActive = false;
+    this.auraBuffTimer = 0; // 엘텍스 지팡이 등 주변 버프 수신용
   }
 
   /**
@@ -87,7 +88,8 @@ export class Tower {
    * 실시간 공격 속도 반환 (오라 버프 등 반영)
    */
   get attackSpeed() {
-    return this.baseAttackSpeed * (this.isBuffed ? 1.4 : 1.0);
+    const auraMul = (this.auraBuffTimer > 0) ? 1.4 : 1.0;
+    return this.baseAttackSpeed * (this.isBuffed ? 1.4 : 1.0) * auraMul;
   }
 
   update(dt, enemies, addProjectile, globalEffects = { emi: false, luciferium: false }) {
@@ -111,6 +113,8 @@ export class Tower {
     } else {
       if (this.heat > 0) this.heat = Math.max(0, this.heat - 10 * dt);
     }
+
+    if (this.auraBuffTimer > 0) this.auraBuffTimer -= dt;
 
     // 휘두르기 애니메이션 업데이트
     if (this.isSwinging) {
@@ -152,10 +156,10 @@ export class Tower {
    */
   handleAuras(enemies, dt) {
     if (this.weaponData.effect === 'aura_cd') {
-      // 주변 아군의 쿨타임을 추가로 감소시킴 (엘텍스 지팡이 등)
+      // 주변 아군에게 공속 버프 부여 (타이머 갱신 방식)
       this.gameCore.units.forEach(u => {
         if (u !== this && !u.isBlueprint && Math.hypot(u.x - this.x, u.y - this.y) < this.range) {
-          if (u.cooldown > 0) u.cooldown -= dt * 0.5; // 쿨타임 회복 속도 50% 보너스
+          u.auraBuffTimer = 0.2; // 지속적인 갱신
         }
       });
     }
@@ -251,8 +255,28 @@ export class Tower {
       ctx.save();
       if (this.isBlueprint) ctx.globalAlpha = 0.4;
 
-      // 특수 유닛 시각 효과 처리 (꽁치검, 999강 나무몽둥이 등)
+      // 특수 유닛 시각 효과 처리
       this.drawSpecialEffect(ctx);
+
+      // 엘텍스 지팡이 오오라 연출
+      if (this.weaponData.effect === 'aura_cd' && !this.isBlueprint) {
+        ctx.save();
+        const pulse = Math.sin(Date.now() * 0.005) * 10;
+        const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.range + pulse);
+        grad.addColorStop(0, 'rgba(0, 255, 255, 0)');
+        grad.addColorStop(0.8, 'rgba(0, 255, 255, 0.05)');
+        grad.addColorStop(1, 'rgba(0, 255, 255, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.range + pulse, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 외곽선 효과
+        ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
+        ctx.setLineDash([10, 5]);
+        ctx.stroke();
+        ctx.restore();
+      }
 
       ctx.shadowBlur = 25;
       ctx.shadowColor = SpriteManager.getColor(this.quality);
