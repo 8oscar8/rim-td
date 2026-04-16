@@ -6,7 +6,6 @@ import { WaveManager } from './game/WaveManager.js';
 import { Tower } from './game/Tower.js';
 import { SpriteManager } from './engine/SpriteManager.js';
 import { SoundManager } from './engine/SoundManager.js';
-import { GachaSystem } from './game/GachaSystem.js';
 
 /**
  * Main Application Class
@@ -277,13 +276,6 @@ class App {
     
     this.ui.updateDisplays(this.state);
     this.waveManager.startNextWave();
-
-    // [TEST] 엘텍스 지팡이 테스트용 지급 (나중에 삭제 예정)
-    const testEltex = GachaSystem.createSpecificWeapon('엘텍스 지팡이', 'excellent', '강철');
-    const tower = new Tower(this.renderer.width / 2 - 50, this.renderer.height / 2, testEltex, this);
-    tower.isBlueprint = false;
-    this.units.push(tower);
-
     this.loop.start();
   }
 

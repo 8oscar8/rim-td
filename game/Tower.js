@@ -258,22 +258,16 @@ export class Tower {
       // 특수 유닛 시각 효과 처리
       this.drawSpecialEffect(ctx);
 
-      // 엘텍스 지팡이 오오라 연출
+      // 엘텍스 지팡이 오오라 연출 (가느다란 점선)
       if (this.weaponData.effect === 'aura_cd' && !this.isBlueprint) {
         ctx.save();
-        const pulse = Math.sin(Date.now() * 0.005) * 10;
-        const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.range + pulse);
-        grad.addColorStop(0, 'rgba(0, 255, 255, 0)');
-        grad.addColorStop(0.8, 'rgba(0, 255, 255, 0.05)');
-        grad.addColorStop(1, 'rgba(0, 255, 255, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.range + pulse, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.strokeStyle = 'rgba(0, 242, 255, 0.4)'; // 좀 더 선명한 대신 투명하게
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 8]); // 가느다란 점선 패턴
+        ctx.lineDashOffset = -Date.now() * 0.01; // 천천히 회전하는 효과
         
-        // 외곽선 효과
-        ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
-        ctx.setLineDash([10, 5]);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.range, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }
