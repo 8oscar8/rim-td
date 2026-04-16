@@ -107,6 +107,9 @@ export class EncounterManager {
       } else if (event.id === 'food_poisoning') {
           borderColor = "#84cc16"; // Lime
           bgColor = "rgba(132, 204, 22, 0.1)";
+      } else if (event.id === 'psychic_drone') {
+          borderColor = "#a21caf"; // Purple/Fuchsia
+          bgColor = "rgba(162, 28, 175, 0.1)";
       }
 
       // UI 요소 생성
@@ -180,6 +183,10 @@ export class EncounterManager {
       { 
         name: '식중독', weight: 15, type: 'negative', id: 'food_poisoning',
         desc: "정착민들이 상한 음식을 먹고 식중독에 걸렸습니다! 고통과 구토로 인해 45초 동안 모든 파견 작업 효율이 50% 감소합니다."
+      },
+      { 
+        name: '정신적 파동', weight: 20, type: 'negative', id: 'psychic_drone',
+        desc: "불쾌한 정신적 파동이 정착지를 휩쓸고 있습니다! 정착민들이 극심한 두통과 집중력 저하를 겪으며 60초 동안 모든 타워의 사거리가 20% 감소합니다."
       }
     ];
 
@@ -246,6 +253,9 @@ export class EncounterManager {
         break;
       case 'food_poisoning':
         this.handleFoodPoisoning();
+        break;
+      case 'psychic_drone':
+        this.handlePsychicDrone();
         break;
     }
   }
@@ -382,6 +392,16 @@ export class EncounterManager {
     });
   }
 
+  // 11. 정신적 파동 (사거리 감소)
+  handlePsychicDrone() {
+    this.activeEvents.push({
+        id: 'psychic_drone',
+        name: '정신적 파동',
+        type: 'negative',
+        duration: 60
+    });
+  }
+
   // 2. 독성 낙진 (파견 효율 감소)
   handleToxicFallout() {
     this.activeEvents.push({
@@ -410,5 +430,14 @@ export class EncounterManager {
       efficiency *= 0.5;
     }
     return efficiency;
+  }
+
+  // 글로벌 사거리 배율 계산
+  getGlobalRangeMultiplier() {
+    let multiplier = 1.0;
+    if (this.activeEvents.some(e => e.id === 'psychic_drone')) {
+      multiplier *= 0.8; // 사거리 20% 감소
+    }
+    return multiplier;
   }
 }
