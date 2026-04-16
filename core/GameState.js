@@ -60,15 +60,6 @@ export class GameState {
       research: 0,
       trading: 0
     };
-
-    // 6. 인카운터(이벤트) 상태
-    this.activeEncounter = null; // { id, name, type, remainingTime }
-    this.encounterTimer = 180; // 첫 이벤트까지 남은 시간 (초)
-    this.globalMod = {
-        damage: 1,
-        workSpeed: 1,
-        range: 1
-    };
   }
 
   addResource(type, amount) {
