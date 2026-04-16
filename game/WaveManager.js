@@ -213,7 +213,48 @@ export class WaveManager {
             }
             return died;
         };
-        document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: boss }));
+        // [New] 이벤트 기반 대신 직접 리스트 관리 방안 사용 가능하나, 일관성을 위해 customEvent 유지 혹은 직접 추가
+        if (window.app && window.app.enemies) {
+            window.app.enemies.push(boss);
+        }
+    }
+  }
+
+  /**
+   * 식인 동물 무리 소환
+   */
+  spawnManhunterPack(animalType, count, enemiesList) {
+    for (let i = 0; i < count; i++) {
+        let hp = this.currentEnemyHp;
+        let speedMult = 1.0;
+        let name = "식인 동물";
+        let reward = 0; // 동물은 돈을 거의 안 줌
+
+        switch(animalType) {
+            case 'Yorkshire':
+                name = "식인 요크셔테리어";
+                hp *= 0.3;
+                speedMult = 1.6;
+                break;
+            case 'Wolf':
+                name = "식인 늑대";
+                hp *= 1.2;
+                speedMult = 1.3;
+                break;
+            case 'Thrumbo':
+                name = "식인 트럼보";
+                hp *= 12.0;
+                speedMult = 0.8;
+                reward = 50; 
+                break;
+        }
+
+        const enemy = new Enemy(this.waypoints, hp, reward, 'organic');
+        enemy.name = name;
+        enemy.speed *= speedMult;
+        
+        // 스폰 간격 간섭을 줄이기 위해 약간의 오프셋 부여 가능 (여기선 즉시 리스트 주입)
+        enemiesList.push(enemy);
     }
   }
 }

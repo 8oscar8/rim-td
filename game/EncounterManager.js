@@ -208,6 +208,10 @@ export class EncounterManager {
       { 
         name: '식량 부패', weight: 15, type: 'negative', id: 'food_rot',
         desc: "보관 중이던 식량이 상해버렸습니다! 덥고 습한 날씨 혹은 관리 소홀로 인해 보관 중인 식량의 상당수가 부패했습니다."
+      },
+      { 
+        name: '식인 동물 무리', weight: 15, type: 'negative', id: 'manhunter_pack',
+        desc: "식인 동물 무리가 정착지 근처에서 당신의 냄새를 맡았습니다! 수십 마리의 굶주린 동물들이 당신의 정착지로 돌진합니다."
       }
     ];
 
@@ -286,6 +290,9 @@ export class EncounterManager {
         break;
       case 'labor_strike':
         this.handleStrike();
+        break;
+      case 'manhunter_pack':
+        this.handleManhunterPack(event);
         break;
     }
   }
@@ -496,6 +503,33 @@ export class EncounterManager {
         type: 'negative',
         duration: 60
     });
+  }
+
+  // 15. 식인 동물 무리 (적 대량 스폰)
+  handleManhunterPack(event) {
+    const wave = this.app.state.waveNumber;
+    let type = 'Yorkshire';
+    let count = 20 + Math.floor(Math.random() * 15);
+
+    if (wave > 30) {
+        type = 'Thrumbo';
+        count = 3 + Math.floor(Math.random() * 3);
+    } else if (wave > 10) {
+        type = 'Wolf';
+        count = 12 + Math.floor(Math.random() * 10);
+    }
+
+    // 팝업 메시지 업데이트
+    const animalName = (type === 'Yorkshire') ? "식인 요크셔테리어" : (type === 'Wolf' ? "식인 늑대" : "식인 트럼보");
+    event.desc = `정착지 냄새를 맡은 [${animalName}] 무리 ${count}마리가 몰려옵니다! 방어 태세를 갖추십시오.`;
+    this.modalText.innerText = event.desc;
+
+    // 즉시 스폰 실행
+    if (this.app.waveManager) {
+        this.app.waveManager.spawnManhunterPack(type, count, this.app.enemies);
+    }
+    
+    this.app.ui.addMiniNotification(`위협: ${animalName} 무리 습격!`, 'failure');
   }
 
   // 2. 독성 낙진 (파견 효율 감소)
