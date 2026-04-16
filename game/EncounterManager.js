@@ -81,6 +81,10 @@ export class EncounterManager {
         desc: "궤도상에서 정체를 알 수 없는 화물 보급품들이 낙하했습니다! 유용한 자원들을 확보했습니다."
       },
       { 
+        name: '공동체 합류', weight: 10, type: 'positive', id: 'wanderer_joins',
+        desc: "지나 가던 길잃은 정착민이 우리 정착지의 안전함에 이끌려 합류를 요청했습니다! 인구가 1 증가합니다."
+      },
+      { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
         desc: "지독한 독성 낙진이 대기를 뒤덮었습니다! 외부 활동이 제한되어 모든 파견 임무의 효율이 50% 감소합니다."
       }
@@ -123,6 +127,9 @@ export class EncounterManager {
       case 'cargo_pods':
         this.handleCargoPods(event);
         break;
+      case 'wanderer_joins':
+        this.handleWandererJoins();
+        break;
       case 'toxic_fallout':
         this.handleToxicFallout();
         break;
@@ -158,6 +165,13 @@ export class EncounterManager {
     // 모달 텍스트 업데이트 (실제 획득한 자원 표시)
     event.desc = `궤도에서 떨어진 낙하기를 회수했습니다! \n\n보상: ${res.name} +${amount}`;
     this.modalText.innerText = event.desc;
+  }
+
+  // 3. 공동체 합류 (인구 증가)
+  handleWandererJoins() {
+    this.app.state.population += 1;
+    this.app.state.idlePopulation += 1;
+    this.app.ui.addMiniNotification("새로운 정착민 합류! (인구 +1)");
   }
 
   // 2. 독성 낙진 (파견 효율 감소)
