@@ -356,21 +356,28 @@ class App {
    * 유닛 배치 대기 모드 진입
    */
   startPlacement(gachaResult) {
-    // 파업 체크
-    if (this.encounterManager && this.encounterManager.isStrikeActive()) {
-      this.ui.addMiniNotification("파업 중에는 유닛 배치가 불가능합니다!", "failure");
-      return;
-    }
-
+    // 데이터 보존을 위해 무조건 배치 모드에는 진입하게 합니다.
     this.placementMode = true;
     this.pendingGachaResult = gachaResult;
-    this.ui.showNotification("INFO", "맵에서 배치할 위치를 클릭하세요.", "info");
+    
+    // 파업 중이면 경고만 띄워줍니다.
+    if (this.encounterManager && this.encounterManager.isStrikeActive()) {
+        this.ui.addMiniNotification("파업 중입니다! 건설 인부들이 파업이 끝날 때까지 배치를 거부합니다.", "failure");
+    } else {
+        this.ui.showNotification("INFO", "맵에서 배치할 위치를 클릭하세요.", "info");
+    }
   }
 
   /**
    * 유닛 배치 확정
    */
   confirmPlacement() {
+    // 실제 배치를 확정하는 순간에 파업 체크
+    if (this.encounterManager && this.encounterManager.isStrikeActive()) {
+        this.ui.addMiniNotification("아직 파업이 끝나지 않았습니다! 배치를 완료할 수 없습니다.", "failure");
+        return; // pendingGachaResult를 지우지 않고 유지함
+    }
+
     const tower = new Tower(this.mousePos.x, this.mousePos.y, this.pendingGachaResult, this);
     tower.isBlueprint = false;
     this.units.push(tower);
