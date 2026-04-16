@@ -284,20 +284,21 @@ export class UIManager {
     this.prodUpBtns = document.querySelectorAll('.prod-up');
     
     const getProdCost = (type, lv) => {
-        const base = {
-            education: { silver: 200, wood: 100 },
-            artisan: { silver: 200, steel: 100 },
-            farming: { silver: 200, food: 100 },
-            mining: { silver: 200, steel: 100 },
-            logging: { silver: 200, wood: 100 },
-            trade: { silver: 300, researchPoints: 150 }
+        // [200, 500, 1200, 2800, 5500] 커브 적용
+        const silverCurve = [200, 500, 1200, 2800, 5500];
+        const resCurve = [100, 250, 600, 1400, 2750];
+        
+        if (lv >= 5) return null;
+
+        const baseCosts = {
+            education: { silver: silverCurve[lv], wood: resCurve[lv] },
+            artisan: { silver: silverCurve[lv], steel: resCurve[lv] },
+            farming: { silver: silverCurve[lv], food: resCurve[lv] },
+            mining: { silver: silverCurve[lv], steel: resCurve[lv] },
+            logging: { silver: silverCurve[lv], wood: resCurve[lv] },
+            trade: { silver: Math.floor(silverCurve[lv] * 1.5), researchPoints: Math.floor(resCurve[lv] * 1.5) }
         };
-        const b = base[type];
-        if (!b) return null;
-        const mul = 1 + lv; 
-        const result = {};
-        for(let k in b) result[k] = Math.floor(b[k] * mul);
-        return result;
+        return baseCosts[type] || null;
     };
 
     this.prodUpBtns.forEach(btn => {
@@ -528,19 +529,19 @@ export class UIManager {
     // 생산 업그레이드 버튼 활성/비활성 상태 갱신 및 텍스트 동기화
     if (this.prodUpBtns) {
         const getProdCost = (type, lv) => {
-            const base = {
-                education: { silver: 200, wood: 100 },
-                artisan: { silver: 200, steel: 100 },
-                farming: { silver: 200, food: 100 },
-                mining: { silver: 200, steel: 100 },
-                logging: { silver: 200, wood: 100 },
-                trade: { silver: 300, researchPoints: 150 }
+            const silverCurve = [200, 500, 1200, 2800, 5500];
+            const resCurve = [100, 250, 600, 1400, 2750];
+            if (lv >= 5) return null;
+
+            const baseCosts = {
+                education: { silver: silverCurve[lv], wood: resCurve[lv] },
+                artisan: { silver: silverCurve[lv], steel: resCurve[lv] },
+                farming: { silver: silverCurve[lv], food: resCurve[lv] },
+                mining: { silver: silverCurve[lv], steel: resCurve[lv] },
+                logging: { silver: silverCurve[lv], wood: resCurve[lv] },
+                trade: { silver: Math.floor(silverCurve[lv] * 1.5), researchPoints: Math.floor(resCurve[lv] * 1.5) }
             };
-            const b = base[type];
-            const mul = 1 + lv; 
-            const result = {};
-            for(let k in b) result[k] = Math.floor(b[k] * mul);
-            return result;
+            return baseCosts[type] || null;
         };
 
         this.prodUpBtns.forEach(btn => {
