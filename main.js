@@ -61,9 +61,8 @@ class App {
     workerTypes.forEach(type => {
       const workerCount = state.workers[type] || 0;
       if (workerCount > 0) {
-        // [New] 지수함수 기반 효율 적용 (Diminishing Returns)
-        // 공식: 인원수 ^ 0.75
-        const efficiency = Math.pow(workerCount, 0.75);
+        // [New] 지수함수 기반 효율 적용 (효율 상향: 0.75 -> 0.85)
+        const efficiency = Math.pow(workerCount, 0.85);
         const speed = 5 * efficiency * dt;
         state.workProgress[type] += speed;
 
@@ -90,65 +89,64 @@ class App {
     let bonusComponent = 0;
     let bonusLoot = "";
     
-    // 업그레이드 보너스 계산 (레벨당 10% 보너스)
-    const getBonus = (lv) => 1 + (lv * 0.1);
+    // 업그레이드 보너스 계산 (레벨당 40% 보너스로 상향: 10% -> 40%)
+    const getBonus = (lv) => 1 + (lv * 0.4);
     
     // 확률 로직 미리 계산: 대박(10%), 실패(5%), 일반(85%)
     const rand = Math.random();
     let isJackpot = rand < 0.1;
     let isFailure = rand >= 0.1 && rand < 0.15;
     
-    switch(type) {
       case 'logging': 
-        baseAmount = Math.floor(8 * getBonus(up.logging)); 
+        baseAmount = Math.floor(10 * getBonus(up.logging)); // 8 -> 10 상향 
         resName = "목재"; 
         break;
       case 'mining': 
-        baseAmount = Math.floor(5 * getBonus(up.mining)); 
+        baseAmount = Math.floor(8 * getBonus(up.mining)); // 5 -> 8 상향
         resName = "강철"; 
-        // 채광 보너스 (심층 채굴 레벨 반영): 플라스틸(5+2%*lv), 우라늄(10+2%*lv), 비취(5+2%*lv)
-        const mineBonus = up.mining * 0.02;
+        // 채광 보너스 (심층 채굴 레벨 보너스 상향: 2% -> 5%)
+        const mineBonus = up.mining * 0.05;
         if (!isFailure) {
-            if (Math.random() < 0.05 + mineBonus) { 
-                const amt = Math.floor(Math.random() * 2) + 1; 
+            if (Math.random() < 0.10 + mineBonus) { // 5% -> 10% 상향
+                const amt = Math.floor(Math.random() * 3) + 1; 
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
-            if (Math.random() < 0.10 + mineBonus) { 
-                const amt = Math.floor(Math.random() * 3) + 1; 
+            if (Math.random() < 0.15 + mineBonus) { // 10% -> 15% 상향
+                const amt = Math.floor(Math.random() * 4) + 1; 
                 s.uranium += amt; bonusLoot += ` (우라늄 +${amt}!)`; 
             }
-            if (Math.random() < 0.05 + mineBonus) { 
+            if (Math.random() < 0.08 + mineBonus) { // 5% -> 8% 상향
                 s.jade += 1; bonusLoot += ` (비취 +1!)`; 
             }
         }
         break;
       case 'farming': 
-        baseAmount = Math.floor(8 * getBonus(up.farming)); 
+        baseAmount = Math.floor(12 * getBonus(up.farming)); // 8 -> 12 상향
         resName = "식량"; 
         break;
       case 'trading': 
-        baseAmount = Math.floor(15 * getBonus(up.trade)); 
+        baseAmount = Math.floor(25 * getBonus(up.trade)); // 15 -> 25 상향
         resName = "은화"; 
-        // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률(10+5%*lv) 및 획득량 증가
-        const tradeBonus = up.trade * 0.05;
+        // 교역 보너스 (무역 네트워크 레벨 보너스 상향: 5% -> 8%)
+        const tradeBonus = up.trade * 0.08;
         if (!isFailure) {
-            if (Math.random() < 0.10 + tradeBonus) { 
-                const amt = Math.floor((Math.random() * 3 + 1) * getBonus(up.trade)); 
+            if (Math.random() < 0.15 + tradeBonus) { // 10% -> 15% 상향
+                const amt = Math.floor((Math.random() * 5 + 2) * getBonus(up.trade)); 
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
-            if (Math.random() < 0.05) { 
-                const amt = Math.floor(Math.random() * 2) + 1; 
+            if (Math.random() < 0.08) { 
+                const amt = Math.floor(Math.random() * 3) + 1; 
                 s.jade += amt; bonusLoot += ` (비취 +${amt}!)`; 
             }
         }
         break;
       case 'research': 
-        baseAmount = Math.floor(15 * getBonus(up.education)); 
+        baseAmount = Math.floor(20 * getBonus(up.education)); // 15 -> 20 상향
         resName = "연구"; 
-        // 연구 보너스 (현대 교육 레벨 반영): 부품 획득 확률(20+5%*lv)
-        const eduBonus = up.education * 0.05;
-        if (!isFailure && Math.random() < 0.20 + eduBonus) {
-            const amt = Math.floor(Math.random() * 2) + 1; 
+        // 연구 보너스 (현대 교육 레벨 보너스 상향: 5% -> 10%)
+        const eduBonus = up.education * 0.1;
+        if (!isFailure && Math.random() < 0.25 + eduBonus) { // 20% -> 25% 상향
+            const amt = Math.floor(Math.random() * 3) + 1; 
             bonusComponent = amt;
             bonusLoot += ` (부품 +${amt}!)`;
         }
