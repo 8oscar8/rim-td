@@ -570,6 +570,30 @@ export class UIManager {
     }
     if (this.resResearch) this.resResearch.textContent = Math.floor(state.researchPoints || 0);
 
+    // [New] 특수 아이템 수량 업데이트
+    const items = state.items || {};
+    const itemMap = {
+        orbital_strike: 'orbital',
+        frag_grenade: 'frag',
+        pulse_grenade: 'pulse',
+        molotov: 'molotov',
+        smoke_launcher: 'smoke',
+        toxin_grenade: 'toxin'
+    };
+
+    for (const [key, idSuffix] of Object.entries(itemMap)) {
+        const countEl = document.getElementById(`count-${idSuffix}`);
+        const cardEl = document.getElementById(`btn-item-${idSuffix}`);
+        if (countEl) {
+            const count = items[key] || 0;
+            countEl.innerText = count;
+            if (cardEl) {
+                if (count > 0) cardEl.classList.remove('empty');
+                else cardEl.classList.add('empty');
+            }
+        }
+    }
+
     // 생산 업그레이드 버튼 활성/비활성 상태 갱신 및 텍스트 동기화
     if (this.prodUpBtns) {
         const getProdCost = (type, lv) => {

@@ -603,6 +603,39 @@ class App {
       ctx.restore();
     }
   }
+
+  /**
+   * 소모성 아이템 사용 로직
+   */
+  useItem(type) {
+    if (this.state.isPaused) return;
+    if ((this.state.items[type] || 0) <= 0) {
+        this.ui.addMiniNotification("아이템이 부족합니다!", "failure");
+        return;
+    }
+
+    let success = false;
+    switch (type) {
+        case 'orbital_strike':
+            // 보스 제외 모든 적 제거
+            const targets = this.enemies.filter(en => !en.isBoss);
+            targets.forEach(en => {
+                en.active = false;
+            });
+            this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
+            success = true;
+            break;
+        default:
+            this.ui.addMiniNotification("해당 아이템은 개발 중입니다.", "info");
+            break;
+    }
+
+    if (success) {
+        this.state.items[type]--;
+        this.ui.updateDisplays(this.state);
+        // 화면 흔들림 효과 등 추가 가능
+    }
+  }
 }
 
 // 창 로드 시 앱 시작

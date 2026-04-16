@@ -44,6 +44,8 @@
                 </div>
             </div>
 
+            <div class="status-section">
+                <h3 class="section-title">자원 현황</h3>
                 <div class="resource-list">
                     <div class="res-row">
                         <img src="assets/food.png" class="res-mini-icon"> <span>식량</span>
@@ -57,32 +59,84 @@
                         <img src="assets/wood.png" class="res-mini-icon"> <span>목재</span>
                         <span id="res-wood">0</span>
                     </div>
-                <div class="res-row">
-                    <img src="assets/steel.png" class="res-mini-icon"> <span>강철</span>
-                    <span id="res-steel">0</span>
+                    <div class="res-row">
+                        <img src="assets/steel.png" class="res-mini-icon"> <span>강철</span>
+                        <span id="res-steel">0</span>
+                    </div>
+                    <div class="res-row">
+                        <img src="assets/plasteel.png" class="res-mini-icon"> <span>플라스틸</span>
+                        <span id="res-plasteel">0</span>
+                    </div>
+                    <div class="res-row">
+                        <img src="assets/uranium.png" class="res-mini-icon"> <span>우라늄</span>
+                        <span id="res-uranium">0</span>
+                    </div>
+                    <div class="res-row">
+                        <img src="assets/jade.png" class="res-mini-icon"> <span>비취</span>
+                        <span id="res-jade">0</span>
+                    </div>
+                    <div class="res-row">
+                        <img src="assets/부품.webp" class="res-mini-icon"> <span>부품</span>
+                        <span id="res-component">0</span>
+                    </div>
                 </div>
-                <div class="res-row">
-                    <img src="assets/plasteel.png" class="res-mini-icon"> <span>플라스틸</span>
-                    <span id="res-plasteel">0</span>
+            </div>
+
+            <!-- [New] 특수 아이템 섹션 (자원 탭 하단) -->
+            <div class="status-section item-section">
+                <h3 class="section-title">특수 아이템</h3>
+                
+                <div class="item-card clickable" id="btn-item-orbital" onclick="window.app.useItem('orbital_strike')">
+                    <div class="item-info">
+                        <img src="assets/rimworld/빔 리피터.webp" class="item-icon">
+                        <span class="label">궤도 폭격</span>
+                    </div>
+                    <span class="item-count" id="count-orbital">0</span>
                 </div>
-                <div class="res-row">
-                    <img src="assets/uranium.png" class="res-mini-icon"> <span>우라늄</span>
-                    <span id="res-uranium">0</span>
+
+                <div class="item-card clickable" id="btn-item-frag" onclick="window.app.useItem('frag_grenade')">
+                    <div class="item-info">
+                        <img src="assets/fraggrenades.webp" class="item-icon">
+                        <span class="label">파쇄 수류탄</span>
+                    </div>
+                    <span class="item-count" id="count-frag">0</span>
                 </div>
-                <div class="res-row">
-                    <img src="assets/jade.png" class="res-mini-icon"> <span>비취</span>
-                    <span id="res-jade">0</span>
+
+                <div class="item-card clickable" id="btn-item-pulse" onclick="window.app.useItem('pulse_grenade')">
+                    <div class="item-info">
+                        <img src="assets/empgrenades.webp" class="item-icon">
+                        <span class="label">펄스 수류탄</span>
+                    </div>
+                    <span class="item-count" id="count-pulse">0</span>
                 </div>
-                <div class="res-row">
-                    <img src="assets/부품.webp" class="res-mini-icon"> <span>부품</span>
-                    <span id="res-component">0</span>
+
+                <div class="item-card clickable" id="btn-item-molotov" onclick="window.app.useItem('molotov')">
+                    <div class="item-info">
+                        <img src="assets/molotov.png" class="item-icon">
+                        <span class="label">화염병</span>
+                    </div>
+                    <span class="item-count" id="count-molotov">0</span>
+                </div>
+
+                <div class="item-card clickable" id="btn-item-smoke" onclick="window.app.useItem('smoke_launcher')">
+                    <div class="item-info">
+                        <img src="assets/smokelauncher.webp" class="item-icon">
+                        <span class="label">연막 발사기</span>
+                    </div>
+                    <span class="item-count" id="count-smoke">0</span>
+                </div>
+
+                <div class="item-card clickable" id="btn-item-toxin" onclick="window.app.useItem('toxin_grenade')">
+                    <div class="item-info">
+                        <img src="assets/toxingrenade.webp" class="item-icon">
+                        <span class="label">독소 수류탄</span>
+                    </div>
+                    <span class="item-count" id="count-toxin">0</span>
                 </div>
             </div>
 
             <!-- [New] 활성 이벤트 표시기 -->
-            <div id="active-events-container">
-                <!-- <div class="event-tag">독성 낙진: 45s</div> -->
-            </div>
+            <div id="active-events-container"></div>
         </aside>
 
         <!-- 2. 중앙 메인: 게임 화면 -->

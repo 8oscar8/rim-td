@@ -60,6 +60,16 @@ export class GameState {
       research: 0,
       trading: 0
     };
+
+    // 6. 소모성 특수 아이템 수량
+    this.items = {
+        orbital_strike: 0,
+        frag_grenade: 0,
+        pulse_grenade: 0,
+        molotov: 0,
+        smoke_launcher: 0,
+        toxin_grenade: 0
+    };
   }
 
   addResource(type, amount) {
