@@ -301,7 +301,7 @@ class App {
   startPlacement(gachaResult) {
     this.placementMode = true;
     this.pendingGachaResult = gachaResult;
-    this.ui.addMiniNotification("맵에서 배치할 위치를 클릭하세요.");
+    this.ui.showNotification("INFO", "맵에서 배치할 위치를 클릭하세요.", "info");
   }
 
   /**
