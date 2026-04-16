@@ -62,7 +62,7 @@ export class Tower {
     this.maxHeat = 100;
     this.isOverheated = false;
     this.overheatTimer = 0;
-    this.overheatDuration = 5.0; 
+    this.overheatDuration = 3.5; 
     
     // 특수 버프 상태
     this.isLuciferiumActive = false;
@@ -216,7 +216,7 @@ export class Tower {
 
       // 미니건 전용 과열 로직
       if (this.weaponName === '미니건') {
-        this.heat += burstCount * 3.5;
+        this.heat += burstCount * 1.2;
         if (this.heat >= this.maxHeat) {
           this.isOverheated = true;
           this.overheatTimer = this.overheatDuration;
