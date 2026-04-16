@@ -140,13 +140,13 @@ export class UIManager {
       };
     }
 
-    // 2.5 비취옥 환전 (1개 -> 1000 은)
+    // 2.5 비취옥 환전 (1개 -> 250 은)
     if (this.exchangeJadeBtn) {
       this.exchangeJadeBtn.onclick = () => {
         if (this.app.state.jade >= 1) {
           this.app.state.jade -= 1;
-          this.app.state.silver += 1000;
-          this.showNotification(`비취옥 환전 완료`, `비취옥 1개를 사용하여 1000 은을 획득했습니다.`);
+          this.app.state.silver += 250;
+          this.showNotification(`비취옥 환전 완료`, `비취옥 1개를 사용하여 250 은을 획득했습니다.`);
           this.updateDisplays(this.app.state);
         } else {
           alert("비취옥이 부족합니다!");
@@ -154,14 +154,13 @@ export class UIManager {
       };
     }
 
-    // 3. 판매 (5개 250 은)
+    // 3. 판매 (선택 유닛 50 은)
     if (this.sellUnitsBtn) {
       this.sellUnitsBtn.onclick = () => {
-        const cost = 250;
-        // 실제 유닛 제거 로직은 App에서 처리해야 하지만 일단 자원만 추가 예시
-        this.app.state.silver += cost;
-        this.showNotification(`유닛 판매 성공`, `선택한 유닛을 판매하여 ${cost} 은을 획득했습니다.`);
-        this.updateDisplays(this.app.state);
+        const success = this.app.sellSelectedUnit();
+        if (!success) {
+          alert("판매할 유닛을 먼저 선택해주세요!");
+        }
       };
     }
 
