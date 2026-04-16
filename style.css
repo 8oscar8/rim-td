@@ -433,6 +433,21 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .mini-notif.jackpot { border-right-color: var(--accent-gold); color: #fff; font-weight: bold; background: rgba(245, 158, 11, 0.2); }
 .mini-notif.failure { border-right-color: var(--accent-red); color: #ffbcbc; background: rgba(239, 68, 68, 0.2); }
 
+.up-lv {
+    font-size: 11px;
+    color: var(--accent-gold);
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+.max-lv {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
 .buff-text {
     color: #00f2ff !important;
     font-weight: bold;

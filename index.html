@@ -244,28 +244,64 @@
 
                         <!-- 생산 업그레이드 (스크린샷 기반) -->
                         <button class="upgrade-btn prod-up" data-type="education">
-                            <div class="up-info"><span class="up-name">현대 교육</span><span class="up-desc">연구 효율 증가</span></div>
-                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/wood.png" class="inline-icon"> 100)</div>
+                            <div class="up-info">
+                                <span class="up-name">현대 교육</span>
+                                <span class="up-lv">(Lv.<span id="education-lv">0</span>/5)</span>
+                                <span class="up-desc">연구 효율 증가</span>
+                            </div>
+                            <div class="up-cost" id="education-cost-area">
+                                (<img src="assets/silver.png" class="inline-icon"> <span id="education-cost-silver">200</span> | <img src="assets/wood.png" class="inline-icon"> <span id="education-cost-wood">100</span>)
+                            </div>
                         </button>
                         <button class="upgrade-btn prod-up" data-type="artisan">
-                            <div class="up-info"><span class="up-name">숙련 장인</span><span class="up-desc">제작 품질 증가</span></div>
-                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/steel.png" class="inline-icon"> 100)</div>
+                            <div class="up-info">
+                                <span class="up-name">숙련 장인</span>
+                                <span class="up-lv">(Lv.<span id="artisan-lv">0</span>/5)</span>
+                                <span class="up-desc">제작 품질 증가</span>
+                            </div>
+                            <div class="up-cost" id="artisan-cost-area">
+                                (<img src="assets/silver.png" class="inline-icon"> <span id="artisan-cost-silver">200</span> | <img src="assets/steel.png" class="inline-icon"> <span id="artisan-cost-steel">100</span>)
+                            </div>
                         </button>
                         <button class="upgrade-btn prod-up" data-type="farming">
-                            <div class="up-info"><span class="up-name">선진 농법</span><span class="up-desc">식량 생산 증가</span></div>
-                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/food.png" class="inline-icon"> 100)</div>
+                            <div class="up-info">
+                                <span class="up-name">선진 농법</span>
+                                <span class="up-lv">(Lv.<span id="farming-lv">0</span>/5)</span>
+                                <span class="up-desc">식량 생산 증가</span>
+                            </div>
+                            <div class="up-cost" id="farming-cost-area">
+                                (<img src="assets/silver.png" class="inline-icon"> <span id="farming-cost-silver">200</span> | <img src="assets/food.png" class="inline-icon"> <span id="farming-cost-food">100</span>)
+                            </div>
                         </button>
                         <button class="upgrade-btn prod-up" data-type="mining">
-                            <div class="up-info"><span class="up-name">심층 채굴</span><span class="up-desc">고급 자원 확률 증가</span></div>
-                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/steel.png" class="inline-icon"> 100)</div>
+                            <div class="up-info">
+                                <span class="up-name">심층 채굴</span>
+                                <span class="up-lv">(Lv.<span id="mining-lv">0</span>/5)</span>
+                                <span class="up-desc">고급 자원 확률 증가</span>
+                            </div>
+                            <div class="up-cost" id="mining-cost-area">
+                                (<img src="assets/silver.png" class="inline-icon"> <span id="mining-cost-silver">200</span> | <img src="assets/steel.png" class="inline-icon"> <span id="mining-cost-steel">100</span>)
+                            </div>
                         </button>
                         <button class="upgrade-btn prod-up" data-type="logging">
-                            <div class="up-info"><span class="up-name">기계 벌목</span><span class="up-desc">목재 생산 증가</span></div>
-                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/wood.png" class="inline-icon"> 100)</div>
+                            <div class="up-info">
+                                <span class="up-name">기계 벌목</span>
+                                <span class="up-lv">(Lv.<span id="logging-lv">0</span>/5)</span>
+                                <span class="up-desc">목재 생산 증가</span>
+                            </div>
+                            <div class="up-cost" id="logging-cost-area">
+                                (<img src="assets/silver.png" class="inline-icon"> <span id="logging-cost-silver">200</span> | <img src="assets/wood.png" class="inline-icon"> <span id="logging-cost-wood">100</span>)
+                            </div>
                         </button>
                         <button class="upgrade-btn prod-up" data-type="trade">
-                            <div class="up-info"><span class="up-name">무역 네트워크</span><span class="up-desc">은화 수급 증가</span></div>
-                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 300 | <img src="assets/research.png" class="inline-icon"> 150)</div>
+                            <div class="up-info">
+                                <span class="up-name">무역 네트워크</span>
+                                <span class="up-lv">(Lv.<span id="trade-lv">0</span>/5)</span>
+                                <span class="up-desc">은화 수급 증가</span>
+                            </div>
+                            <div class="up-cost" id="trade-cost-area">
+                                (<img src="assets/silver.png" class="inline-icon"> <span id="trade-cost-silver">300</span> | <img src="assets/research.png" class="inline-icon"> <span id="trade-cost-research">150</span>)
+                            </div>
                         </button>
 
                     </div>

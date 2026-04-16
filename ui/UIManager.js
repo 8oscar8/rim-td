@@ -282,12 +282,9 @@ export class UIManager {
 
     // 5.5 생산 업그레이드 이벤트
     this.prodUpBtns = document.querySelectorAll('.prod-up');
-    this.prodUpBtns.forEach(btn => {
-      btn.onclick = () => {
-        const type = btn.getAttribute('data-type');
-        const s = this.app.state;
-        
-        const costs = {
+    
+    const getProdCost = (type, lv) => {
+        const base = {
             education: { silver: 200, wood: 100 },
             artisan: { silver: 200, steel: 100 },
             farming: { silver: 200, food: 100 },
@@ -295,8 +292,26 @@ export class UIManager {
             logging: { silver: 200, wood: 100 },
             trade: { silver: 300, researchPoints: 150 }
         };
+        const b = base[type];
+        if (!b) return null;
+        const mul = 1 + lv; 
+        const result = {};
+        for(let k in b) result[k] = Math.floor(b[k] * mul);
+        return result;
+    };
 
-        const cost = costs[type];
+    this.prodUpBtns.forEach(btn => {
+      btn.onclick = () => {
+        const type = btn.getAttribute('data-type');
+        const s = this.app.state;
+        const curLv = s.upgrades[type] || 0;
+
+        if (curLv >= 5) {
+            alert("최대 레벨에 도달했습니다!");
+            return;
+        }
+
+        const cost = getProdCost(type, curLv);
         let canAfford = true;
         for (const [res, amt] of Object.entries(cost)) {
             if (s[res] < amt) {
@@ -309,7 +324,7 @@ export class UIManager {
             for (const [res, amt] of Object.entries(cost)) {
                 s[res] -= amt;
             }
-            s.upgrades[type] = (s.upgrades[type] || 0) + 1;
+            s.upgrades[type] = curLv + 1;
             const name = btn.querySelector('.up-name').textContent;
             this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
             this.updateDisplays(s);
@@ -510,32 +525,51 @@ export class UIManager {
     }
     if (this.resResearch) this.resResearch.textContent = Math.floor(state.researchPoints || 0);
 
-    // 생산 업그레이드 버튼 활성/비활성 상태 갱신
+    // 생산 업그레이드 버튼 활성/비활성 상태 갱신 및 텍스트 동기화
     if (this.prodUpBtns) {
-        const prodCosts = {
-            education: { silver: 200, wood: 100 },
-            artisan: { silver: 200, steel: 100 },
-            farming: { silver: 200, food: 100 },
-            mining: { silver: 200, steel: 100 },
-            logging: { silver: 200, wood: 100 },
-            trade: { silver: 300, researchPoints: 150 }
+        const getProdCost = (type, lv) => {
+            const base = {
+                education: { silver: 200, wood: 100 },
+                artisan: { silver: 200, steel: 100 },
+                farming: { silver: 200, food: 100 },
+                mining: { silver: 200, steel: 100 },
+                logging: { silver: 200, wood: 100 },
+                trade: { silver: 300, researchPoints: 150 }
+            };
+            const b = base[type];
+            const mul = 1 + lv; 
+            const result = {};
+            for(let k in b) result[k] = Math.floor(b[k] * mul);
+            return result;
         };
 
         this.prodUpBtns.forEach(btn => {
             const type = btn.getAttribute('data-type');
-            const cost = prodCosts[type];
-            let canAfford = true;
-            if (cost) {
+            const curLv = state.upgrades[type] || 0;
+            
+            // 1. 레벨 텍스트 갱신
+            const lvEl = document.getElementById(`${type}-lv`);
+            if (lvEl) lvEl.textContent = curLv;
+
+            // 2. 비용 텍스트 갱신
+            if (curLv >= 5) {
+                const area = document.getElementById(`${type}-cost-area`);
+                if (area) area.innerHTML = `<span class="max-lv">MAX LEVEL</span>`;
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "default";
+            } else {
+                const cost = getProdCost(type, curLv);
+                let canAfford = true;
                 for (const [res, amt] of Object.entries(cost)) {
-                    if (state[res] < amt) {
-                        canAfford = false;
-                        break;
-                    }
+                    const el = document.getElementById(`${type}-cost-${res}`);
+                    if (el) el.textContent = amt;
+                    if (state[res] < amt) canAfford = false;
                 }
+                btn.disabled = !canAfford;
+                btn.style.opacity = canAfford ? "1" : "0.4";
+                btn.style.cursor = canAfford ? "pointer" : "not-allowed";
             }
-            btn.disabled = !canAfford;
-            btn.style.opacity = canAfford ? "1" : "0.4";
-            btn.style.cursor = canAfford ? "pointer" : "not-allowed";
         });
     }
 
