@@ -4,6 +4,7 @@
  */
 import { GachaSystem } from './GachaSystem.js';
 import { WEAPON_DB } from './WeaponData.js';
+import { SoundManager } from '../engine/SoundManager.js';
 
 export class EncounterManager {
   constructor(app) {
