@@ -381,8 +381,9 @@ export class EncounterManager {
   // 글로벌 효율 보너스 계산 (독성 낙진 등 반영)
   getGlobalWorkEfficiency() {
     let efficiency = 1.0;
+    // 독성 낙진: 파견 효율 0% (완전 중단)
     if (this.activeEvents.some(e => e.id === 'toxic_fallout')) {
-      efficiency *= 0.5;
+      efficiency *= 0.0;
     }
     return efficiency;
   }
