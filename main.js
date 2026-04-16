@@ -247,7 +247,7 @@ class App {
       this.units.splice(selectedIdx, 1);
       this.state.silver += price;
       
-      this.ui.showNotification("SELL", `${u.weaponName} 판매 완료 (+${price} 은)`, "info");
+      this.ui.addMiniNotification(`${u.weaponName} 판매 완료 (+${price} 은)`);
       this.ui.updateDisplays(this.state);
       return true;
     }
@@ -301,7 +301,7 @@ class App {
   startPlacement(gachaResult) {
     this.placementMode = true;
     this.pendingGachaResult = gachaResult;
-    this.ui.showNotification("INFO", "맵에서 배치할 위치를 클릭하세요.", "info");
+    this.ui.addMiniNotification("맵에서 배치할 위치를 클릭하세요.");
   }
 
   /**
