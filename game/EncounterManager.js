@@ -104,6 +104,9 @@ export class EncounterManager {
       } else if (event.id === 'solar_flare') {
           borderColor = "#ea580c"; // Orange
           bgColor = "rgba(234, 88, 12, 0.1)";
+      } else if (event.id === 'food_poisoning') {
+          borderColor = "#84cc16"; // Lime
+          bgColor = "rgba(132, 204, 22, 0.1)";
       }
 
       // UI 요소 생성
@@ -173,6 +176,10 @@ export class EncounterManager {
       { 
         name: '흑점 폭발', weight: 15, type: 'negative', id: 'solar_flare',
         desc: "강렬한 태양 활동으로 인해 흑점 폭발이 발생했습니다! 전자기기들이 먹통이 되어 60초 동안 모든 원거리 타워의 공격이 불가능해집니다."
+      },
+      { 
+        name: '식중독', weight: 15, type: 'negative', id: 'food_poisoning',
+        desc: "정착민들이 상한 음식을 먹고 식중독에 걸렸습니다! 고통과 구토로 인해 45초 동안 모든 파견 작업 효율이 50% 감소합니다."
       }
     ];
 
@@ -236,6 +243,9 @@ export class EncounterManager {
         break;
       case 'solar_flare':
         this.handleSolarFlare();
+        break;
+      case 'food_poisoning':
+        this.handleFoodPoisoning();
         break;
     }
   }
@@ -362,6 +372,16 @@ export class EncounterManager {
     });
   }
 
+  // 10. 식중독 (파견 효율 감소)
+  handleFoodPoisoning() {
+    this.activeEvents.push({
+        id: 'food_poisoning',
+        name: '식중독',
+        type: 'negative',
+        duration: 45
+    });
+  }
+
   // 2. 독성 낙진 (파견 효율 감소)
   handleToxicFallout() {
     this.activeEvents.push({
@@ -384,6 +404,10 @@ export class EncounterManager {
     // 독성 낙진: 파견 효율 0% (완전 중단)
     if (this.activeEvents.some(e => e.id === 'toxic_fallout')) {
       efficiency *= 0.0;
+    }
+    // 식중독: 파견 효율 50% 감소
+    if (this.activeEvents.some(e => e.id === 'food_poisoning')) {
+      efficiency *= 0.5;
     }
     return efficiency;
   }
