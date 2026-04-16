@@ -302,7 +302,9 @@ export class UIManager {
       
       // 도파민 모드: 제목에 등급, 내용에 무기 이름, 밑에 확률 표시
       const gradeStr = grade.toUpperCase();
-      const probStr = probs[grade] ? `<div class="prob-tag">${probs[grade]} CHANCE</div>` : '';
+      // 가차 결과일 때만 확률 표시
+      const isGacha = title.includes("배치") || title.includes("GACHA");
+      const probStr = (isGacha && probs[grade]) ? `<div class="prob-tag">${probs[grade]} CHANCE</div>` : '';
 
       t.innerHTML = `${gradeStr}`;
       // 배치 문구 제거하고 무기 이름만 크게 표시
@@ -323,12 +325,13 @@ export class UIManager {
   /**
    * 림월드 스타일 미니 알림 (5시 방향)
    */
-  addMiniNotification(text) {
+  addMiniNotification(text, styleClass = '') {
     const container = document.getElementById('mini-notif-container');
     if (!container) return;
 
     const notif = document.createElement('div');
     notif.className = 'mini-notif';
+    if (styleClass) notif.classList.add(styleClass);
     notif.textContent = text;
     
     container.appendChild(notif);

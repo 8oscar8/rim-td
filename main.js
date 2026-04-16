@@ -168,15 +168,15 @@ class App {
       this.state.addResource(type === 'logging' ? 'wood' : (type === 'mining' ? 'steel' : (type === 'farming' ? 'food' : (type === 'trading' ? 'silver' : 'research'))), finalAmount);
       
       if (isJackpot) {
-          // 대박은 중앙 배너로 강조 (도파민!)
-          this.ui.showNotification(statusMsg, `${resName} +${finalAmount}${bonusLoot}`, 'legendary');
+          // 대박 미니 알림 (황금색)
+          this.ui.addMiniNotification(`${statusMsg}: ${resName} +${finalAmount}${bonusLoot}`, 'jackpot');
       } else {
-          // 일반 성공은 미니 알림
+          // 일반 성공 미니 알림
           this.ui.addMiniNotification(`${resName} +${finalAmount}${bonusLoot}`);
       }
     } else if (isFailure) {
-      // 실패도 중앙 배너로 경고
-      this.ui.showNotification(statusMsg, `${resName} 작업 중 사고 발생!`, 'hidden-grade');
+      // 실패 미니 알림 (빨간색)
+      this.ui.addMiniNotification(`${statusMsg}: ${resName} 채집 실패!`, 'failure');
     } else if (type === 'research') {
       this.state.researchPoints += finalAmount;
     }
