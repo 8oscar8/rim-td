@@ -65,7 +65,8 @@ class App {
         // [Buff] 지수함수 기반 효율 상향 (0.75 -> 0.82)
         // 공식: 인원수 ^ 0.82
         const efficiency = Math.pow(workerCount, 0.82);
-        const speed = 6 * efficiency * dt; // 기본 속도 5 -> 6 상향
+        // [Effect] 인카운터(독성 낙진 등)에 의한 작업 속도 보정 적용
+        const speed = 6 * efficiency * dt * (state.globalMod.workSpeed || 1); 
         state.workProgress[type] += speed;
 
         if (state.workProgress[type] >= 100) {
@@ -393,10 +394,6 @@ class App {
     // [New] 작업 파견 진행 (v2)
     this.updateWorkDispatch(scaledDt);
     
-    // [New] 인구 증가 체크 (식량 임계점 도달 시)
-    if (this.state.food >= this.state.foodToNextPop) {
-      this.state.food -= this.state.foodToNextPop;
-      this.state.population++;
       this.state.idlePopulation++;
       
       // 다음 인구 필요 식량 지수적 증가 (1.3배씩 증가)
@@ -404,6 +401,9 @@ class App {
       
       this.handleWorkComplete('population_up');
     }
+
+    // [New] 인카운터(랜덤 이벤트) 엔진 업데이트
+    this.updateEncounters(scaledDt);
 
     // 1. 웨이브 엔진 업데이트
     this.waveManager.update(scaledDt, this.enemies);
@@ -533,6 +533,80 @@ class App {
         console.error("Combination Error:", e);
         this.ui.addMiniNotification("조합 중 오류가 발생했습니다!", "failure");
     }
+  }
+
+  /**
+   * 랜덤 인카운터(이벤트) 엔진
+   */
+  updateEncounters(dt) {
+    const s = this.state;
+    
+    // 1. 활성화된 이벤트 타이머 관리
+    if (s.activeEncounter) {
+        s.activeEncounter.remainingTime -= dt;
+        if (s.activeEncounter.remainingTime <= 0) {
+            this.ui.showNotification("이벤트 종료", `${s.activeEncounter.name} 효과가 사라졌습니다.`, "info");
+            s.activeEncounter = null;
+            // 효과 초기화
+            s.globalMod.workSpeed = 1;
+        }
+    }
+
+    // 2. 새로운 이벤트 발생 타이머 관리
+    s.encounterTimer -= dt;
+    if (s.encounterTimer <= 0) {
+        this.triggerRandomEncounter();
+        // 다음 주기 설정 (3분~6분 사이)
+        s.encounterTimer = 180 + Math.random() * 180;
+    }
+  }
+
+  triggerRandomEncounter() {
+    // 일단 상선 통과(12)와 독성 낙진(7)만 구현
+    const weights = [
+        { id: 'trade_ship', name: '상선 통과', weight: 12 },
+        { id: 'toxic_fallout', name: '독성 낙진', weight: 7 }
+    ];
+    
+    const totalWeight = weights.reduce((sum, w) => sum + w.weight, 0);
+    let rand = Math.random() * totalWeight;
+    
+    let selected = weights[0];
+    for (const w of weights) {
+        if (rand < w.weight) {
+            selected = w;
+            break;
+        }
+        rand -= w.weight;
+    }
+
+    if (selected.id === 'trade_ship') {
+        this.triggerTradeShip();
+    } else if (selected.id === 'toxic_fallout') {
+        this.triggerToxicFallout();
+    }
+  }
+
+  triggerTradeShip() {
+    // Rare(70%) / Epic(30%) 무기 1개
+    const isEpic = Math.random() < 0.3;
+    const grade = isEpic ? 'Epic' : 'Rare';
+    const result = GachaSystem.drawSpecificGrade(grade, this.state.upgrades.artisan || 0);
+    
+    if (result) {
+        this.startPlacement(result);
+        this.ui.showNotification("상선 통과", `행성 궤도를 지나는 상선이 무기(${grade}) 하나를 기증했습니다!`, grade);
+    }
+  }
+
+  triggerToxicFallout() {
+    this.state.activeEncounter = {
+        id: 'toxic_fallout',
+        name: '독성 낙진',
+        remainingTime: 60 // 1분간 지속
+    };
+    this.state.globalMod.workSpeed = 0.5; // 효율 50% 감소
+    this.ui.showNotification("위험: 독성 낙진", "대기가 독성 물질로 뒤덮였습니다! 모든 파견 작업 효율이 50% 감소합니다.", "failure");
   }
 
   /**
