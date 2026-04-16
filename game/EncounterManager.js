@@ -250,9 +250,18 @@ export class EncounterManager {
       }
     }
 
-    // 팝업 표시 및 게임 일시정지
-    this.showEventModal(selected);
-    this.executeEvent(selected);
+    // [Sound] 이벤트 타입에 따라 사운드를 먼저 재생하여 긴장감 조성
+    if (selected.type === 'negative') {
+        SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.8);
+    } else {
+        SoundManager.playSFX('assets/audio/encounter_success.mp3', 0.8);
+    }
+
+    // 소리가 먼저 나고 약간(500ms) 뒤에 팝업 표시 및 게임 일시정지
+    setTimeout(() => {
+        this.showEventModal(selected);
+        this.executeEvent(selected);
+    }, 500);
   }
 
   showEventModal(event) {
@@ -262,13 +271,6 @@ export class EncounterManager {
     this.modalTitle.style.color = (event.type === 'positive') ? "#4ade80" : "#ef4444";
     this.modalText.innerText = event.desc;
     this.modal.classList.remove('hidden');
-
-    // [Sound] 이벤트 타입에 따른 효과음 설정
-    if (event.type === 'negative') {
-        SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.8);
-    } else {
-        SoundManager.playSFX('assets/audio/encounter_success.mp3', 0.8);
-    }
     
     this.app.state.isPaused = true; // 게임 일시정지
   }
