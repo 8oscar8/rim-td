@@ -94,13 +94,7 @@ export class Tower {
     const encounterManager = this.gameCore.encounterManager;
     const globalMul = encounterManager ? encounterManager.getGlobalAttackSpeedMultiplier() : 1.0;
     
-    // 루시페륨 자체 공속 보너스 (2배)
-    let luciSpdMul = 1.0;
-    if (encounterManager && encounterManager.activeEvents && encounterManager.activeEvents.some(e => e.id === 'luciferium')) {
-        luciSpdMul = 2.0;
-    }
-
-    return this.baseAttackSpeed * auraMul * globalMul * luciSpdMul;
+    return this.baseAttackSpeed * auraMul * globalMul;
   }
 
   /**

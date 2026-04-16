@@ -78,16 +78,40 @@ export class EncounterManager {
   getGlobalAttackSpeedMultiplier() {
     let multiplier = 1.0;
     if (this.activeEvents.some(e => e.id === 'psychic_soothe')) {
-        multiplier *= 1.5; // 50% 공속 보너스
+        multiplier *= 1.5; // 정신적 안정파: 50% 공속 보너스
+    }
+    if (this.activeEvents.some(e => e.id === 'luciferium')) {
+        multiplier *= 2.0; // 루시페륨: 100% 공속 보너스
     }
     return multiplier;
   }
 
   updateActiveEvents(dt) {
-    let uiHtml = "";
-    this.activeEvents = this.activeEvents.filter(event => {
+    // 1. 지속 시간 갱신 및 종료 이벤트 처리
+    const finishedEvents = [];
+    this.activeEvents.forEach(event => {
       event.duration -= dt;
+      if (event.duration <= 0) {
+        finishedEvents.push(event);
+      }
+    });
+
+    // 2. 종료된 이벤트 처리 (알림 및 특수 효과)
+    finishedEvents.forEach(event => {
+      this.app.ui.addMiniNotification(`이벤트 종료: ${event.name}`, 'info');
       
+      // 루시페륨 종료 시 페널티 적용
+      if (event.id === 'luciferium') {
+        this.app.destroyRandomTower();
+      }
+    });
+
+    // 3. 활성 이벤트 리스트에서 제거 (리스트 필터링)
+    this.activeEvents = this.activeEvents.filter(e => e.duration > 0);
+
+    // 4. UI 업데이트 (정제된 리스트 기반)
+    let uiHtml = "";
+    this.activeEvents.forEach(event => {
       let borderColor = (event.type === 'positive') ? "#a855f7" : "#ef4444";
       let bgColor = (event.type === 'positive') ? "rgba(168, 85, 247, 0.1)" : "rgba(239, 68, 68, 0.1)";
 
@@ -99,7 +123,7 @@ export class EncounterManager {
           borderColor = "#facc15"; // Gold
           bgColor = "rgba(250, 204, 21, 0.1)";
       } else if (event.id === 'luciferium') {
-          borderColor = "#991b1b"; // Deep Red (Crimson)
+          borderColor = "#991b1b"; // Deep Red
           bgColor = "rgba(153, 27, 27, 0.1)";
       } else if (event.id === 'solar_flare') {
           borderColor = "#ea580c"; // Orange
@@ -108,44 +132,31 @@ export class EncounterManager {
           borderColor = "#84cc16"; // Lime
           bgColor = "rgba(132, 204, 22, 0.1)";
       } else if (event.id === 'psychic_drone') {
-          borderColor = "#a21caf"; // Purple/Fuchsia
+          borderColor = "#a21caf"; // Purple
           bgColor = "rgba(162, 28, 175, 0.1)";
       } else if (event.id === 'pyromaniac') {
-          borderColor = "#ea580c"; // Orange-Red
+          borderColor = "#ea580c";
           bgColor = "rgba(234, 88, 12, 0.1)";
       } else if (event.id === 'food_rot') {
-          borderColor = "#78350f"; // Brown
+          borderColor = "#78350f";
           bgColor = "rgba(120, 53, 15, 0.1)";
       } else if (event.id === 'labor_strike') {
-          borderColor = "#475569"; // Slate Grey
+          borderColor = "#475569";
           bgColor = "rgba(71, 85, 105, 0.1)";
       } else if (event.id === 'manhunter_pack') {
-          borderColor = "#b91c1c"; // Blood Red
+          borderColor = "#b91c1c";
           bgColor = "rgba(185, 28, 28, 0.1)";
       } else if (event.id === 'infestation') {
-          borderColor = "#44403c"; // Dark Stone (Insects)
+          borderColor = "#44403c";
           bgColor = "rgba(68, 64, 60, 0.1)";
       }
 
-      // UI 요소 생성
       uiHtml += `
         <div class="event-tag" style="border-left-color: ${borderColor}; background: ${bgColor}">
             <span>${event.name}</span>
-            <span class="time" style="color: ${borderColor}">${Math.ceil(event.duration)}s</span>
+            <span class="time" style="color: ${borderColor}">${Math.max(0, Math.ceil(event.duration))}s</span>
         </div>
       `;
-
-      if (event.duration <= 0) {
-        this.app.ui.addMiniNotification(`이벤트 종료: ${event.name}`, 'info');
-        
-        // 루시페륨 종료 시 페널티 적용
-        if (event.id === 'luciferium') {
-            this.app.destroyRandomTower();
-        }
-
-        return false;
-      }
-      return true;
     });
 
     if (this.activeEventsContainer) {
