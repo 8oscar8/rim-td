@@ -261,8 +261,10 @@ export class UIManager {
       const qualText = qualNames[tower.quality.toLowerCase()] || tower.quality;
       
       const isRanged = tower.weaponType === 'ranged';
-      // 원거리면 품질+무기명, 근거리면 품질+재질+무기명
-      if (isRanged) {
+      // 재질 표시 여부 결정 (None, 나무, 혹은 무기명이 '맨손/목재'인 경우 생략)
+      const skipMaterial = tower.material === 'None' || tower.material === '나무' || tower.weaponName === '맨손/목재';
+      
+      if (isRanged || skipMaterial) {
         this.detailName.textContent = `${qualText} ${tower.weaponName}`;
       } else {
         this.detailName.textContent = `${qualText} ${tower.material} ${tower.weaponName}`;
