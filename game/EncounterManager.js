@@ -467,9 +467,10 @@ export class EncounterManager {
     const target = resources[Math.floor(Math.random() * resources.length)];
     const currentAmount = s[target.key] || 0;
     
-    if (currentAmount > 0) {
+    // 최소 5개 이상 있을 때만 소실 발생 (너무 적으면 무시)
+    if (currentAmount >= 5) {
         const lossPercent = 20 + Math.random() * 30;
-        const lossAmount = Math.ceil(currentAmount * (lossPercent / 100));
+        const lossAmount = Math.max(1, Math.ceil(currentAmount * (lossPercent / 100)));
         
         s.addResource(target.key, -lossAmount);
 
@@ -477,7 +478,7 @@ export class EncounterManager {
         if (this.modalText) this.modalText.innerText = event.desc;
         this.app.ui.addMiniNotification(`자원 소실: ${target.name} -${lossAmount}`, 'failure');
     } else {
-        event.desc = `방화광이 불을 지르려 했으나, 다행히도 대상 자원 창고가 비어있어 피해가 미미했습니다.`;
+        event.desc = `방화광이 불을 지르려 했으나, 다행히도 대상 자원 창고가 비어있거나 양이 너무 적어 피해가 미미했습니다.`;
         if (this.modalText) this.modalText.innerText = event.desc;
     }
   }
@@ -487,9 +488,10 @@ export class EncounterManager {
     const s = this.app.state;
     const currentFood = s.food || 0;
     
-    if (currentFood > 0) {
+    // 최소 10개 이상 있을 때만 부패 발생
+    if (currentFood >= 10) {
         const lossPercent = 30 + Math.random() * 40;
-        const lossAmount = Math.ceil(currentFood * (lossPercent / 100));
+        const lossAmount = Math.max(1, Math.ceil(currentFood * (lossPercent / 100)));
         
         s.addResource('food', -lossAmount);
 
@@ -497,7 +499,7 @@ export class EncounterManager {
         if (this.modalText) this.modalText.innerText = event.desc;
         this.app.ui.addMiniNotification(`식량 부패: -${lossAmount}`, 'failure');
     } else {
-        event.desc = `창고가 비어있어 부패할 식량이 없었습니다.`;
+        event.desc = `창고에 부패할 만큼의 식량이 충분하지 않아 피해 없이 지나갔습니다.`;
         if (this.modalText) this.modalText.innerText = event.desc;
     }
   }
