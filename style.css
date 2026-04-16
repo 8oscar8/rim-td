@@ -402,7 +402,7 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     font-size: 13px;
     border-right: 3px solid #ccc;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    animation: mini-pop 4s forwards;
+    animation: mini-pop 2s forwards;
     white-space: nowrap;
 }
 
@@ -411,8 +411,8 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 
 @keyframes mini-pop {
     0% { opacity: 0; transform: translateX(20px); }
-    10% { opacity: 1; transform: translateX(0); }
-    80% { opacity: 1; transform: translateX(0); }
+    15% { opacity: 1; transform: translateX(0); }
+    70% { opacity: 1; transform: translateX(0); }
     100% { opacity: 0; transform: translateY(-20px); }
 }
 

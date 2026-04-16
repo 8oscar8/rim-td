@@ -165,7 +165,7 @@ class App {
 
     // 자원 추가
     if (finalAmount > 0) {
-      this.state.addResource(type === 'logging' ? 'wood' : (type === 'mining' ? 'steel' : (type === 'farming' ? 'food' : (type === 'trading' ? 'silver' : 'research'))), finalAmount);
+      this.state.addResource(type === 'logging' ? 'wood' : (type === 'mining' ? 'steel' : (type === 'farming' ? 'food' : (type === 'trading' ? 'silver' : 'researchPoints'))), finalAmount);
       
       if (isJackpot) {
           // 대박 미니 알림 (황금색)

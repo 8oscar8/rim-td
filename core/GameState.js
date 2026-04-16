@@ -10,6 +10,7 @@ export class GameState {
     this.steel = 0;
     this.plasteel = 0;
     this.uranium = 0;
+    this.jade = 0;
     this.component = 0;
     this.food = 0;
     this.foodToNextPop = 100; // 다음 인구 증가를 위한 필요 식량

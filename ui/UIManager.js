@@ -337,12 +337,12 @@ export class UIManager {
     
     container.appendChild(notif);
 
-    // 4초 후 요소 제거
+    // 2초 후 요소 제거 (CSS 애니메이션 속도와 동기화)
     setTimeout(() => {
         if (notif.parentNode) {
             container.removeChild(notif);
         }
-    }, 4000);
+    }, 2000);
   }
 
   showUnitDetail(tower) {
