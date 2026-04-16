@@ -121,7 +121,7 @@ export class WaveManager {
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect) => {
       const died = originalTakeDamage(amount, ap, effect);
-      if (died) this.onEnemyDeath(enemy.reward, false);
+      if (died) this.onEnemyDeath(enemy);
       return died;
     };
     enemiesList.push(enemy);
@@ -142,7 +142,7 @@ export class WaveManager {
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect) => {
       const died = originalTakeDamage(amount, ap, effect);
-      if (died) this.onEnemyDeath(enemy.reward, true);
+      if (died) this.onEnemyDeath(enemy);
       return died;
     };
     enemiesList.push(enemy);
@@ -232,9 +232,9 @@ export class WaveManager {
         animal.speed *= 1.6; // 매우 빠름
         
         const originalDeath = animal.takeDamage.bind(animal);
-        animal.takeDamage = (amount, ap, effect) => {
-            const died = originalDeath(amount, ap, effect);
-            if (died) this.onEnemyDeath(animal.reward, false);
+        animal.takeDamage = (amount, ap, effect, shooterGrade) => {
+            const died = originalDeath(amount, ap, effect, shooterGrade);
+            if (died) this.onEnemyDeath(animal);
             return died;
         };
         
@@ -284,6 +284,13 @@ export class WaveManager {
         // 곤충 외형 커스텀
         insect.size = config.size;
         insect.color = config.color;
+
+        const originalDeath = insect.takeDamage.bind(insect);
+        insect.takeDamage = (amount, ap, effect, shooterGrade) => {
+            const died = originalDeath(amount, ap, effect, shooterGrade);
+            if (died) this.onEnemyDeath(insect);
+            return died;
+        };
 
         const spawnEvent = new CustomEvent('spawnSpecial', { detail: insect });
         document.dispatchEvent(spawnEvent);

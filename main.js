@@ -395,11 +395,58 @@ class App {
     this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 전장에 배치되었습니다.`, grade);
   }
 
-  handleEnemyDeath(reward, isBoss) {
-    this.state.silver += reward;
+  handleEnemyDeath(enemy) {
+    if (!enemy) return;
+    
+    const s = this.state;
+    const type = enemy.type;
+    const isBoss = enemy.isBoss;
+    
+    // 1. 기본 점수 증가
+    s.score += isBoss ? 500 : 10;
+    
+    // 2. 기본 은화 보상 (대폭 축소: 1개 고정, 보스는 기존 보상 유지)
+    const silMul = this.encounterManager ? this.encounterManager.getGlobalSilverMultiplier() : 1.0;
+    const baseReward = isBoss ? enemy.reward : 1;
+    s.silver += Math.floor(baseReward * silMul);
+
+    // 3. 확률형 추가 전리품 (하향 조정 버전)
+    const rand = Math.random();
+    let lootMsg = "";
+
+    if (type === 'organic') {
+        // 식량 15%, 은화 10%
+        if (rand < 0.15) {
+            const amount = 1 + Math.floor(Math.random() * 2);
+            s.addResource('food', amount);
+            if (amount > 1) lootMsg = `식량 +${amount}`;
+        } else if (rand < 0.25) { // 0.15 ~ 0.25 (10%)
+            const amount = 1 + Math.floor(Math.random() * 3);
+            s.silver += amount;
+        }
+    } else if (type === 'mech') {
+        // 강철 20%, 은화 10%, 플라스틸 3%
+        if (rand < 0.20) {
+            const amount = 1 + Math.floor(Math.random() * 3);
+            s.addResource('steel', amount);
+            if (amount > 2) lootMsg = `강철 +${amount}`;
+        } else if (rand < 0.30) {
+            const amount = 2 + Math.floor(Math.random() * 4);
+            s.silver += amount;
+        } else if (rand < 0.33) {
+            s.addResource('plasteel', 1);
+            lootMsg = "플라스틸 +1";
+        }
+    }
+
+    // 보스 전용 보상
     if (isBoss) {
-      this.state.addResource('steel', 10);
-      console.log("[Loot] 보스 처치! 강철 10 획득");
+      s.addResource('steel', 10);
+      s.addResource('component', 1);
+      this.ui.addMiniNotification("보스 처치! 강철+10, 부품+1", "info");
+    } else if (lootMsg) {
+      // 일반 몹은 특별한 보상(플라스틸 등)이나 일정량 이상일 때만 알림
+      this.ui.addMiniNotification(lootMsg);
     }
   }
 
