@@ -436,11 +436,92 @@ class App {
     // UI 동기화
     this.ui.updateDisplays(this.state);
 
+    // [New] 무기 조합 가능 여부 체크 (20프레임마다 한 번씩 수행하여 최적화)
+    if (Math.floor(Date.now() / 333) % 1 === 0) {
+        this.checkCombinationAvailability();
+    }
+
     // [New] 보스 시간 초과 체크 (게임 오버)
     const timedOutBoss = this.enemies.find(e => e.active && e.isBoss && e.bossTimer <= 0);
     if (timedOutBoss) {
         this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
     }
+  }
+
+  /**
+   * 조합 가능 유닛 식별 로직
+   */
+  checkCombinationAvailability() {
+    const counts = {}; // "Name-Grade": count
+    this.units.forEach(u => {
+      if (u.isBlueprint) return;
+      const key = `${u.weaponName}-${u.weaponData.grade}`;
+      counts[key] = (counts[key] || 0) + 1;
+    });
+
+    this.units.forEach(u => {
+      if (u.isBlueprint) return;
+      const key = `${u.weaponName}-${u.weaponData.grade}`;
+      const isLowGrade = u.weaponData.grade === 'Common' || u.weaponData.grade === 'Uncommon';
+      u.isCombinable = (counts[key] >= 4 && isLowGrade);
+    });
+  }
+
+  /**
+   * 유닛 조합 실행
+   */
+  combineUnits(targetUnit) {
+    if (!targetUnit || !targetUnit.isCombinable) return;
+    
+    const cost = 200;
+    if (this.state.researchPoints < cost) {
+        this.ui.addMiniNotification("연구 포인트가 부족합니다! (200 필요)", "failure");
+        return;
+    }
+
+    const name = targetUnit.weaponName;
+    const grade = targetUnit.weaponData.grade;
+    
+    // 1. 재료 후보군 추출 (동일 이름, 동일 등급)
+    const candidates = this.units.filter(u => u.weaponName === name && u.weaponData.grade === grade && !u.isBlueprint);
+    if (candidates.length < 4) return;
+
+    // 2. 우선순위 정렬 (사용자가 선택한 타워는 보존, 나머지는 품질/재질 낮은 순)
+    // 품질 순서: awful(0.4) < normal(1.0) < excellent(1.35) < legendary(1.55)
+    const qualityMap = { awful: 0, normal: 1, excellent: 2, legendary: 3 };
+    
+    const sorted = candidates.filter(u => u !== targetUnit).sort((a, b) => {
+        const qA = qualityMap[a.quality] || 0;
+        const qB = qualityMap[b.quality] || 0;
+        if (qA !== qB) return qA - qB;
+        return 0; // 재질 로직은 복잡하므로 품질 우선
+    });
+
+    // 최종 재료 4개 (선택한 유닛 1개 + 최하급 3개)
+    const materials = [targetUnit, ...sorted.slice(0, 3)];
+
+    // 3. 자원 소모 및 성패 판정
+    this.state.researchPoints -= cost;
+    
+    const successProb = (grade === 'Common') ? 0.8 : 0.7; // 계획서 기준
+    const isSuccess = Math.random() < successProb;
+
+    if (isSuccess) {
+        const result = GachaSystem.drawForCombination(grade, this.state.upgrades.artisan || 0);
+        if (result) {
+            // 새 유닛 생성 (재료 중 한 곳의 좌표 사용)
+            const newTower = new Tower(targetUnit.x, targetUnit.y, result, this);
+            newTower.isBlueprint = false;
+            this.units.push(newTower);
+            this.ui.showNotification("조합 성공!", `${name} 4개를 합쳐 ${result.weaponName}(${result.weaponData.grade}) 획득!`, result.weaponData.grade);
+        }
+    } else {
+        this.ui.showNotification("조합 실패", `${name} 4개가 전부 파괴되었습니다...`, 'failure');
+    }
+
+    // 4. 재료 제거
+    this.units = this.units.filter(u => !materials.includes(u));
+    this.ui.hideUnitDetail();
   }
 
   /**

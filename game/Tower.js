@@ -296,6 +296,23 @@ export class Tower {
       ctx.stroke();
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
       ctx.beginPath(); ctx.arc(this.x, this.y, this.currentRange || this.range, 0, Math.PI * 2); ctx.stroke();
+      
+      // [New] 클릭 시 동일 유닛 연결선 표시
+      if (this.isCombinable) {
+        ctx.save();
+        ctx.setLineDash([10, 5]);
+        ctx.lineWidth = 1;
+        this.gameCore.units.forEach(u => {
+          if (u !== this && !u.isBlueprint && u.weaponName === this.weaponName && u.weaponData.grade === this.weaponData.grade) {
+            ctx.strokeStyle = 'rgba(155, 89, 182, 0.6)';
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(u.x, u.y);
+            ctx.stroke();
+          }
+        });
+        ctx.restore();
+      }
     }
 
     this.drawGauges(ctx);
@@ -305,6 +322,19 @@ export class Tower {
   drawSpecialEffect(ctx) {
     if (this.isBlueprint) return;
     const time = Date.now() * 0.003;
+
+    // [New] 조합 가능 오오라 표시 (보라색 파동)
+    if (this.isCombinable) {
+      const pulse = Math.sin(Date.now() * 0.005) * 5;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(162, 0, 255, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 30 + pulse, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
 
     if (this.weaponName === '전설의 꽁치검') {
       const glowSize = 45 + Math.sin(time) * 8;

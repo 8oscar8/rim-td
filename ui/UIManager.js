@@ -45,6 +45,7 @@ export class UIManager {
     this.exchangeJadeBtn = document.getElementById('btn-exchange-jade');
     this.sellUnitsBtn = document.getElementById('btn-sell-units');
     this.techUpBtn = document.getElementById('btn-tech-upgrade');
+    this.combineUnitBtn = document.getElementById('btn-combine-unit');
     this.craftBtns = document.querySelectorAll('.shop-btn.craft');
     
     this.upgradeMeleeBtn = document.getElementById('up-melee');
@@ -482,9 +483,30 @@ export class UIManager {
       // 방관 정보 (선택 사항)
       const apEl = document.getElementById('detail-ap');
       if (apEl) apEl.textContent = `${Math.floor(tower.ap * 100)}%`;
+
+      // [New] 조합 버튼 노출 및 처리
+      if (this.combineUnitBtn) {
+        if (tower.isCombinable) {
+          this.combineUnitBtn.classList.remove('hidden');
+          this.combineUnitBtn.onclick = () => {
+            this.app.combineUnits(tower);
+          };
+        } else {
+          this.combineUnitBtn.classList.add('hidden');
+        }
+      }
       
     } catch (e) {
       console.error("UI Detail Update Error:", e);
+    }
+  }
+
+  hideUnitDetail() {
+    const detailArea = document.getElementById('unit-detail-area');
+    if (detailArea) {
+        // 실제로는 패널을 숨기지 않고 텍스트를 초기화하거나 스타일만 조정 가능
+        // 여기서는 간단히 조합 버튼만 숨깁니다.
+        if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
     }
   }
 
