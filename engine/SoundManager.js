@@ -46,37 +46,47 @@ export class SoundManager {
     }
   }
 
-  // 효과음 재생 (중첩 지원 또는 특정 사운드 전용 처리)
+  // 효과음 재생 (중결 지원 또는 특정 사운드 전용 처리)
   static playSFX(src, volume = 0.6) {
-    let sound;
-    
-    // 사전 로드된 특수 사운드(습격/배드 이벤트) 재사용
-    if (src.includes('raid_alert')) {
-      sound = this.raidAlert;
-      sound.currentTime = 0;
-    } else if (src.includes('bad_alert')) {
-      sound = this.badAlert;
-      sound.currentTime = 0;
-    } else if (src.includes('encounter_success.mp3')) {
-      sound = this.encounterSuccessSound;
-      sound.currentTime = 0;
-    } else if (src.includes('coin.mp3')) {
-      sound = this.coinSound;
-      sound.currentTime = 0;
-    } else if (src.includes('buy.mp3')) {
-      sound = this.buySound;
-      sound.currentTime = 0;
-    } else if (src.includes('upgrade.mp3')) {
-      sound = this.upgradeSound;
-      sound.currentTime = 0;
-    } else {
-      sound = new Audio(src);
-    }
+    try {
+      let sound;
+      console.log(`[SoundManager] Attempting to play SFX: ${src}`);
+      
+      // 사전 로드된 특수 사운드 사용
+      if (src.includes('raid_alert')) {
+        sound = this.raidAlert;
+      } else if (src.includes('bad_alert')) {
+        sound = this.badAlert;
+      } else if (src.includes('encounter_success.mp3')) {
+        sound = this.encounterSuccessSound;
+      } else if (src.includes('coin.mp3')) {
+        sound = this.coinSound;
+      } else if (src.includes('buy.mp3')) {
+        sound = this.buySound;
+      } else if (src.includes('upgrade.mp3')) {
+        sound = this.upgradeSound;
+      }
 
-    sound.volume = volume * this.masterVolume;
-    sound.play().catch(e => {
-      console.warn("SFX 재생 실패 (유저 클릭 필요):", src, e);
-    }); 
+      // 사전 로드된 사운드가 없거나 일반 사운드인 경우 새로 생성
+      if (!sound) {
+        console.log(`[SoundManager] Creating new Audio instance for: ${src}`);
+        sound = new Audio(src);
+      }
+
+      if (sound) {
+        sound.currentTime = 0;
+        sound.volume = volume * this.masterVolume;
+        const playPromise = sound.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.error(`[SoundManager] SFX Playback failed for ${src}:`, error);
+          });
+        }
+      }
+    } catch (err) {
+      console.error("[SoundManager] Critical error in playSFX:", err);
+    }
   }
 
   static stopBGM() {

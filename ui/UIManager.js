@@ -118,26 +118,14 @@ export class UIManager {
     // 1. 일반 뽑기 (50 은)
     if (this.buyRandomBtn) {
       this.buyRandomBtn.onclick = () => {
-        if (this.app.state.silver >= 50) {
-          this.app.state.silver -= 50;
-          const result = GachaSystem.draw(0);
-          this.app.startPlacement(result);
-        } else {
-          alert("은이 부족합니다!");
-        }
+        this.app.buyRandomUnit();
       };
     }
 
     // 2. 고급 무기 상자 (1000 은)
     if (this.buyAdvancedBtn) {
       this.buyAdvancedBtn.onclick = () => {
-        if (this.app.state.silver >= 1000) {
-          this.app.state.silver -= 1000;
-          const result = GachaSystem.drawAdvanced(1); // 장인 레벨 보너스 적용
-          this.app.startPlacement(result);
-        } else {
-          alert("은이 부족합니다! (1000 은 필요)");
-        }
+        this.app.buyAdvancedUnit();
       };
     }
 
