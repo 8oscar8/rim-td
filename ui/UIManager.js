@@ -414,6 +414,15 @@ export class UIManager {
       
       this.detailRange.textContent = tower.range || 0;
       this.detailSpd.textContent = `${spd.toFixed(2)}/s`;
+
+      // 버프 시각화 (하늘색 강조)
+      if (tower.auraBuffTimer > 0) {
+        this.detailSpd.classList.add('buff-text');
+        this.detailDps.classList.add('buff-text');
+      } else {
+        this.detailSpd.classList.remove('buff-text');
+        this.detailDps.classList.remove('buff-text');
+      }
       
       // 방관 정보 (선택 사항)
       const apEl = document.getElementById('detail-ap');
