@@ -129,10 +129,11 @@ class App {
       case 'trading': 
         baseAmount = Math.floor(15 * getBonus(up.trade)); 
         resName = "은화"; 
-        // 교역 보너스
+        // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률(10+5%*lv) 및 획득량 증가
+        const tradeBonus = up.trade * 0.05;
         if (!isFailure) {
-            if (Math.random() < 0.1) { 
-                const amt = Math.floor(Math.random() * 3) + 1; 
+            if (Math.random() < 0.10 + tradeBonus) { 
+                const amt = Math.floor((Math.random() * 3 + 1) * getBonus(up.trade)); 
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
             if (Math.random() < 0.05) { 
@@ -144,7 +145,9 @@ class App {
       case 'research': 
         baseAmount = Math.floor(15 * getBonus(up.education)); 
         resName = "연구"; 
-        if (!isFailure && Math.random() < 0.2) {
+        // 연구 보너스 (현대 교육 레벨 반영): 부품 획득 확률(20+5%*lv)
+        const eduBonus = up.education * 0.05;
+        if (!isFailure && Math.random() < 0.20 + eduBonus) {
             const amt = Math.floor(Math.random() * 2) + 1; 
             bonusComponent = amt;
             bonusLoot += ` (부품 +${amt}!)`;
