@@ -24,16 +24,15 @@ class App {
     this.waypoints = [];
     
     // 3. 게임 오브젝트 관리
-    this.mousePos = { x: 0, y: 0 };
-    this.units = [];
-    this.effects = []; // 가챠 연출용 이펙트 배열 추가
     this.enemies = [];
+    this.units = [];
     this.projectiles = [];
     this.fieldEffects = [];
     
     // 4. 배치 모드 및 자원 관련 상태
     this.placementMode = false;
     this.pendingGachaResult = null;
+    this.mousePos = { x: 0, y: 0 };
     this.passiveSilverTimer = 0; // 2초당 1은 지급을 위한 타이머
 
     // 5. 웨이브 매니저 (init에서 초기화)
@@ -318,23 +317,13 @@ class App {
   confirmPlacement() {
     const tower = new Tower(this.mousePos.x, this.mousePos.y, this.pendingGachaResult, this);
     tower.isBlueprint = false;
-    tower.x = this.mousePos.x;
-    tower.y = this.mousePos.y;
     this.units.push(tower);
+    // this.state.population = this.units.length; <- 이 줄이 버그의 원인이었습니다. 인구는 구매 시 늘어나는 것이 아니라 식량 등에 의해 결정되어야 합니다.
     
-    // [Gacha Effect] 가챠 설치 연출 추가
-    const grade = tower.weaponData.grade || 'Common';
-    this.effects.push({
-        x: tower.x,
-        y: tower.y,
-        grade: grade,
-        startTime: Date.now(),
-        duration: 800 // 0.8초 동안 연출
-    });
-
+    
     this.placementMode = false;
     this.pendingGachaResult = null;
-    this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 배치되었습니다.`);
+    this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 전장에 배치되었습니다.`);
   }
 
   handleEnemyDeath(reward, isBoss) {
@@ -419,20 +408,9 @@ class App {
     this.fieldEffects.forEach(f => f.render(this.renderer.ctx));
 
     // 적 -> 유닛 -> 투사체 순으로 렌더링
-    this.waveManager.render(this.renderer.ctx);
+    this.renderer.drawEntities(this.enemies);
     this.renderer.drawEntities(this.units);
     this.renderer.drawEntities(this.projectiles);
-
-    // 가챠 이펙트 렌더링
-    const now = Date.now();
-    this.effects = this.effects.filter(fx => {
-        const elapsed = now - fx.startTime;
-        const progress = Math.min(elapsed / fx.duration, 1);
-        
-        this.renderer.drawGachaEffect(fx.x, fx.y, fx.grade, progress);
-        
-        return progress < 1;
-    });
 
     // 6. 배치 모드 (Ghost 유닛) 렌더링
     if (this.placementMode && this.pendingGachaResult) {

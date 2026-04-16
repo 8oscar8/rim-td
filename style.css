@@ -243,15 +243,19 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 /* Notification Banner */
 #notification-banner {
     position: absolute;
-    bottom: 40px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    background: rgba(20, 21, 23, 0.95);
-    border-left: 4px solid var(--accent-blue);
-    padding: 12px 24px;
-    border-radius: 0 8px 8px 0;
-    backdrop-filter: blur(10px);
-    z-index: 100;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 21, 23, 0.9);
+    border: 1px solid var(--accent-blue);
+    border-top: 4px solid var(--accent-blue);
+    padding: 20px 40px;
+    border-radius: 8px;
+    backdrop-filter: blur(15px);
+    z-index: 1000;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    pointer-events: none; /* 게임 플레이 방해 금지 */
 }
 #notification-banner.hidden { display: none; }
 #notification-banner h4 { font-size: 14px; color: var(--accent-blue); margin-bottom: 2px; }
