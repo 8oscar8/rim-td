@@ -116,6 +116,10 @@ export class UIManager {
     // 1. 일반 뽑기 (50 은)
     if (this.buyRandomBtn) {
       this.buyRandomBtn.onclick = () => {
+        if (this.app.state.idlePopulation <= 0) {
+          alert("유휴 인구가 부족합니다! (식량 확보를 통해 인구를 늘리거나 작업을 해제하세요)");
+          return;
+        }
         if (this.app.state.silver >= 50) {
           this.app.state.silver -= 50;
           const result = GachaSystem.draw(0);
@@ -129,6 +133,10 @@ export class UIManager {
     // 2. 고급 무기 상자 (1000 은)
     if (this.buyAdvancedBtn) {
       this.buyAdvancedBtn.onclick = () => {
+        if (this.app.state.idlePopulation <= 0) {
+          alert("유휴 인구가 부족합니다!");
+          return;
+        }
         if (this.app.state.silver >= 1000) {
           this.app.state.silver -= 1000;
           const result = GachaSystem.drawAdvanced(1); // 장인 레벨 보너스 적용
@@ -358,14 +366,14 @@ export class UIManager {
     if (this.rangedDpmVal) this.rangedDpmVal.textContent = Math.floor(rangedDpm);
 
     // 5. 버튼 활성화/비활성화 및 비용 업데이트
-    const canBuyRandom = state.silver >= 50;
+    const canBuyRandom = state.silver >= 50 && state.idlePopulation > 0;
     if (this.buyRandomBtn) {
       this.buyRandomBtn.disabled = !canBuyRandom;
       this.buyRandomBtn.style.opacity = canBuyRandom ? "1" : "0.4";
       this.buyRandomBtn.style.filter = canBuyRandom ? "none" : "grayscale(0.5)";
     }
 
-    const canBuyAdvanced = state.silver >= 1000;
+    const canBuyAdvanced = state.silver >= 1000 && state.idlePopulation > 0;
     if (this.buyAdvancedBtn) {
         this.buyAdvancedBtn.disabled = !canBuyAdvanced;
         this.buyAdvancedBtn.style.opacity = canBuyAdvanced ? "1" : "0.4";
@@ -464,9 +472,9 @@ export class UIManager {
       }
     });
 
-    // 7. 대기 인원 자동 계산 및 동기화
+    // 7. 대기 인원 자동 계산 및 동기화 (작업자 + 배치된 유닛 합산 차감)
     const totalAssigned = Object.values(state.workers).reduce((a, b) => a + b, 0);
-    state.idlePopulation = state.population - totalAssigned;
+    state.idlePopulation = state.population - totalAssigned - this.app.units.length;
     if (this.idlePopVal) this.idlePopVal.textContent = state.idlePopulation;
   }
 }

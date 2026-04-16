@@ -280,7 +280,8 @@ class App {
     const tower = new Tower(this.mousePos.x, this.mousePos.y, this.pendingGachaResult, this);
     tower.isBlueprint = false;
     this.units.push(tower);
-    this.state.population = this.units.length;
+    // this.state.population = this.units.length; <- 이 줄이 버그의 원인이었습니다. 인구는 구매 시 늘어나는 것이 아니라 식량 등에 의해 결정되어야 합니다.
+    
     
     this.placementMode = false;
     this.pendingGachaResult = null;
