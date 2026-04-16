@@ -380,9 +380,18 @@ class App {
     this.projectiles = this.projectiles.filter(p => p.active);
     this.projectiles.forEach(p => p.update(scaledDt, this.enemies, this.fieldEffects));
 
-    // 5. 필드 효과 (연막/독성) 업데이트
+    // 5. 필드 효과 (연막/독성) 업데이트 및 적용
     this.fieldEffects = this.fieldEffects.filter(f => {
       f.duration -= scaledDt;
+      
+      // 범위 내의 적들에게 효과 적용
+      this.enemies.forEach(en => {
+        if (en.active && Math.hypot(en.x - f.x, en.y - f.y) <= (f.radius || 60)) {
+          if (f.type === 'smoke') en.applyEffect('smoke', 0.5);
+          if (f.type === 'toxin') en.applyEffect('toxin', 0.5);
+        }
+      });
+
       return f.duration > 0;
     });
 

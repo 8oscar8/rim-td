@@ -279,6 +279,35 @@ export class UIManager {
     if (this.upgradeBluntBtn) this.upgradeBluntBtn.onclick = () => handleUpgrade('blunt');
     if (this.upgradeMeleeBtn) this.upgradeMeleeBtn.onclick = () => handleUpgrade('sharp');
     if (this.upgradeRangedBtn) this.upgradeRangedBtn.onclick = () => handleUpgrade('ranged');
+
+    // 6. 특수 무기 제작
+    this.specialCraftBtns = document.querySelectorAll('.special-craft');
+    this.specialCraftBtns.forEach(btn => {
+      btn.onclick = () => {
+        const weaponName = btn.getAttribute('data-weapon');
+        const s = this.app.state;
+        
+        const costs = {
+            '파쇄 수류탄': { silver: 150, component: 5 },
+            '펄스 수류탄': { silver: 300, component: 10 },
+            '화염병': { silver: 200, component: 5 },
+            '연막 발사기': { silver: 250, component: 5 },
+            '독소 수류탄': { silver: 500, component: 15 }
+        };
+
+        const cost = costs[weaponName];
+        if (s.silver >= cost.silver && s.component >= cost.component) {
+            s.silver -= cost.silver;
+            s.component -= cost.component;
+            
+            const result = GachaSystem.createSpecificWeapon(weaponName);
+            this.app.startPlacement(result);
+            this.updateDisplays(s);
+        } else {
+            alert("자원이 부족합니다!");
+        }
+      };
+    });
   }
 
   switchTab(tabId) {

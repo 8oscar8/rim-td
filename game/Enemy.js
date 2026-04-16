@@ -219,6 +219,14 @@ export class Enemy {
     else if ((effect === 'fear' || effect === 'burn_fear') && this.type === 'organic') {
       this.fearTimer = Math.max(this.fearTimer, duration);
     }
+    else if (effect === 'toxin' && this.type !== 'mech') {
+      const existingToxin = this.activeDots.find(d => d.isFieldToxin);
+      if (existingToxin) {
+        existingToxin.duration = 0.5;
+      } else {
+        this.activeDots.push({ damagePerSec: 8, duration: 0.5, isFieldToxin: true });
+      }
+    }
   }
 
   render(ctx) {
