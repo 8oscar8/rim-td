@@ -146,7 +146,7 @@ export class UIManager {
         if (this.app.state.jade >= 1) {
           this.app.state.jade -= 1;
           this.app.state.silver += 250;
-          this.showNotification(`비취옥 환전 완료`, `비취옥 1개를 사용하여 250 은을 획득했습니다.`);
+          this.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
           this.updateDisplays(this.app.state);
         } else {
           alert("비취옥이 부족합니다!");
