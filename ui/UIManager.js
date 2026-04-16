@@ -305,6 +305,12 @@ export class UIManager {
     if (!state) return;
 
     if (this.waveVal) this.waveVal.textContent = state.waveNumber;
+    if (this.timerVal) {
+      const totalSeconds = Math.max(0, Math.floor(state.nextWaveTimer));
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = totalSeconds % 60;
+      this.timerVal.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
     if (this.popVal) this.popVal.textContent = state.population;
     if (this.silverVal) this.silverVal.textContent = Math.floor(state.silver);
     if (this.enemyVal) this.enemyVal.textContent = state.enemies ? state.enemies.length : 0;

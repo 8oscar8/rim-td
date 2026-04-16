@@ -33,6 +33,7 @@ export class GameState {
     
     // 4. 게임 엔진 상태
     this.waveNumber = 1;
+    this.nextWaveTimer = 0; // 다음 웨이브까지 남은 시간
     this.isPaused = false; 
     this.timeScale = 1.0;
     this.score = 0;

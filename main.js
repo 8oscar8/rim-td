@@ -333,6 +333,7 @@ class App {
 
     // 1. 웨이브 엔진 업데이트
     this.waveManager.update(scaledDt, this.enemies);
+    this.state.nextWaveTimer = this.waveManager.nextWaveTimer; // 타이머 동기화
 
     // 2. 적 리스트 정리 및 업데이트
     this.enemies = this.enemies.filter(e => e.active);
