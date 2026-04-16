@@ -84,10 +84,14 @@ class App {
     }
 
     const s = this.state;
+    const up = s.upgrades;
     let baseAmount = 0;
     let resName = "";
     let bonusComponent = 0;
     let bonusLoot = "";
+    
+    // 업그레이드 보너스 계산 (레벨당 10% 보너스)
+    const getBonus = (lv) => 1 + (lv * 0.1);
     
     // 확률 로직 미리 계산: 대박(10%), 실패(5%), 일반(85%)
     const rand = Math.random();
@@ -95,44 +99,53 @@ class App {
     let isFailure = rand >= 0.1 && rand < 0.15;
     
     switch(type) {
-      case 'logging': baseAmount = 8; resName = "목재"; break;
+      case 'logging': 
+        baseAmount = Math.floor(8 * getBonus(up.logging)); 
+        resName = "목재"; 
+        break;
       case 'mining': 
-        baseAmount = 5; resName = "강철"; 
-        // 채광 보너스: 플라스틸(5%), 우라늄(10%), 비취(5%)
+        baseAmount = Math.floor(5 * getBonus(up.mining)); 
+        resName = "강철"; 
+        // 채광 보너스 (심층 채굴 레벨 반영): 플라스틸(5+2%*lv), 우라늄(10+2%*lv), 비취(5+2%*lv)
+        const mineBonus = up.mining * 0.02;
         if (!isFailure) {
-            if (Math.random() < 0.05) { 
-                const amt = Math.floor(Math.random() * 2) + 1; // 1~2
+            if (Math.random() < 0.05 + mineBonus) { 
+                const amt = Math.floor(Math.random() * 2) + 1; 
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
-            if (Math.random() < 0.1) { 
-                const amt = Math.floor(Math.random() * 3) + 1; // 1~3
+            if (Math.random() < 0.10 + mineBonus) { 
+                const amt = Math.floor(Math.random() * 3) + 1; 
                 s.uranium += amt; bonusLoot += ` (우라늄 +${amt}!)`; 
             }
-            if (Math.random() < 0.05) { 
-                const amt = Math.floor(Math.random() * 2) + 1; // 1~2
-                s.jade += 1; bonusLoot += ` (비취 +${amt}!)`; 
+            if (Math.random() < 0.05 + mineBonus) { 
+                s.jade += 1; bonusLoot += ` (비취 +1!)`; 
             }
         }
         break;
-      case 'farming': baseAmount = 8; resName = "식량"; break;
+      case 'farming': 
+        baseAmount = Math.floor(8 * getBonus(up.farming)); 
+        resName = "식량"; 
+        break;
       case 'trading': 
-        baseAmount = 15; resName = "은화"; 
-        // 교역 보너스: 플라스틸(10%), 비취(5%)
+        baseAmount = Math.floor(15 * getBonus(up.trade)); 
+        resName = "은화"; 
+        // 교역 보너스
         if (!isFailure) {
             if (Math.random() < 0.1) { 
-                const amt = Math.floor(Math.random() * 3) + 1; // 1~3
+                const amt = Math.floor(Math.random() * 3) + 1; 
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
             if (Math.random() < 0.05) { 
-                const amt = Math.floor(Math.random() * 2) + 1; // 1~2
+                const amt = Math.floor(Math.random() * 2) + 1; 
                 s.jade += amt; bonusLoot += ` (비취 +${amt}!)`; 
             }
         }
         break;
       case 'research': 
-        baseAmount = 15; resName = "연구"; 
+        baseAmount = Math.floor(15 * getBonus(up.education)); 
+        resName = "연구"; 
         if (!isFailure && Math.random() < 0.2) {
-            const amt = Math.floor(Math.random() * 2) + 1; // 1~2
+            const amt = Math.floor(Math.random() * 2) + 1; 
             bonusComponent = amt;
             bonusLoot += ` (부품 +${amt}!)`;
         }
@@ -253,6 +266,26 @@ class App {
       return true;
     }
     return false;
+  }
+
+  buyAdvancedUnit() {
+    if (this.state.silver >= 1000) {
+      this.state.silver -= 1000;
+      const artisanLv = this.state.upgrades.artisan || 0;
+      const result = GachaSystem.drawAdvanced(artisanLv);
+      this.startPlacement(result);
+      this.ui.updateDisplays(this.state);
+    }
+  }
+
+  buyRandomUnit() {
+    if (this.state.silver >= 50) {
+      this.state.silver -= 50;
+      const artisanLv = this.state.upgrades.artisan || 0;
+      const result = GachaSystem.draw(artisanLv);
+      this.startPlacement(result);
+      this.ui.updateDisplays(this.state);
+    }
   }
 
   init() {

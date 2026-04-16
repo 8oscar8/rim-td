@@ -29,7 +29,13 @@ export class GameState {
       sharp: 0,    // 날붙이 업그레이드
       blunt: 0,    // 둔기 업그레이드
       ranged: 0,   // 원거리 업그레이드
-      armor: 0     // 방어력 관통 업그레이드
+      armor: 0,    // 방어력 관통 업그레이드
+      education: 0, // 현대 교육
+      artisan: 0,   // 숙련 장인
+      farming: 0,   // 선진 농법
+      mining: 0,    // 심층 채굴
+      logging: 0,   // 기계 벌목
+      trade: 0      // 무역 네트워크
     };
     
     // 4. 게임 엔진 상태

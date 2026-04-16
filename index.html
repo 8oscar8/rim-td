@@ -208,6 +208,7 @@
                 <!-- 훈련 탭 -->
                 <div id="tab-train" class="tab-pane">
                     <div class="upgrade-list">
+                        <!-- 기존 전투 업그레이드 -->
                         <button id="up-blunt" class="upgrade-btn">
                             <div class="up-info">
                                 <span class="up-name">둔기</span>
@@ -238,6 +239,35 @@
                                 (<img src="assets/plasteel.png" class="inline-icon"> <span id="ranged-cost-1">1</span> | <img src="assets/silver.png" class="inline-icon"> <span id="ranged-cost-2">1</span>)
                             </div>
                         </button>
+
+                        <div class="divider">파견 및 생산 강화</div>
+
+                        <!-- 생산 업그레이드 (스크린샷 기반) -->
+                        <button class="upgrade-btn prod-up" data-type="education">
+                            <div class="up-info"><span class="up-name">현대 교육</span><span class="up-desc">연구 효율 증가</span></div>
+                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/wood.png" class="inline-icon"> 100)</div>
+                        </button>
+                        <button class="upgrade-btn prod-up" data-type="artisan">
+                            <div class="up-info"><span class="up-name">숙련 장인</span><span class="up-desc">제작 품질 증가</span></div>
+                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/steel.png" class="inline-icon"> 100)</div>
+                        </button>
+                        <button class="upgrade-btn prod-up" data-type="farming">
+                            <div class="up-info"><span class="up-name">선진 농법</span><span class="up-desc">식량 생산 증가</span></div>
+                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/food.png" class="inline-icon"> 100)</div>
+                        </button>
+                        <button class="upgrade-btn prod-up" data-type="mining">
+                            <div class="up-info"><span class="up-name">심층 채굴</span><span class="up-desc">고급 자원 확률 증가</span></div>
+                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/steel.png" class="inline-icon"> 100)</div>
+                        </button>
+                        <button class="upgrade-btn prod-up" data-type="logging">
+                            <div class="up-info"><span class="up-name">기계 벌목</span><span class="up-desc">목재 생산 증가</span></div>
+                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 200 | <img src="assets/wood.png" class="inline-icon"> 100)</div>
+                        </button>
+                        <button class="upgrade-btn prod-up" data-type="trade">
+                            <div class="up-info"><span class="up-name">무역 네트워크</span><span class="up-desc">은화 수급 증가</span></div>
+                            <div class="up-cost">(<img src="assets/silver.png" class="inline-icon"> 300 | <img src="assets/research.png" class="inline-icon"> 150)</div>
+                        </button>
+
                     </div>
                 </div>
             </div>

@@ -280,6 +280,45 @@ export class UIManager {
     if (this.upgradeMeleeBtn) this.upgradeMeleeBtn.onclick = () => handleUpgrade('sharp');
     if (this.upgradeRangedBtn) this.upgradeRangedBtn.onclick = () => handleUpgrade('ranged');
 
+    // 5.5 생산 업그레이드 이벤트
+    this.prodUpBtns = document.querySelectorAll('.prod-up');
+    this.prodUpBtns.forEach(btn => {
+      btn.onclick = () => {
+        const type = btn.getAttribute('data-type');
+        const s = this.app.state;
+        
+        const costs = {
+            education: { silver: 200, wood: 100 },
+            artisan: { silver: 200, steel: 100 },
+            farming: { silver: 200, food: 100 },
+            mining: { silver: 200, steel: 100 },
+            logging: { silver: 200, wood: 100 },
+            trade: { silver: 300, researchPoints: 150 }
+        };
+
+        const cost = costs[type];
+        let canAfford = true;
+        for (const [res, amt] of Object.entries(cost)) {
+            if (s[res] < amt) {
+                canAfford = false;
+                break;
+            }
+        }
+
+        if (canAfford) {
+            for (const [res, amt] of Object.entries(cost)) {
+                s[res] -= amt;
+            }
+            s.upgrades[type] = (s.upgrades[type] || 0) + 1;
+            const name = btn.querySelector('.up-name').textContent;
+            this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
+            this.updateDisplays(s);
+        } else {
+            alert("자원이 부족합니다!");
+        }
+      };
+    });
+
     // 6. 특수 무기 제작
     this.specialCraftBtns = document.querySelectorAll('.special-craft');
     this.specialCraftBtns.forEach(btn => {
