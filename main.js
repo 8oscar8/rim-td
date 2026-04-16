@@ -303,7 +303,7 @@ class App {
       this.state.silver -= 1000;
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.drawAdvanced(artisanLv);
-      SoundManager.playSFX('assets/audio/buy.mp3');
+      this.playGachaSound(result.weaponData.grade);
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     } else {
@@ -316,12 +316,21 @@ class App {
       this.state.silver -= 50;
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.draw(artisanLv);
-      SoundManager.playSFX('assets/audio/buy.mp3');
+      this.playGachaSound(result.weaponData.grade);
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     } else {
       alert("은화가 부족합니다! (50 은 필요)");
     }
+  }
+
+  /**
+   * 등급에 따른 효과음 재생
+   */
+  playGachaSound(grade) {
+    const highGrades = ['Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
+    const sfx = highGrades.includes(grade) ? 'assets/audio/coin.mp3' : 'assets/audio/buy.mp3';
+    SoundManager.playSFX(sfx);
   }
 
   init() {
@@ -616,7 +625,7 @@ class App {
             const result = GachaSystem.drawForCombination(grade, this.state.upgrades.artisan || 0);
             if (result) {
                 // [Fix] 자동 생성이 아닌, 상점처럼 직접 배치 모드로 전환
-                SoundManager.playSFX('assets/audio/buy.mp3');
+                this.playGachaSound(result.weaponData.grade);
                 this.startPlacement(result);
                 this.ui.showNotification("조합 성공!", `${name} 4개를 합쳐 새로운 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
             } else {
