@@ -122,6 +122,9 @@ export class EncounterManager {
       } else if (event.id === 'manhunter_pack') {
           borderColor = "#b91c1c"; // Blood Red
           bgColor = "rgba(185, 28, 28, 0.1)";
+      } else if (event.id === 'infestation') {
+          borderColor = "#44403c"; // Dark Stone (Insects)
+          bgColor = "rgba(68, 64, 60, 0.1)";
       }
 
       // UI 요소 생성
@@ -215,6 +218,10 @@ export class EncounterManager {
       {
         name: '식인 동물 무리', weight: 18, type: 'negative', id: 'manhunter_pack',
         desc: "정착지 주변에서 미친 듯이 굶주린 동물 무리가 습격해왔습니다! 매우 빠른 속도로 달려오는 동물들을 제거해야 합니다."
+      },
+      {
+        name: '곤충 군락', weight: 15, type: 'negative', id: 'infestation',
+        desc: "깊은 바위산 천장에서 기분 나쁜 긁는 소리가 들리기 시작합니다... 곤충들이 굴을 뚫고 정착지를 습격했습니다!"
       }
     ];
 
@@ -296,6 +303,9 @@ export class EncounterManager {
         break;
       case 'manhunter_pack':
         this.handleManhunterPack();
+        break;
+      case 'infestation':
+        this.handleInfestation();
         break;
     }
   }
@@ -506,6 +516,13 @@ export class EncounterManager {
   handleManhunterPack() {
     if (this.app.waveManager) {
         this.app.waveManager.spawnManhunterPack();
+    }
+  }
+
+  // 16. 곤충 군락 (다양한 곤충형 적 스폰)
+  handleInfestation() {
+    if (this.app.waveManager) {
+        this.app.waveManager.spawnInfestation();
     }
   }
 

@@ -244,4 +244,51 @@ export class WaveManager {
         if (spawnCount >= animalCount) clearInterval(interval);
     }, 200); // 0.2초 간격으로 쏟아져 나옴
   }
+
+  /**
+   * 곤충 군락 (Infestation) - 다양한 곤충형 적 스폰
+   */
+  spawnInfestation() {
+    console.log("Infestation triggered!");
+    
+    // 곤충 종류 정의
+    const insectTypes = [
+        { name: '메가스카라브', hpMul: 0.5, spdMul: 1.5, size: 10, color: '#94a3b8' },
+        { name: '스펠로피드', hpMul: 1.0, spdMul: 1.1, size: 15, color: '#475569' },
+        { name: '메가스파이더', hpMul: 2.2, spdMul: 0.8, size: 22, color: '#1e293b' }
+    ];
+
+    let count = 0;
+    const maxCount = 12 + Math.floor(Math.random() * 8); // 12~20마리
+    const baseHp = this.getCurrentWaveHp();
+
+    const intervalId = setInterval(() => {
+        if (count >= maxCount) {
+            clearInterval(intervalId);
+            return;
+        }
+
+        // 가중치 적용 스폰 (스카라브 50%, 스펠로피드 30%, 스파이더 20%)
+        const rand = Math.random();
+        let config = insectTypes[0];
+        if (rand > 0.8) config = insectTypes[2];      // 메가스파이더
+        else if (rand > 0.5) config = insectTypes[1]; // 스펠로피드
+
+        const insect = new Enemy(
+            config.name,
+            baseHp * config.hpMul,
+            this.speed * config.spdMul,
+            'organic'
+        );
+        
+        // 곤충 외형 커스텀
+        insect.size = config.size;
+        insect.color = config.color;
+
+        const spawnEvent = new CustomEvent('spawnSpecial', { detail: insect });
+        document.dispatchEvent(spawnEvent);
+
+        count++;
+    }, 250);
+  }
 }
