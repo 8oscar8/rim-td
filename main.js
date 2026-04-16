@@ -127,7 +127,7 @@ class App {
         resName = "식량"; 
         break;
       case 'trading': 
-        baseAmount = Math.floor(25 * getBonus(up.trade)); 
+        baseAmount = Math.floor(12 * getBonus(up.trade)); 
         resName = "은화"; 
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률(10+5%*lv) 및 획득량 증가
         const tradeBonus = up.trade * 0.05;
@@ -143,7 +143,7 @@ class App {
         }
         break;
       case 'research': 
-        baseAmount = Math.floor(25 * getBonus(up.education)); 
+        baseAmount = Math.floor(13 * getBonus(up.education)); 
         resName = "연구"; 
         // 연구 보너스 (현대 교육 레벨 반영): 부품 획득 확률(20+5%*lv)
         const eduBonus = up.education * 0.05;
