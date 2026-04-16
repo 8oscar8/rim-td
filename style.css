@@ -56,14 +56,16 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 }
 .res-row { 
     display: grid;
-    grid-template-columns: 24px 80px 60px;
+    grid-template-columns: 28px 1fr 80px;
     align-items: center;
-    gap: 12px;
-    font-size: 13px; 
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    gap: 15px;
+    font-size: 14px; 
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
     width: 100%;
-    justify-content: center;
+}
+.res-row:hover {
+    background: rgba(255, 255, 255, 0.02);
 }
 .res-row span:last-of-type {
     text-align: right;
@@ -431,11 +433,14 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .shop-btn.craft .text { font-size: 13px; font-weight: 600; }
 
 .res-mini-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
-    margin-right: 0;
-    vertical-align: middle;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    transition: transform 0.2s;
+}
+.res-row:hover .res-mini-icon {
+    transform: scale(1.1);
 }
 
 .inline-icon {
@@ -595,11 +600,21 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     user-select: none;
 }
 .item-card.clickable:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: translateX(4px);
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.5);
+    transform: translateX(8px);
+    box-shadow: -5px 0 15px rgba(59, 130, 246, 0.2);
 }
-.item-card.clickable:active { transform: scale(0.97); }
+.item-card.clickable:active { transform: translateX(4px) scale(0.98); }
+
+/* 특수 아이템: 궤도 폭격 전용 스타일 */
+#btn-item-orbital {
+    border-left: 3px solid #3b82f6;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+}
+#btn-item-orbital .item-icon {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+}
 
 .item-info {
     display: flex;
@@ -607,10 +622,13 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     gap: 15px;
 }
 .item-icon {
-    width: 34px;
-    height: 34px;
+    width: 42px;
+    height: 42px;
     object-fit: contain;
-    filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+    transition: all 0.3s;
+}
+.item-card:hover .item-icon {
+    transform: rotate(-5deg) scale(1.1);
 }
 .item-card .label {
     font-family: 'Outfit', sans-serif;
