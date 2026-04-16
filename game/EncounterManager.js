@@ -55,6 +55,16 @@ export class EncounterManager {
     return multiplier;
   }
 
+  // 글로벌 작업량 배율 계산 (작업 영감 반영)
+  getGlobalWorkMultiplier(jobType) {
+    let multiplier = 1.0;
+    const inspiration = this.activeEvents.find(e => e.id === 'work_inspiration' && e.targetJob === jobType);
+    if (inspiration) {
+        multiplier *= 3.0;
+    }
+    return multiplier;
+  }
+
   // 글로벌 공격 속도 배율 계산 (정신적 안정파 등 반영)
   getGlobalAttackSpeedMultiplier() {
     let multiplier = 1.0;
@@ -76,6 +86,9 @@ export class EncounterManager {
       if (event.id === 'psychic_soothe') {
           borderColor = "#22d3ee"; // Cyan
           bgColor = "rgba(34, 211, 238, 0.1)";
+      } else if (event.id === 'work_inspiration') {
+          borderColor = "#facc15"; // Gold
+          bgColor = "rgba(250, 204, 21, 0.1)";
       }
 
       // UI 요소 생성
@@ -123,6 +136,10 @@ export class EncounterManager {
       { 
         name: '고대의 유물', weight: 5, type: 'positive', id: 'ancient_relic',
         desc: "미개척지에서 고대 기술로 만들어진 강력한 유물이 발견되었습니다! 전설적인 근접 무기 중 하나를 확보합니다."
+      },
+      { 
+        name: '작업 영감', weight: 10, type: 'positive', id: 'work_inspiration',
+        desc: "정착민들이 특정 작업에 깊은 영감을 얻었습니다! 90초 동안 무작위 한 종류의 작업 수득량이 3배로 증가합니다."
       },
       { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
@@ -178,6 +195,9 @@ export class EncounterManager {
         break;
       case 'ancient_relic':
         this.handleAncientRelic(event);
+        break;
+      case 'work_inspiration':
+        this.handleWorkInspiration(event);
         break;
       case 'toxic_fallout':
         this.handleToxicFallout();
@@ -262,6 +282,29 @@ export class EncounterManager {
         this.modalText.innerText = event.desc;
         this.app.ui.showNotification("전설적 유물 발견", `${pName}을(를) 획득했습니다!`, "Legendary");
     }
+  }
+
+  // 7. 작업 영감 (특정 작업 3배 보너스)
+  handleWorkInspiration(event) {
+    const jobs = [
+        { id: 'logging', name: '벌목' },
+        { id: 'mining', name: '채광' },
+        { id: 'farming', name: '농사' },
+        { id: 'research', name: '연구' },
+        { id: 'trading', name: '교역' }
+    ];
+    const job = jobs[Math.floor(Math.random() * jobs.length)];
+
+    this.activeEvents.push({
+        id: 'work_inspiration',
+        targetJob: job.id,
+        name: `${job.name} 영감`,
+        type: 'positive',
+        duration: 90
+    });
+
+    event.desc = `정착민들이 [${job.name}] 작업에서 신들린 지혜를 발휘하기 시작했습니다! \n\n90초 동안 [${job.name}] 자원 획득량이 3배가 됩니다.`;
+    this.modalText.innerText = event.desc;
   }
 
   // 2. 독성 낙진 (파견 효율 감소)

@@ -177,6 +177,10 @@ class App {
         if (finalAmount < 1 && baseAmount > 0) finalAmount = 1;
     }
 
+    // [New] 작업 영감 보너스 (3배) 반영
+    const workMult = this.encounterManager.getGlobalWorkMultiplier(type);
+    finalAmount = Math.floor(finalAmount * workMult);
+
     // [New] 암브로시아 보너스 (은화 2배) 반영
     if (resName === "은화") {
         const silverMult = this.encounterManager.getGlobalSilverMultiplier();
