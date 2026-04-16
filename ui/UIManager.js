@@ -479,12 +479,15 @@ export class UIManager {
       this.detailSpd.textContent = `${spd.toFixed(2)}/s`;
 
       // 버프 시각화 (하늘색 강조)
-      if (tower.auraBuffTimer > 0) {
+      const isBuffed = (spd > tower.baseAttackSpeed) || (total > base);
+      if (isBuffed) {
         this.detailSpd.classList.add('buff-text');
         this.detailDps.classList.add('buff-text');
+        this.detailAtk.classList.add('buff-text');
       } else {
         this.detailSpd.classList.remove('buff-text');
         this.detailDps.classList.remove('buff-text');
+        this.detailAtk.classList.remove('buff-text');
       }
       
       // 방관 정보 (선택 사항)
@@ -557,10 +560,9 @@ export class UIManager {
       this.techLevelVal.textContent = names[state.techLevel] || state.techLevel;
     }
 
-    // 선택된 유닛 정보 실시간 갱신
-    const selectedUnit = this.app.units.find(u => u.selected);
-    if (selectedUnit) {
-      this.showUnitDetail(selectedUnit);
+    // 선택된 유닛 정보 실시간 갱신 (버프/스탯 변화 반영)
+    if (this.selectedUnit && this.selectedUnit.active) {
+      this.showUnitDetail(this.selectedUnit);
     }
 
     if (this.popVal) this.popVal.textContent = state.population;
