@@ -22,6 +22,7 @@ class App {
 
     // 1. 매니저 클래스 초기화
     SpriteManager.init();
+    SoundManager.init();
     
     // 2. 경로(Waypoints) 초기화 (나중에 init에서 정교화)
     this.waypoints = [];
@@ -289,6 +290,7 @@ class App {
       this.units.splice(selectedIdx, 1);
       this.state.silver += price;
       
+      SoundManager.playSFX('assets/audio/buy.mp3');
       this.ui.addMiniNotification(`${u.weaponName} 판매 완료 (+${price} 은)`);
       this.ui.updateDisplays(this.state);
       return true;
@@ -301,6 +303,7 @@ class App {
       this.state.silver -= 1000;
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.drawAdvanced(artisanLv);
+      SoundManager.playSFX('assets/audio/buy.mp3');
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     }
@@ -311,6 +314,7 @@ class App {
       this.state.silver -= 50;
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.draw(artisanLv);
+      SoundManager.playSFX('assets/audio/buy.mp3');
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     }
@@ -608,6 +612,7 @@ class App {
             const result = GachaSystem.drawForCombination(grade, this.state.upgrades.artisan || 0);
             if (result) {
                 // [Fix] 자동 생성이 아닌, 상점처럼 직접 배치 모드로 전환
+                SoundManager.playSFX('assets/audio/buy.mp3');
                 this.startPlacement(result);
                 this.ui.showNotification("조합 성공!", `${name} 4개를 합쳐 새로운 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
             } else {
