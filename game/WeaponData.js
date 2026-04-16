@@ -35,18 +35,18 @@ export const WEAPON_DB = {
   '볼트액션 소총': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 24, spd: 0.3, ap: 0.3, effect: null, range: 370 },
   '투창 다발': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 25, spd: 0.2, ap: 0.3, effect: null, range: 200 },
 
-  '기관단총(SMG)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 13, burst: 3, spd: 0.45, ap: 0.15, range: 240 },
-  '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 16, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310 },
-  '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 35, burst: 3, spd: 0.4, ap: 0.3, effect: 'splash_knockback', range: 140 },
+  '기관단총(SMG)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 20, burst: 3, spd: 0.45, ap: 0.15, range: 240 },
+  '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310 },
+  '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 60, burst: 3, spd: 0.4, ap: 0.3, effect: 'aoe_dmg', range: 140 },
 
-  '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 95, spd: 0.18, ap: 0.8, effect: null, range: 480 },
-  '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 35, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280 },
-  '차지 랜스': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 110, spd: 0.2, ap: 0.9, effect: 'armor_break', range: 340 },
+  '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: null, range: 480 },
+  '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 75, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280 },
+  '차지 랜스': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 280, spd: 0.2, ap: 0.9, effect: 'armor_break', range: 340 },
 
-  '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 45, burst: 25, spd: 0.25, ap: 0.3, effect: null, range: 310 },
-  '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 45, spd: 0.25, ap: 0.6, effect: 'multi_bullet', range: 9999 },
+  '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.25, ap: 0.3, effect: null, range: 310 },
+  '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 150, spd: 0.25, ap: 0.6, effect: 'multi_bullet', range: 9999 },
 
-  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 35, burst: 1, spd: 0.5, ap: 1.0, effect: 'multi_bullet', range: 9999 },
+  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 200, burst: 1, spd: 0.5, ap: 1.0, effect: 'multi_bullet', range: 9999 },
 
   // 투척류 및 특수 무기
   '파쇄 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 50, spd: 0.2, ap: 0.2, effect: 'aoe_dmg', range: 150 },
