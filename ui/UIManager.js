@@ -180,7 +180,7 @@ export class UIManager {
           this.app.state.silver -= sCost;
           this.app.state.researchPoints -= rCost;
           this.app.state.techLevel = levels[currIdx + 1];
-          this.addMiniNotification(`기술 업그레이드 완료: ${this.app.state.techLevel}`, 'jackpot');
+          this.addMiniNotification(`기술 업그레이드 완료: ${this.app.state.techLevel}`);
         } else {
           alert("자원이 부족합니다!");
         }
