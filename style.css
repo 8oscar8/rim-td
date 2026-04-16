@@ -526,4 +526,57 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     100% { opacity: 0; transform: translateY(-20px); }
 }
 
+/* Encounter Modal (RimWorld Style Popup) */
+#encounter-modal {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-content {
+    background: #1e2124;
+    border: 2px solid #555;
+    padding: 30px;
+    border-radius: 4px; /* 림월드스러운 각진 디자인 */
+    width: 450px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,0,0,1);
+    animation: dopamine-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modal-content h2 { margin-bottom: 15px; font-size: 22px; color: var(--accent-gold); letter-spacing: 2px; }
+.modal-content p { font-size: 16px; margin-bottom: 25px; line-height: 1.6; color: #ccc; }
+#event-modal-close-btn {
+    background: #2d2f33;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 8px 30px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+#event-modal-close-btn:hover { background: #3d4044; border-color: #888; }
+
+/* Active Events (Sidebar Bottom) */
+#active-events-container {
+    margin-top: auto;
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.event-tag {
+    background: rgba(239, 68, 68, 0.15);
+    border-left: 3px solid #ef4444;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
+.event-tag .time { font-weight: bold; color: #ef4444; }
+
 

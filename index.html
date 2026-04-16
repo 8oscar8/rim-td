@@ -78,6 +78,11 @@
                     <span id="res-component">0</span>
                 </div>
             </div>
+
+            <!-- [New] 활성 이벤트 표시기 -->
+            <div id="active-events-container">
+                <!-- <div class="event-tag">독성 낙진: 45s</div> -->
+            </div>
         </aside>
 
         <!-- 2. 중앙 메인: 게임 화면 -->
@@ -95,6 +100,15 @@
 
             <!-- 미니 알림 (파견/자원 등, 5시 방향) -->
             <div id="mini-notif-container"></div>
+
+            <!-- [New] 인카운터 모달 (림월드 스타일 팝업) -->
+            <div id="encounter-modal" class="hidden">
+                <div class="modal-content">
+                    <h2 id="event-modal-title">사건 발생</h2>
+                    <p id="event-modal-text">사건의 상세 설명이 여기에 표시됩니다.</p>
+                    <button id="event-modal-close-btn">확인</button>
+                </div>
+            </div>
         </main>
 
         <!-- 3. 오른쪽 사이드바: 작업 관리 및 정보 -->

@@ -386,6 +386,9 @@ class App {
    * 게임 상태 업데이트
    */
   update(dt) {
+    // 일시정지 상태면 모든 업데이트 스킵
+    if (this.state.isPaused) return;
+
     const scaledDt = dt * this.state.timeScale;
 
     // 0. 기본 자금 수입 (2초당 1은)
