@@ -52,7 +52,7 @@ export class SoundManager {
       let sound;
       console.log(`[SoundManager] Attempting to play SFX: ${src}`);
       
-      // 사전 로드된 특수 사운드 사용
+      // 사전 로드된 특수 사운드 사용 (긴 사운드나 잦은 사운드만 재사용)
       if (src.includes('raid_alert')) {
         sound = this.raidAlert;
       } else if (src.includes('bad_alert')) {
@@ -63,9 +63,8 @@ export class SoundManager {
         sound = this.coinSound;
       } else if (src.includes('buy.mp3')) {
         sound = this.buySound;
-      } else if (src.includes('upgrade.mp3')) {
-        sound = this.upgradeSound;
       }
+      // upgrade.mp3 및 기타 사운드는 매번 새로 생성하여 안정성 확보
 
       // 사전 로드된 사운드가 없거나 일반 사운드인 경우 새로 생성
       if (!sound) {

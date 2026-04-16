@@ -199,7 +199,6 @@ export class UIManager {
         else if (grade === 'Mythic' && techIdx < 3) techMet = false;
 
         if (!techMet) {
-          SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.5);
           alert("기술 수준이 부족합니다!");
           return;
         }
@@ -231,7 +230,6 @@ export class UIManager {
            }
            this.updateDisplays(state);
         } else {
-           SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.4);
            alert("자원이 부족합니다!");
         }
       };
@@ -239,6 +237,7 @@ export class UIManager {
 
     // 업그레이드 버튼 이벤트
     const handleUpgrade = (type) => {
+      console.log(`[UIManager] handleUpgrade triggered for: ${type}`);
       const s = this.app.state;
       const currentLevel = s.upgrades[type] || 0;
       const nextLevelCost = currentLevel + 1;
@@ -266,7 +265,8 @@ export class UIManager {
         
         // 업그레이드 레벨 증가
         s.upgrades[type]++;
-        SoundManager.playSFX('assets/audio/upgrade.mp3', 0.6);
+        console.log(`[UIManager] Upgrade success: ${type} Lv.${s.upgrades[type]}`);
+        SoundManager.playSFX('assets/audio/upgrade.mp3', 1.0);
         const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
         this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
       } else {
@@ -325,7 +325,7 @@ export class UIManager {
                 s[res] -= amt;
             }
             s.upgrades[type] = curLv + 1;
-            SoundManager.playSFX('assets/audio/upgrade.mp3', 0.6);
+            SoundManager.playSFX('assets/audio/upgrade.mp3', 1.0);
             const name = btn.querySelector('.up-name').textContent;
             this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
             this.updateDisplays(s);
