@@ -24,20 +24,18 @@ export class Tower {
     // 2. 기본 수치 및 보정치 확보
     const baseDmg = Number(this.weaponData.dmg) || 10;
     const baseSpd = Number(this.weaponData.spd) || 0.5;
+    const baseAp = Number(this.weaponData.ap) || 0;
     
-    // 재질 데이터 (비취옥 등 오타 방지 포함)
-    const matName = this.material;
-    const matData = MATERIAL_DB[matName] || MATERIAL_DB['강철'];
+    const matData = MATERIAL_DB[this.material] || MATERIAL_DB['강철'] || { matMul: 1, spdMul: 1, apMul: 1 };
     const qualMod = QUALITY_COEFFS[this.quality] || 1.0;
     
-    // 원거리(ranged)가 아닌 모든 무기(blunt, sharp 등)는 재질 배율 적용
     const isRanged = this.weaponType === 'ranged';
-    const dmgMul = !isRanged ? (matData.matMul || 1.0) : 1.0;
-    const spdMul = !isRanged ? (matData.spdMul || 1.0) : 1.0;
+    const dmgMul = isRanged ? 1.0 : (matData.matMul || 1.0);
+    const spdMul = isRanged ? 1.0 : (matData.spdMul || 1.0);
+    const apMul = isRanged ? 1.0 : (matData.apMul || 1.0);
 
-    // 3. 최종 스탯 계산
+    // 3. 최종 스탯 계산 및 검증 (0 방지)
     let calcDmg = baseDmg * dmgMul * qualMod;
-    let calcSpd = baseSpd * spdMul;
     if (baseDmg > 0 && calcDmg < 1) calcDmg = 1;
     this.baseDamage = Math.floor(calcDmg) || 1; // 최소 1 보장
     
