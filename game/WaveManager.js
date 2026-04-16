@@ -167,7 +167,7 @@ export class WaveManager {
         muffalo.takeDamage = (amount, ap, effect, shooterGrade) => {
             const died = originalDeath(amount, ap, effect, shooterGrade);
             if (died && typeof window.gameCore !== 'undefined') {
-                this.onEnemyDeath(muffalo.reward, false);
+                this.onEnemyDeath(muffalo);
                 window.gameCore.state.addResource('component', 2);
             }
             return died;
@@ -206,7 +206,7 @@ export class WaveManager {
         boss.takeDamage = (amount, ap, effect, shooterGrade) => {
             const died = originalDeath(amount, ap, effect, shooterGrade);
             if (died && window.gameCore) {
-                this.onEnemyDeath(boss.reward, true);
+                this.onEnemyDeath(boss);
                 if (type === 'ImperialGuard') window.gameCore.applyImperialBuff();
                 else if (type === 'AlphaThrumbo') window.gameCore.grantThrumboHorn();
                 else if (type === 'DarkMonolith') window.gameCore.upgradeAllLowerGradeTowers();
