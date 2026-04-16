@@ -46,10 +46,13 @@ export class Enemy {
       this.bossTimerMax = 550;
       this.bossTimer = 550;
     }
+
+    this.flashTimer = 0;
   }
 
   update(dt) {
     if (!this.active) return;
+    if (this.flashTimer > 0) this.flashTimer -= dt;
 
     // 재생 로직 처리
     if (this.hpRegen > 0 && this.hp < this.maxHp) {
@@ -72,7 +75,7 @@ export class Enemy {
       if (dot.duration <= 0) this.activeDots.splice(i, 1);
     }
     
-    if (this.hp <= 0) {
+    if (this.hp <= 0 && this.flashTimer <= 0) {
       this.active = false;
       return;
     }
@@ -141,6 +144,7 @@ export class Enemy {
    */
   takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common') {
     if (!this.active) return false;
+    this.flashTimer = 0.1; // 번쩍임 효과 활성화
 
     // 유닛 등급 기반 방어 기믹
     if (this.gradeFilter) {
@@ -247,6 +251,16 @@ export class Enemy {
   render(ctx) {
     if (!this.active) return;
     
+    // 번쩍임 효과 (흰색 필터)
+    if (this.flashTimer > 0) {
+        ctx.save();
+        ctx.fillStyle = "#fff";
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#fff";
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius + 2, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+    }
+
     ctx.fillStyle = this.type === 'mech' ? '#7f8c8d' : SpriteManager.getColor('enemy');
     
     if (this.isBoss) {

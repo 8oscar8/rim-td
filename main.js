@@ -621,7 +621,8 @@ class App {
             // 보스 제외 모든 적 제거
             const targets = this.enemies.filter(en => !en.isBoss);
             targets.forEach(en => {
-                en.active = false;
+                en.flashTimer = 0.5; // 강력한 번쩍임
+                en.hp = 0;
             });
             this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
             success = true;
