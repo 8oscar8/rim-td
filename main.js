@@ -415,31 +415,32 @@ class App {
     let lootMsg = "";
 
     if (type === 'organic') {
-        // 은화 35% (재상향), 식량 20% (상향)
+        // 은화 35%, 식량 50% (평균 2개 -> 기대값 1.0)
         if (rand < 0.35) {
             const amount = 1 + Math.floor(Math.random() * 3);
             const finalSilver = Math.floor(amount * silMul);
             s.silver += finalSilver;
             lootMsg = `은화 +${finalSilver}`;
-        } else if (rand < 0.55) { // 0.35 ~ 0.55 (20%)
-            const amount = 1 + Math.floor(Math.random() * 2);
+        } else if (rand < 0.85) { // 35% ~ 85% (50%)
+            const amount = 1 + Math.floor(Math.random() * 3); // 1, 2, 3 (평균 2)
             s.addResource('food', amount);
             lootMsg = `식량 +${amount}`;
         }
     } else if (type === 'mech') {
-        // 은화 35% (재상향), 강철 25% (상향), 플라스틸 8% (상향)
+        // 은화 35%, 강철 40%(평균 2.5 -> 기대값 1.0), 플라스틸 20%(평균 2.5 -> 기대값 0.5)
         if (rand < 0.35) {
             const amount = 2 + Math.floor(Math.random() * 5);
             const finalSilver = Math.floor(amount * silMul);
             s.silver += finalSilver;
             lootMsg = `은화 +${finalSilver}`;
-        } else if (rand < 0.60) { // 0.35 ~ 0.60 (25%)
-            const amount = 1 + Math.floor(Math.random() * 4);
+        } else if (rand < 0.75) { // 35% ~ 75% (40%)
+            const amount = 2 + Math.floor(Math.random() * 2); // 2, 3 (평균 2.5)
             s.addResource('steel', amount);
-            if (amount >= 2) lootMsg = `강철 +${amount}`;
-        } else if (rand < 0.68) { // 0.60 ~ 0.68 (8%)
-            s.addResource('plasteel', 1);
-            lootMsg = "플라스틸 +1";
+            lootMsg = `강철 +${amount}`;
+        } else if (rand < 0.95) { // 75% ~ 95% (20%)
+            const amount = 2 + Math.floor(Math.random() * 2); // 2, 3 (평균 2.5)
+            s.addResource('plasteel', amount);
+            lootMsg = `플라스틸 +${amount}`;
         }
     }
 
