@@ -42,6 +42,7 @@ export class UIManager {
     this.speedBtns = document.querySelectorAll('.speed-btn');
     this.buyRandomBtn = document.getElementById('btn-buy-random');
     this.buyAdvancedBtn = document.getElementById('btn-buy-advanced');
+    this.exchangeJadeBtn = document.getElementById('btn-exchange-jade');
     this.sellUnitsBtn = document.getElementById('btn-sell-units');
     this.techUpBtn = document.getElementById('btn-tech-upgrade');
     this.craftBtns = document.querySelectorAll('.shop-btn.craft');
@@ -135,6 +136,20 @@ export class UIManager {
           this.app.startPlacement(result);
         } else {
           alert("은이 부족합니다! (1000 은 필요)");
+        }
+      };
+    }
+
+    // 2.5 비취옥 환전 (1개 -> 1000 은)
+    if (this.exchangeJadeBtn) {
+      this.exchangeJadeBtn.onclick = () => {
+        if (this.app.state.jade >= 1) {
+          this.app.state.jade -= 1;
+          this.app.state.silver += 1000;
+          this.showNotification(`비취옥 환전 완료`, `비취옥 1개를 사용하여 1000 은을 획득했습니다.`);
+          this.updateDisplays(this.app.state);
+        } else {
+          alert("비취옥이 부족합니다!");
         }
       };
     }
@@ -406,6 +421,12 @@ export class UIManager {
         this.buyAdvancedBtn.disabled = !canBuyAdvanced;
         this.buyAdvancedBtn.style.opacity = canBuyAdvanced ? "1" : "0.4";
         this.buyAdvancedBtn.style.filter = canBuyAdvanced ? "none" : "grayscale(0.5)";
+    }
+
+    const canExchangeJade = state.jade >= 1;
+    if (this.exchangeJadeBtn) {
+        this.exchangeJadeBtn.disabled = !canExchangeJade;
+        this.exchangeJadeBtn.style.opacity = canExchangeJade ? "1" : "0.4";
     }
 
     // 기술 업그레이드 버튼 및 비용 업데이트
