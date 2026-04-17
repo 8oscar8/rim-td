@@ -188,8 +188,10 @@ export class HiddenEventManager {
               this.app.waveManager.spawnSpecialBoss('DarkMonolith');
           },
           () => {
-              // [거절]
-              this.app.ui.addMiniNotification("공허의 기운이 평행 우주로 흩어집니다.", "info");
+              // [거절] 공용 패널티 함수 호출
+              if (this.app.applyVoidPunishment) {
+                  this.app.applyVoidPunishment("거절");
+              }
           }
       );
   }

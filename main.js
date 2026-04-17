@@ -17,6 +17,7 @@ import { HiddenEventManager } from './game/HiddenEventManager.js';
 class App {
   constructor() {
     window.app = this; // 전역 접근 허용 (UI 이벤트용)
+    window.gameCore = this; // [Alias] WaveManager 등에서 보상 처리용으로 사용
     window.GachaSystem = GachaSystem; // 콘솔 테스트용 노출
     this.state = new GameState();
     this.renderer = new Renderer('game-canvas');
@@ -628,10 +629,16 @@ class App {
         this.checkCombinationAvailability();
     }
 
-    // [New] 보스 시간 초과 체크 (게임 오버)
+    // [New] 보스 시간 초과 체크
     const timedOutBoss = this.enemies.find(e => e.active && e.isBoss && e.bossTimer <= 0);
     if (timedOutBoss) {
-        this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
+        if (timedOutBoss.name === '암흑 모노리스') {
+            // 모노리스는 게임 오버 대신 패널티를 주고 사라짐
+            timedOutBoss.active = false;
+            this.applyVoidPunishment("처치 실패");
+        } else {
+            this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
+        }
     }
 
     // [Bug Fix] 적의 수가 100마리를 넘으면 게임 오버
@@ -641,6 +648,66 @@ class App {
 
     // [New] 특수 히든 레시피 체크
     this.checkSpecialEvolution();
+  }
+
+  /**
+   * [Hidden Penalty] 공허의 응징 (모노리스 거절 또는 처치 실패 시)
+   */
+  applyVoidPunishment(reason = "거절") {
+    const s = this.state;
+    const results = [];
+
+    // 1. 파견/생산 기술 일괄 하락 (-1)
+    const prodTypes = ['logging', 'mining', 'farming', 'trade', 'education', 'artisan'];
+    const koProd = {
+        logging: '벌목', mining: '채광', farming: '농사',
+        trade: '교역', education: '교육', artisan: '제작'
+    };
+
+    prodTypes.forEach(type => {
+        if ((s.upgrades[type] || 0) > 0) {
+            s.upgrades[type]--;
+            results.push(`🛠️ ${koProd[type]} -1`);
+        }
+    });
+
+    // 2. 전투 기술 무작위 소량 하락 (2~3단계)
+    const combatTypes = ['sharp', 'blunt', 'ranged'];
+    const koCombat = { sharp: '날붙이', blunt: '둔기', ranged: '원거리' };
+    const lossCount = 2 + Math.floor(Math.random() * 2); // 2~3단계 하락
+    
+    const lostCombat = {};
+    for (let i = 0; i < lossCount; i++) {
+        const type = combatTypes[Math.floor(Math.random() * combatTypes.length)];
+        if (s.upgrades[type] > 0) {
+            s.upgrades[type]--;
+            lostCombat[type] = (lostCombat[type] || 0) + 1;
+        }
+    }
+
+    for (const [type, count] of Object.entries(lostCombat)) {
+        results.push(`⚔️ ${koCombat[type]} -${count}`);
+    }
+
+    if (results.length > 0) {
+        this.ui.addMiniNotification(reason === "처치 실패" ? "공허를 막아내는 데 실패했습니다!" : "정착지의 지식이 공허 속으로 증발합니다!", "failure");
+        
+        const title = reason === "처치 실패" ? "😱 공허의 역습" : "👁️ 공허의 응징";
+        const descPrefix = reason === "처치 실패" ? "모노리스를 파괴하지 못해 정착지가 오염되었습니다." : "공허의 부름을 모독한 대가로 정착민들의 의식이 뒤엉킵니다.";
+
+        if (this.encounterManager) {
+            this.encounterManager.showEventModal({
+                name: title,
+                desc: `${descPrefix} \n쌓아올린 기술과 숙련도가 신기루처럼 사라졌습니다. \n\n` + results.join('\n'),
+                type: 'negative'
+            });
+        }
+    } else {
+        this.ui.addMiniNotification("공허의 기운이 조용히 물러납니다.", "info");
+    }
+    
+    this.ui.updateDisplays(s);
+    SoundManager.playSFX('assets/audio/bad_alert.mp3');
   }
 
   /**
