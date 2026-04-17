@@ -273,6 +273,20 @@ export class Enemy {
       ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
     }
 
+    // [New] 초재생/재생 효과 연출 (초록색 펄스 오오라)
+    if (this.hpRegen > 0 && this.hp < this.maxHp && this.active) {
+      ctx.save();
+      const pulse = Math.sin(Date.now() * 0.01) * 3;
+      ctx.strokeStyle = `rgba(0, 255, 120, ${0.4 + pulse/10})`;
+      ctx.lineWidth = 3;
+      ctx.setLineDash([5, 5]);
+      ctx.lineDashOffset = -Date.now() * 0.05;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius + 4 + pulse, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     // 체력 및 보호막바 렌더링
     this.drawHealthBar(ctx);
 

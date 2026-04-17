@@ -192,7 +192,7 @@ export class WaveManager {
         case 'AlphaThrumbo':
             boss = new Enemy(this.waypoints, baseHp * 2, 2000, 'organic', true);
             boss.name = '알파 트럼보';
-            boss.hpRegen = 50;
+            boss.hpRegen = boss.maxHp * 0.025; // 초재생 능력: 초당 최대 체력의 2.5% 회복
             break;
         case 'DarkMonolith':
             boss = new Enemy(this.waypoints, baseHp, 0, 'none', true);
