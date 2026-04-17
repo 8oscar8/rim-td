@@ -35,7 +35,10 @@ export class Tower {
     const apMul = isRanged ? 1.0 : (matData.apMul || 1.0);
 
     // 3. 최종 스탯 계산 및 검증 (0 방지)
-    let calcDmg = baseDmg * dmgMul * qualMod;
+    // [UI 개선] '999강 나무몽둥이'는 재질/품질 보너스를 무시하고 고정값 9999를 가지도록 예외 처리
+    let finalDmgMul = (this.weaponName.includes('999강')) ? 1.0 : (dmgMul * qualMod);
+    let calcDmg = baseDmg * finalDmgMul;
+    
     if (baseDmg > 0 && calcDmg < 1) calcDmg = 1;
     this.baseDamage = Math.floor(calcDmg) || 1; // 최소 1 보장
     
