@@ -755,8 +755,16 @@ class App {
       
       ctx.save();
       ctx.globalAlpha = 0.5;
-      ctx.fillStyle = SpriteManager.getColor(this.pendingGachaResult.quality);
-      ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI * 2); ctx.fill();
+      
+      // [New] 고스트 이미지 렌더링 (실제 무기 이미지 표시)
+      const img = SpriteManager.getImage(this.pendingGachaResult.weaponName);
+      if (img && img.complete) {
+          const size = 32;
+          ctx.drawImage(img, x - size/2, y - size/2, size, size);
+      } else {
+          ctx.fillStyle = SpriteManager.getColor(this.pendingGachaResult.quality);
+          ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI * 2); ctx.fill();
+      }
       
       // [UI 개선] 사거리 미리보기 가시성 상향
       ctx.strokeStyle = "rgba(0, 242, 255, 0.9)"; // 더 진한 청록색

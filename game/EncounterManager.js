@@ -26,7 +26,8 @@ export class EncounterManager {
 
     // 모달 닫기 이벤트 (기본)
     if (this.modalCloseBtn) {
-        this.modalCloseBtn.onclick = () => {
+        this.modalCloseBtn.onclick = (e) => {
+            if (e) e.stopPropagation();
             this.modal.classList.add('hidden');
             this.app.state.isPaused = false; // 일시정지 해제
         };
@@ -302,12 +303,20 @@ export class EncounterManager {
     // 선택 버튼 보이기
     this.choiceBtnContainer.classList.remove('hidden');
     
-    this.acceptBtn.onclick = () => {
+    this.acceptBtn.onclick = (e) => {
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
         this.closeModal();
         if (onAccept) onAccept();
     };
     
-    this.rejectBtn.onclick = () => {
+    this.rejectBtn.onclick = (e) => {
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
         this.closeModal();
         if (onReject) onReject();
     };

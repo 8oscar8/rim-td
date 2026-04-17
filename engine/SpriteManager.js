@@ -40,7 +40,8 @@ export class SpriteManager {
       '철퇴': 'assets/rimworld/철퇴.webp',
       '연막 발사기': 'assets/rimworld/연막발사기.webp',
       '999강 나무몽둥이': 'assets/rimworld/목재.webp',
-      '전설의 꽁치검': 'assets/saury_sword.png'
+      '전설의 꽁치검': 'assets/saury_sword.png',
+      '결속 단분자검': 'assets/rimworld/단분자검.webp'
     };
 
     for (const [name, src] of Object.entries(weaponImages)) {

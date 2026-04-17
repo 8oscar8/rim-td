@@ -415,6 +415,36 @@ export class Tower {
       ctx.fillText('JADE', this.x, this.y + 20);
       ctx.restore();
     }
+
+    // [New] 결속 단분자검: 붉은 공허 오오라 연출
+    if (this.weaponName === '결속 단분자검') {
+      const time = Date.now() * 0.003;
+      const pulse = Math.sin(time) * 4;
+      
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      
+      // 1. 배후의 붉은 글로우
+      const grad = ctx.createRadialGradient(0, 0, 5, 0, 0, 30 + pulse);
+      grad.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
+      grad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(0, 0, 30 + pulse, 0, Math.PI * 2); ctx.fill();
+      
+      // 2. 소용돌이치는 붉은 파티클 효과 (점선)
+      ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 8]);
+      ctx.lineDashOffset = -time * 30;
+      ctx.beginPath(); ctx.arc(0, 0, 22 + pulse, 0, Math.PI * 2); ctx.stroke();
+      
+      // 3. 내부의 고박동 핵
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(0, 0, 15 - pulse/2, 0, Math.PI * 2); ctx.stroke();
+
+      ctx.restore();
+    }
   }
 
   // 체력 및 과열 게이지 렌더링
