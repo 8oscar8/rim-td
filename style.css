@@ -149,6 +149,12 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     color: #fff;
     box-shadow: 0 0 10px rgba(52, 152, 219, 0.4);
 }
+.speed-btn.paused {
+    background: #e74c3c;
+    border-color: #ff7675;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
+}
 
 .shop-btn {
     width: 100%;

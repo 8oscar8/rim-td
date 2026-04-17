@@ -40,6 +40,7 @@ export class UIManager {
 
     // 5. 버튼들
     this.speedBtns = document.querySelectorAll('.speed-btn');
+    this.pauseBtn = document.getElementById('btn-pause');
     this.buyRandomBtn = document.getElementById('btn-buy-random');
     this.buyAdvancedBtn = document.getElementById('btn-buy-advanced');
     this.exchangeJadeBtn = document.getElementById('btn-exchange-jade');
@@ -86,13 +87,22 @@ export class UIManager {
 
     // 속도 조절
     this.speedBtns.forEach(btn => {
+      if (btn.id === 'btn-pause') return; // 일시정지 버튼은 별도 처리
       btn.onclick = () => {
-        this.speedBtns.forEach(b => b.classList.remove('active'));
+        this.speedBtns.forEach(b => { if(b.id !== 'btn-pause') b.classList.remove('active'); });
         btn.classList.add('active');
         const speed = parseFloat(btn.textContent);
         if (this.app.state) this.app.state.timeScale = speed;
       };
     });
+
+    // 일시정지 토글
+    if (this.pauseBtn) {
+      this.pauseBtn.onclick = () => {
+        this.app.state.isPaused = !this.app.state.isPaused;
+        this.updateDisplays(this.app.state);
+      };
+    }
 
     // 작업자 배정 이벤트 (v2)
     this.workPlusBtns.forEach(btn => {
@@ -538,6 +548,12 @@ export class UIManager {
 
   updateDisplays(state) {
     if (!state) return;
+
+    // 일시정지 상태 반영
+    if (this.pauseBtn) {
+        this.pauseBtn.classList.toggle('paused', state.isPaused);
+        this.pauseBtn.textContent = state.isPaused ? "재개" : "일시정지";
+    }
 
     if (this.waveVal) this.waveVal.textContent = state.waveNumber;
     if (this.timerVal) {
