@@ -339,7 +339,7 @@ export class Enemy {
     }
 
     // 보스 제한 시간 게이지 (보라색/파란색)
-    if (this.isBoss && this.bossTimer > 0) {
+    if (this.isBoss && this.bossTimer > 0 && this.raidTimer <= 0) {
       const timerPercent = Math.max(this.bossTimer / this.bossTimerMax, 0);
       const timerBarY = barY + barHeight + 2;
       ctx.fillStyle = 'rgba(0,0,0,0.5)';

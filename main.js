@@ -886,12 +886,17 @@ class App {
       s.addResource('component', component);
       s.addResource('plasteel', plasteel);
       
+      // [Log] 미니 알림 병행
+      this.ui.addMiniNotification(`강탈 성공! 은화+${silver}, 강철+${steel}...`, "Legendary");
+
       // 3. 특수 전설 무기 지급
       const weaponGrades = ['Legendary', 'Mythic'];
       const grade = weaponGrades[Math.floor(Math.random() * weaponGrades.length)];
       const result = GachaSystem.drawSpecificGrade(grade, 0);
       
-      this.ui.showNotification("💰 습격 대성공!", `상단을 약탈하여 은화 ${silver}, 강철 ${steel}, 부품 ${component}, 플라스틸 ${plasteel}을(를) 강탈했습니다!`, "Legendary");
+      const report = `[전리품 목록]\n• 은화: ${silver}\n• 강철: ${steel}\n• 부품: ${component}\n• 플라스틸: ${plasteel}\n\n상단의 보물을 모두 탈취했습니다!`;
+      this.ui.showNotification("💰 습격 대성공!", report, "Legendary");
+      
       if (result) this.startPlacement(result);
       SoundManager.playSFX('assets/audio/encounter_success.mp3');
   }
