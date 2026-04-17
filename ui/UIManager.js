@@ -194,7 +194,8 @@ export class UIManager {
 
     // 5. 무기 제작
     this.craftBtns.forEach(btn => {
-      btn.onclick = () => {
+      btn.onclick = (e) => {
+        if (e) e.stopPropagation(); // 캔버스 클릭 간섭 방지
         // 파업 체크
         if (this.app.encounterManager && this.app.encounterManager.isStrikeActive()) {
           alert("정착민들이 파업 중입니다! 상점을 이용할 수 없습니다.");
@@ -208,44 +209,54 @@ export class UIManager {
         const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
         const techIdx = levels.indexOf(state.techLevel);
         let techMet = true;
-        if (grade === 'Rare' && techIdx < 1) techMet = false;
-        else if (grade === 'Epic' && techIdx < 2) techMet = false;
+        // Rare는 이제 원시(Primitive, 0)에서도 가능하도록 수정
+        if (grade === 'Epic' && techIdx < 2) techMet = false;
         else if (grade === 'Legendary' && techIdx < 3) techMet = false;
         else if (grade === 'Mythic' && techIdx < 3) techMet = false;
 
         if (!techMet) {
-          alert("기술 수준이 부족합니다!");
+          this.addMiniNotification("지식이 부족하여 아직 제작할 수 없습니다!", "failure");
           return;
         }
 
         let canCraft = false;
         if (grade === 'Rare') {
-          if (state.wood >= 30 && state.steel >= 30 && state.component >= 1) {
-            state.wood -= 30; state.steel -= 30; state.component -= 1; canCraft = true;
-          }
+          if (state.wood >= 30 && state.steel >= 30 && state.component >= 1) canCraft = true;
         } else if (grade === 'Epic') {
-          if (state.steel >= 50 && state.plasteel >= 10 && state.component >= 5) {
-            state.steel -= 50; state.plasteel -= 10; state.component -= 5; canCraft = true;
-          }
+          if (state.steel >= 50 && state.plasteel >= 10 && state.component >= 5) canCraft = true;
         } else if (grade === 'Legendary') {
-          if (state.plasteel >= 30 && state.uranium >= 20 && state.researchPoints >= 100 && state.component >= 10) {
-            state.plasteel -= 30; state.uranium -= 20; state.researchPoints -= 100; state.component -= 10; canCraft = true;
-          }
+          if (state.plasteel >= 30 && state.uranium >= 20 && state.researchPoints >= 100 && state.component >= 10) canCraft = true;
         } else if (grade === 'Mythic') {
-          if (state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20) {
-            state.plasteel -= 50; state.uranium -= 30; state.researchPoints -= 300; state.component -= 20; canCraft = true;
-          }
+          if (state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20) canCraft = true;
         }
 
         if (canCraft) {
            const result = GachaSystem.drawSpecificGrade(grade, 1);
            if (result) {
+             // [Fix] 무기 생성이 성공했을 때만 자원 소모
+             if (grade === 'Rare') {
+               state.wood -= 30; state.steel -= 30; state.component -= 1;
+             } else if (grade === 'Epic') {
+               state.steel -= 50; state.plasteel -= 10; state.component -= 5;
+             } else if (grade === 'Legendary') {
+               state.plasteel -= 30; state.uranium -= 20; state.researchPoints -= 100; state.component -= 10;
+             } else if (grade === 'Mythic') {
+               state.plasteel -= 50; state.uranium -= 30; state.researchPoints -= 300; state.component -= 20;
+             }
+
              SoundManager.playSFX('assets/audio/buy.mp3');
-             this.app.startPlacement(result);
+             
+             // [CRITICAL FIX] 클릭 이벤트가 모두 종료된 후에 배치 모드 진입 (캔버스 클릭 간섭 방지)
+             setTimeout(() => {
+               this.app.startPlacement(result);
+             }, 50);
+
+             this.updateDisplays(state);
+           } else {
+             this.addMiniNotification("무기 설계도를 찾을 수 없습니다!", "failure");
            }
-           this.updateDisplays(state);
         } else {
-           alert("자원이 부족합니다!");
+           this.addMiniNotification("자원이 부족합니다!", "failure");
         }
       };
     });

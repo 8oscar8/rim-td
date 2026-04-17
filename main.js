@@ -873,14 +873,14 @@ class App {
    */
   handleCaravanRaidSuccess() {
       const s = this.state;
-      // 1. 은화 보상 (1000~2000)
-      const silver = 1000 + Math.floor(Math.random() * 1000);
+      // 1. 은화 보상 상향 (2000~4500)
+      const silver = 2000 + Math.floor(Math.random() * 2500);
       s.silver += silver;
       
-      // 2. 산업 자원 보상 (랜덤성 극대화)
-      const steel = 50 + Math.floor(Math.random() * 250);
-      const component = 1 + Math.floor(Math.random() * 14);
-      const plasteel = 10 + Math.floor(Math.random() * 70);
+      // 2. 산업 자원 보상 상향 (랜덤성 극대화)
+      const steel = 200 + Math.floor(Math.random() * 650);
+      const component = 5 + Math.floor(Math.random() * 20);
+      const plasteel = 50 + Math.floor(Math.random() * 150);
       
       s.addResource('steel', steel);
       s.addResource('component', component);
@@ -895,7 +895,14 @@ class App {
       const result = GachaSystem.drawSpecificGrade(grade, 0);
       
       const report = `[전리품 목록]\n• 은화: ${silver}\n• 강철: ${steel}\n• 부품: ${component}\n• 플라스틸: ${plasteel}\n\n상단의 보물을 모두 탈취했습니다!`;
-      this.ui.showNotification("💰 습격 대성공!", report, "Legendary");
+      
+      if (this.encounterManager) {
+          this.encounterManager.showEventModal({
+              name: "💰 습격 대성공!",
+              desc: report,
+              type: 'positive'
+          });
+      }
       
       if (result) this.startPlacement(result);
       SoundManager.playSFX('assets/audio/encounter_success.mp3');
@@ -911,7 +918,7 @@ class App {
       // 1. 은화 차감 (현재의 30%)
       const silverLoss = Math.floor(s.silver * 0.3);
       s.silver -= silverLoss;
-      if (silverLoss > 0) lossMsg.push(`은화 -${silverLoss}`);
+      if (silverLoss > 0) lossMsg.push(`• 은화: -${silverLoss}`);
       
       // 2. 다른 자원 중 하나를 무작위로 대량 차감
       const resources = ['steel', 'food', 'wood'];
@@ -919,9 +926,19 @@ class App {
       const currentAmount = s[target] || 0;
       const lossAmount = Math.floor(currentAmount * 0.4);
       s[target] -= lossAmount;
-      if (lossAmount > 0) lossMsg.push(`${target === 'steel' ? '강철' : (target === 'food' ? '식량' : '목재')} -${lossAmount}`);
+      const targetName = target === 'steel' ? '강철' : (target === 'food' ? '식량' : '목재');
+      if (lossAmount > 0) lossMsg.push(`• ${targetName}: -${lossAmount}`);
 
-      this.ui.showNotification("⚖️ 배상 청구", `상단이 무사히 탈출하여 제국에 신고했습니다! 보복으로 인한 피해: ${lossMsg.join(', ')}`, "failure");
+      const report = `상단이 무사히 탈출하여 제국에 신고했습니다!\n\n[피해 내역]\n${lossMsg.join('\n')}\n\n보복으로 인해 자원이 차감되었습니다.`;
+      
+      if (this.encounterManager) {
+          this.encounterManager.showEventModal({
+              name: "⚖️ 배상 청구",
+              desc: report,
+              type: 'negative'
+          });
+      }
+      
       SoundManager.playSFX('assets/audio/raid_alert.mp3');
   }
 

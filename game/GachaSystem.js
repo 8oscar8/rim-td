@@ -72,49 +72,62 @@ export class GachaSystem {
     };
   }
 
-  static drawSpecificGrade(targetGrade, artisanLevel = 0) {
-    // 해당 등급에 맞는 무기들 번출 (투척류 제외)
+  static drawSpecificGrade(inputGrade, artisanLevel = 0) {
+    console.log(`[Gacha] Starting specific craft for grade: ${inputGrade}`);
+    
+    // 1. 등급 이름 정규화
+    const targetGrade = inputGrade.charAt(0).toUpperCase() + inputGrade.slice(1).toLowerCase();
+    
+    // 2. 무기 선택
     const excludeEffects = ['aoe_dmg', 'emp', 'smoke', 'burn_fear', 'toxin'];
     const availableWeapons = Object.entries(WEAPON_DB)
       .filter(([name, data]) => data.grade === targetGrade && !excludeEffects.includes(data.effect))
       .map(([name, data]) => ({ name, ...data }));
     
-    if (availableWeapons.length === 0) return null;
-    const weapon = availableWeapons[Math.floor(Math.random() * availableWeapons.length)];
+    if (availableWeapons.length === 0) {
+      console.error(`[Gacha] No weapons found for grade: ${targetGrade}`);
+      return null;
+    }
     
-    // 품질 결정 (장인 레벨 반영)
-    let probs = { ...QUALITY_PROBABILITIES };
+    const weapon = availableWeapons[Math.floor(Math.random() * availableWeapons.length)];
+
+    // 3. 품질 결정 (안전한 보너스 계산)
+    let selectedQuality = 'normal';
+    const qWeight = { awful: 15, normal: 50, excellent: 25, masterwork: 8, legendary: 2 };
+    
     if (artisanLevel > 0) {
-      probs.awful = Math.max(0, probs.awful - (artisanLevel * 2));
-      probs.normal = Math.max(0, probs.normal - (artisanLevel * 3));
-      probs.excellent += (artisanLevel * 4);
-      probs.legendary += (artisanLevel * 1);
+        qWeight.awful = Math.max(0, qWeight.awful - 5);
+        qWeight.normal = Math.max(0, qWeight.normal - 5);
+        qWeight.excellent += 5;
+        qWeight.legendary += 5;
     }
 
-    const qualRand = Math.random() * 100;
-    let selectedQuality = 'awful';
-    let cumulativeQual = 0;
-    for (const [qual, prob] of Object.entries(probs)) {
-      cumulativeQual += prob;
-      if (qualRand <= cumulativeQual) {
-        selectedQuality = qual;
+    const totalQ = Object.values(qWeight).reduce((a, b) => a + b, 0);
+    const qRand = Math.random() * totalQ;
+    let qCum = 0;
+    for (const [q, w] of Object.entries(qWeight)) {
+      qCum += w;
+      if (qRand <= qCum) {
+        selectedQuality = q;
         break;
       }
     }
 
-    // 재질 결정 (가중치 적용)
-    let selectedMaterial = '강철'; 
+    // 4. 재질 결정
+    let selectedMaterial = '강철';
     if (weapon.fixedMaterial) {
       selectedMaterial = weapon.fixedMaterial;
     } else if (weapon.type === 'ranged') {
       selectedMaterial = 'None';
     } else {
-      const matRand = Math.random() * 100;
-      let cumulativeMat = 0;
-      for (const [mat, prob] of Object.entries(MATERIAL_PROBABILITIES)) {
-        cumulativeMat += prob;
-        if (matRand <= cumulativeMat) {
-          selectedMaterial = mat;
+      const mWeight = { '나무': 20, '강철': 50, '플라스틸': 20, '우라늄': 7, '비취옥': 3 };
+      const totalM = Object.values(mWeight).reduce((a, b) => a + b, 0);
+      const mRand = Math.random() * totalM;
+      let mCum = 0;
+      for (const [m, w] of Object.entries(mWeight)) {
+        mCum += w;
+        if (mRand <= mCum) {
+          selectedMaterial = m;
           break;
         }
       }
