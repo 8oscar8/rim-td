@@ -374,8 +374,38 @@ export class Tower {
       ctx.beginPath(); ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2); ctx.fill();
     }
 
-    if (this.material === '비취옥' || this.material === 'Slate') {
-       // 재질 전용 입자 효과 (생략 가능)
+    if (this.material === '비취옥' || this.material === 'Jade') {
+      const jadeTime = Date.now() * 0.002;
+      const jadePulse = Math.sin(jadeTime) * 5;
+      
+      ctx.save();
+      // 영롱한 비취색 오라 (Emerald Glow)
+      const grad = ctx.createRadialGradient(this.x, this.y, 10, this.x, this.y, 35 + jadePulse);
+      grad.addColorStop(0, 'rgba(46, 204, 113, 0.4)');
+      grad.addColorStop(0.5, 'rgba(46, 204, 113, 0.1)');
+      grad.addColorStop(1, 'rgba(46, 204, 113, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 35 + jadePulse, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 회전하는 점선 테두리
+      ctx.strokeStyle = 'rgba(46, 204, 113, 0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 5]);
+      ctx.lineDashOffset = -jadeTime * 20;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // [Tag] JADE 텍스트 표시
+      ctx.fillStyle = '#2ecc71';
+      ctx.font = 'bold 10px Inter';
+      ctx.textAlign = 'center';
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = '#000';
+      ctx.fillText('JADE', this.x, this.y + 20);
+      ctx.restore();
     }
   }
 
