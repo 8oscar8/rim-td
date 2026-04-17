@@ -299,6 +299,7 @@ class App {
   }
 
   buyAdvancedUnit() {
+    if (this.state.isPaused) return;
     if (this.state.silver >= 1000) {
       this.state.silver -= 1000;
       const artisanLv = this.state.upgrades.artisan || 0;
@@ -312,6 +313,7 @@ class App {
   }
 
   buyRandomUnit() {
+    if (this.state.isPaused) return;
     if (this.state.silver >= 50) {
       this.state.silver -= 50;
       const artisanLv = this.state.upgrades.artisan || 0;
@@ -385,6 +387,7 @@ class App {
    * 유닛 배치 확정
    */
   confirmPlacement() {
+    if (this.state.isPaused) return;
     // 실제 배치를 확정하는 순간에 파업 체크
     if (this.encounterManager && this.encounterManager.isStrikeActive()) {
         this.ui.addMiniNotification("아직 파업이 끝나지 않았습니다! 배치를 완료할 수 없습니다.", "failure");

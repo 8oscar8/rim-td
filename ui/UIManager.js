@@ -693,21 +693,22 @@ export class UIManager {
     if (this.rangedDpmVal) this.rangedDpmVal.textContent = Math.floor(rangedDpm);
 
     // 5. 버튼 활성화/비활성화 및 비용 업데이트
-    const canBuyRandom = state.silver >= 50;
+    const canInteract = !state.isPaused;
+    const canBuyRandom = state.silver >= 50 && canInteract;
     if (this.buyRandomBtn) {
       this.buyRandomBtn.disabled = !canBuyRandom;
       this.buyRandomBtn.style.opacity = canBuyRandom ? "1" : "0.4";
       this.buyRandomBtn.style.filter = canBuyRandom ? "none" : "grayscale(0.5)";
     }
 
-    const canBuyAdvanced = state.silver >= 1000;
+    const canBuyAdvanced = state.silver >= 1000 && canInteract;
     if (this.buyAdvancedBtn) {
         this.buyAdvancedBtn.disabled = !canBuyAdvanced;
         this.buyAdvancedBtn.style.opacity = canBuyAdvanced ? "1" : "0.4";
         this.buyAdvancedBtn.style.filter = canBuyAdvanced ? "none" : "grayscale(0.5)";
     }
 
-    const canExchangeJade = state.jade >= 1;
+    const canExchangeJade = state.jade >= 1 && canInteract;
     if (this.exchangeJadeBtn) {
         this.exchangeJadeBtn.disabled = !canExchangeJade;
         this.exchangeJadeBtn.style.opacity = canExchangeJade ? "1" : "0.4";
@@ -725,9 +726,9 @@ export class UIManager {
             this.sellUnitsBtn.style.filter = "none";
             if (sellText) sellText.textContent = `판매 (${price})`;
         } else {
-            this.sellUnitsBtn.disabled = true;
-            this.sellUnitsBtn.style.opacity = "0.4";
-            this.sellUnitsBtn.style.filter = "grayscale(1)";
+            this.sellUnitsBtn.disabled = !canInteract;
+            this.sellUnitsBtn.style.opacity = canInteract ? "1" : "0.4";
+            this.sellUnitsBtn.style.filter = canInteract ? "none" : "grayscale(1)";
             if (sellText) sellText.textContent = `판매 (유닛 선택 필요)`;
         }
     }
@@ -752,7 +753,7 @@ export class UIManager {
             if (costS) costS.textContent = sCost;
             if (costR) costR.textContent = rCost;
 
-            const canUp = state.silver >= sCost && state.researchPoints >= rCost;
+            const canUp = state.silver >= sCost && state.researchPoints >= rCost && canInteract;
             this.techUpBtn.disabled = !canUp;
             this.techUpBtn.style.opacity = canUp ? "1" : "0.4";
         }
@@ -764,7 +765,7 @@ export class UIManager {
         const grade = btn.getAttribute('data-grade');
         const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
         const techIdx = levels.indexOf(state.techLevel);
-        let techMet = true;
+        let techMet = canInteract;
         if (grade === 'Rare' && techIdx < 1) techMet = false;
         else if (grade === 'Epic' && techIdx < 2) techMet = false;
         else if (grade === 'Legendary' && techIdx < 3) techMet = false;
