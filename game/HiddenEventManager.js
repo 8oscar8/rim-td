@@ -128,10 +128,12 @@ export class HiddenEventManager {
                   }
               }
 
-              // 보상 지급
-              const result = GachaSystem.createSpecificWeapon('결속 단분자검', 'legendary', 'None');
-              this.app.startPlacement(result);
-              this.app.ui.updateDisplays(this.app.state);
+              // [Fix] 메인 앱의 전역 보상 함수를 직접 호출 (안정성 확보)
+              if (typeof this.app.triggerHowlingBladeReward === 'function') {
+                  this.app.triggerHowlingBladeReward();
+              } else if (window.app && window.app.triggerHowlingBladeReward) {
+                  window.app.triggerHowlingBladeReward();
+              }
           },
           () => {
               // [거절]

@@ -853,6 +853,33 @@ class App {
     this.state.monolithBuff = true;
     this.units.forEach(u => { if (u.setupStats) u.setupStats(); }); // 스탯 재계산
   }
+
+  /**
+   * [Hidden Event] 울부짖는 칼날의 선택 보상 강제 지급
+   */
+  triggerHowlingBladeReward() {
+    console.log("[App] Triggering Howling Blade Reward Sequence...");
+    try {
+        const result = GachaSystem.createSpecificWeapon('결속 단분자검', 'legendary', 'None');
+        
+        // 1. 강제 일시정지 해제 및 배치 모드 설정
+        this.state.isPaused = false;
+        this.placementMode = true;
+        this.pendingGachaResult = result;
+        
+        // 2. 초기 마우스 위치 보정 (안 뜨는 현상 방지)
+        if (!this.mousePos || (this.mousePos.x === 0 && this.mousePos.y === 0)) {
+            this.mousePos = { x: this.renderer.width / 2, y: this.renderer.height / 2 };
+        }
+
+        this.ui.showNotification("피의 계약", "무기가 전장에 나타났습니다. 배치할 위치를 선택하세요.", "Legendary");
+        this.ui.updateDisplays(this.state);
+        
+        console.log("[App] Placement Mode Active:", this.placementMode, this.pendingGachaResult);
+    } catch (e) {
+        console.error("[App] Reward Trigger Error:", e);
+    }
+  }
 }
 
 // 창 로드 시 앱 시작
