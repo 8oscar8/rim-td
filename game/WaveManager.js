@@ -195,9 +195,10 @@ export class WaveManager {
             boss.hpRegen = boss.maxHp * 0.025; // 초재생 능력: 초당 최대 체력의 2.5% 회복
             break;
         case 'DarkMonolith':
-            boss = new Enemy(this.waypoints, baseHp * 1.5, 0, 'none', true);
+            // 저등급 유닛만 데미지를 줄 수 있으므로 체력을 대폭 하향 (기존 보스의 60% 수준)
+            boss = new Enemy(this.waypoints, baseHp * 0.6, 0, 'none', true);
             boss.name = '암흑 모노리스';
-            boss.gradeFilter = { mode: 'below', grade: 'Special' }; // Special 등급까지 피격 가능 (= Legendary 이상 면역)
+            boss.gradeFilter = { mode: 'below', grade: 'Epic' }; // Epic 등급 이하만 피격 가능 (= Special 이상 면역)
             break;
     }
 
