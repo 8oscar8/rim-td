@@ -54,6 +54,10 @@ class App {
     // 6. 입력 이벤트 (타워 선택 및 배치)
     this.renderer.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
     this.renderer.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+    this.renderer.canvas.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        this.handleCanvasRightClick(e);
+    });
     
     // [New] 특수 적 스폰 이벤트 수신
     document.addEventListener('spawnSpecial', (e) => {
@@ -385,19 +389,66 @@ class App {
   }
 
   /**
+   * 마우스 이동 처리 (배치 가이드)
+   */
+  handleMouseMove(e) {
+    const rect = this.renderer.canvas.getBoundingClientRect();
+    this.mousePos = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  /**
+   * 캔버스 클릭 처리 (설치/선택)
+   */
+  handleCanvasClick(e) {
+    if (this.inputLock) return; // UI 클릭 후 즉각 반응 방지
+    
+    // 우클릭은 취소 (contextmenu 이벤트를 따로 잡거나 mousedown 사용 권장하나 일단 click에서 처리)
+    if (this.placementMode) {
+        this.confirmPlacement();
+    } else {
+        // 유닛 선택 로직
+        const found = this.units.find(u => !u.isBlueprint && Math.hypot(u.x - this.mousePos.x, u.y - this.mousePos.y) < 30);
+        if (found) {
+            this.ui.showUnitDetail(found);
+        } else {
+            this.ui.hideUnitDetail();
+        }
+    }
+  }
+
+  /**
+   * 캔버스 우클릭 처리 (취소)
+   */
+  handleCanvasRightClick(e) {
+    if (this.placementMode) {
+        this.cancelPlacement();
+    } else {
+        this.ui.hideUnitDetail();
+    }
+  }
+
+  /**
    * 유닛 배치 대기 모드 진입
    */
   startPlacement(gachaResult) {
-    // 데이터 보존을 위해 무조건 배치 모드에는 진입하게 합니다.
+    if (!gachaResult) {
+      console.error("Gacha result is null!");
+      return;
+    }
+    
+    // 배치 모드 강제 활성화
     this.placementMode = true;
     this.pendingGachaResult = gachaResult;
+
+    // UI 알림
+    this.ui.addMiniNotification(`배치 준비: ${gachaResult.weaponName} (${gachaResult.quality})`, "info");
     
-    // 파업 중이면 경고만 띄워줍니다.
-    if (this.encounterManager && this.encounterManager.isStrikeActive()) {
-        this.ui.addMiniNotification("파업 중입니다! 건설 인부들이 파업이 끝날 때까지 배치를 거부합니다.", "failure");
-    } else {
-        this.ui.showNotification("INFO", "맵에서 배치할 위치를 클릭하세요.", "info");
-    }
+    // [Safety] 0.1초간 클릭 무시 (버튼 잔상 방지)
+    this.inputLock = true;
+    setTimeout(() => { this.inputLock = false; }, 100);
   }
 
   /**

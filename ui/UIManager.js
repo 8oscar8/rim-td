@@ -1,4 +1,5 @@
 import { GachaSystem } from '../game/GachaSystem.js';
+import { SoundManager } from '../engine/SoundManager.js';
 
 /**
  * UIManager.js
@@ -259,6 +260,11 @@ export class UIManager {
            this.addMiniNotification("자원이 부족합니다!", "failure");
         }
       };
+
+      // [New] 제작 요구 자원 툴팁 이벤트
+      btn.onmouseenter = (e) => this.showCraftTooltip(e, btn);
+      btn.onmousemove = (e) => this.moveTooltip(e);
+      btn.onmouseleave = () => this.hideTooltip();
     });
 
     // 업그레이드 버튼 이벤트
@@ -369,11 +375,21 @@ export class UIManager {
             alert("자원이 부족합니다!");
         }
       };
+
+      // [New] 업그레이드 요구 자원 툴팁
+      btn.onmouseenter = (e) => this.showUpgradeTooltip(e, btn);
+      btn.onmousemove = (e) => this.moveTooltip(e);
+      btn.onmouseleave = () => this.hideTooltip();
     });
 
     // 6. 특수 무기 제작
     this.specialCraftBtns = document.querySelectorAll('.special-craft');
     this.specialCraftBtns.forEach(btn => {
+      // [New] 특수 제작 툴팁 이벤트
+      btn.onmouseenter = (e) => this.showSpecialCraftTooltip(e, btn);
+      btn.onmousemove = (e) => this.moveTooltip(e);
+      btn.onmouseleave = () => this.hideTooltip();
+
       btn.onclick = () => {
         const weaponName = btn.getAttribute('data-weapon');
         const s = this.app.state;
@@ -849,5 +865,119 @@ export class UIManager {
     const totalAssigned = Object.values(state.workers).reduce((a, b) => a + b, 0);
     state.idlePopulation = state.population - totalAssigned;
     if (this.idlePopVal) this.idlePopVal.textContent = state.idlePopulation;
+  }
+  // ==========================================
+  // [New] 제작 툴팁 시스템 메서드들
+  // ==========================================
+
+  showCraftTooltip(e, btn) {
+    const grade = btn.getAttribute('data-grade');
+    const s = this.app.state;
+    let requirements = [];
+    
+    // 요구 수량 데이터 (UIManager.js의 craft logic과 동기화)
+    if (grade === 'Rare') {
+      requirements = [
+        { name: '나무', req: 30, cur: s.wood },
+        { name: '강철', req: 30, cur: s.steel },
+        { name: '부품', req: 1, cur: s.component }
+      ];
+    } else if (grade === 'Epic') {
+      requirements = [
+        { name: '강철', req: 50, cur: s.steel },
+        { name: '플라스틸', req: 10, cur: s.plasteel },
+        { name: '부품', req: 5, cur: s.component }
+      ];
+    } else if (grade === 'Legendary') {
+      requirements = [
+        { name: '플라스틸', req: 30, cur: s.plasteel },
+        { name: '우라늄', req: 20, cur: s.uranium },
+        { name: '연구', req: 100, cur: s.researchPoints },
+        { name: '부품', req: 10, cur: s.component }
+      ];
+    } else if (grade === 'Mythic') {
+      requirements = [
+        { name: '플라스틸', req: 50, cur: s.plasteel },
+        { name: '우라늄', req: 30, cur: s.uranium },
+        { name: '연구', req: 300, cur: s.researchPoints },
+        { name: '부품', req: 20, cur: s.component }
+      ];
+    }
+
+    this.renderTooltip(requirements, `${grade} 등급 제작 요구사항`);
+  }
+
+  showSpecialCraftTooltip(e, btn) {
+    const weaponName = btn.getAttribute('data-weapon');
+    const s = this.app.state;
+    const costs = {
+        '파쇄 수류탄': { silver: 150, component: 5 },
+        '펄스 수류탄': { silver: 300, component: 10 },
+        '화염병': { silver: 200, component: 5 },
+        '연막 발사기': { silver: 250, component: 5 },
+        '독소 수류탄': { silver: 500, component: 15 }
+    };
+    const cost = costs[weaponName];
+    const requirements = [
+        { name: '은화', req: cost.silver, cur: s.silver },
+        { name: '부품', req: cost.component, cur: s.component }
+    ];
+    this.renderTooltip(requirements, `${weaponName} 제작 요구사항`);
+  }
+
+  showUpgradeTooltip(e, btn) {
+    const type = btn.getAttribute('data-type');
+    const s = this.app.state;
+    const curLv = s.upgrades[type] || 0;
+    const nextLv = curLv + 1;
+    
+    // 요구 자원 매핑 (handleUpgrade와 동일 로직)
+    const resourceMap = {
+        blunt: [{ name: '은화', key: 'silver' }, { name: '강철', key: 'steel' }],
+        sharp: [{ name: '목재', key: 'wood' }, { name: '은화', key: 'silver' }],
+        ranged: [{ name: '플라스틸', key: 'plasteel' }, { name: '은화', key: 'silver' }]
+    };
+    
+    const resList = resourceMap[type];
+    const requirements = resList.map(r => ({
+      name: r.name,
+      req: nextLv,
+      cur: s[r.key]
+    }));
+
+    const typeName = type === 'blunt' ? '둔기' : (type === 'sharp' ? '날붙이' : '원거리');
+    this.renderTooltip(requirements, `${typeName} 강화 Lv.${nextLv} 요구사항`);
+  }
+
+  renderTooltip(requirements, title) {
+    let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
+    requirements.forEach(r => {
+      const isShort = r.cur < r.req;
+      const color = isShort ? '#ff4d4d' : '#4dff88';
+      const status = isShort ? '▲' : '✓';
+      html += `<div class="tooltip-row" style="color: ${color}">
+        <span class="res-name">${status} ${r.name}:</span>
+        <span class="res-val">${r.cur} / ${r.req}</span>
+      </div>`;
+    });
+    html += `</div><div class="tooltip-footer">부족한 자원이 있으면 빨간색으로 표시됩니다.</div>`;
+    if (this.tooltip) {
+      this.tooltip.innerHTML = html;
+      this.tooltip.classList.remove('hidden');
+    }
+  }
+
+  moveTooltip(e) {
+    if (this.tooltip) {
+      // fixed position이므로 clientX/Y 사용
+      this.tooltip.style.left = (e.clientX + 20) + 'px';
+      this.tooltip.style.top = (e.clientY + 20) + 'px';
+    }
+  }
+
+  hideTooltip() {
+    if (this.tooltip) {
+        this.tooltip.classList.add('hidden');
+    }
   }
 }
