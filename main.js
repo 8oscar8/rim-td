@@ -565,6 +565,50 @@ class App {
     if (this.enemies.length >= 100) {
         this.handleGameOver("적의 수가 너무 많아 기지가 함락되었습니다! (100마리 도달)");
     }
+
+    // [New] 특수 히든 레시피 체크
+    this.checkSpecialEvolution();
+  }
+
+  /**
+   * [Easter Egg] 특수 진화/히든 레시피 체크
+   */
+  checkSpecialEvolution() {
+    // 1. 999강 나무몽둥이: 맨손/목재 9개 + 목재 999개
+    const woodRes = this.state.wood || 0;
+    const bareHands = this.units.filter(u => u.weaponName === '맨손/목재' && !u.isBlueprint);
+
+    if (woodRes >= 999 && bareHands.length >= 9) {
+        // [Trigger Event]
+        const event = {
+            name: "전설의 대목장 등장",
+            desc: "9명의 정착민이 999개의 목재를 사용하여 불가능에 가까운 무기를 벼려냈습니다! \n\n조건 충족: 맨손/목재(9개) + 목재(999개) \n결과: 기존 정착민 9명이 사라지고 '999강 나무몽둥이'가 주어집니다.",
+            type: 'positive'
+        };
+
+        if (this.encounterManager) {
+            this.encounterManager.showEventModal(event);
+        }
+
+        // 자원 및 유닛 소모
+        this.state.wood -= 999;
+        let count = 0;
+        // 유닛 목록에서 맨손/목재 9개 제거
+        for (let i = this.units.length - 1; i >= 0; i--) {
+            if (this.units[i].weaponName === '맨손/목재' && !this.units[i].isBlueprint) {
+                this.units.splice(i, 1);
+                count++;
+                if (count >= 9) break;
+            }
+        }
+
+        // 히든 아이템 지급 (전설 품질 고정)
+        const result = GachaSystem.createSpecificWeapon('999강 나무몽둥이', 'legendary', '나무');
+        this.startPlacement(result);
+
+        this.ui.updateDisplays(this.state);
+        SoundManager.playSFX('assets/audio/encounter_success.mp3');
+    }
   }
 
   /**
