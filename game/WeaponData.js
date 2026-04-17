@@ -44,9 +44,9 @@ export const WEAPON_DB = {
   '차지 랜스': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 280, spd: 0.2, ap: 0.9, effect: 'armor_break', range: 340 },
 
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.25, ap: 0.3, effect: null, range: 310 },
-  '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 150, spd: 0.25, ap: 0.6, effect: 'multi_bullet', range: 9999 },
+  '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 30, spd: 0.25, ap: 0.6, effect: 'multi_bullet', range: 9999 },
 
-  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 200, burst: 1, spd: 0.5, ap: 1.0, effect: 'multi_bullet', range: 9999 },
+  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'multi_bullet', range: 9999 },
 
   // 투척류 및 특수 무기
   '파쇄 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 50, spd: 0.2, ap: 0.2, effect: 'aoe_dmg', range: 150 },
