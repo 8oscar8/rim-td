@@ -84,6 +84,7 @@ export class HiddenEventManager {
         { id: 'alpha_thrumbo', name: '알파 트럼보의 출현', type: 'boss' },
         { id: 'dark_monolith', name: '암흑 모노리스', type: 'object' },
         { id: 'imperial_guard', name: '근위대의 시련', type: 'combat' },
+        { id: 'caravan_raid', name: '상단 습격의 기회', type: 'choice' },
         { id: 'howling_blade', name: '울부짖는 칼날의 선택', type: 'choice' }
     ];
 
@@ -107,8 +108,30 @@ export class HiddenEventManager {
         if (selected.id === 'alpha_thrumbo') this.triggerAlphaThrumbo();
         else if (selected.id === 'dark_monolith') this.app.waveManager.spawnSpecialBoss('DarkMonolith');
         else if (selected.id === 'imperial_guard') this.triggerImperialGuard();
+        else if (selected.id === 'caravan_raid') this.triggerCaravanRaid();
         else if (selected.id === 'howling_blade') this.triggerHowlingBlade();
     }
+  }
+
+  triggerCaravanRaid() {
+      const eventData = {
+          name: "부유한 상단의 통과",
+          desc: "진귀한 산업 자원과 보물을 가득 실은 외지인 연합 상단이 인근을 지나가고 있습니다. \n\n이들을 습격하면 막대한 자원과 전설 무기를 손에 넣을 수 있지만, 실패 시 제국의 혹독한 배상 책임을 지게 됩니다. \n\n약탈을 개시하시겠습니까?"
+      };
+
+      this.app.encounterManager.showChoiceModal(
+          eventData,
+          () => {
+              // [수락] 습격 시작
+              this.app.ui.addMiniNotification("약탈이 시작되었습니다! 모든 전리품을 확보하십시오.", "Legendary");
+              this.app.waveManager.spawnCaravanRaid();
+          },
+          () => {
+              // [거절]
+              this.app.ui.addMiniNotification("상단은 감사의 뜻으로 소량의 식량을 보냈습니다.", "info");
+              this.app.state.addResource('food', 50);
+          }
+      );
   }
 
   triggerImperialGuard() {

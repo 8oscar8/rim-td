@@ -869,6 +869,58 @@ class App {
   }
 
   /**
+   * [Hidden Event] 상단 습격 성공 (일확천금)
+   */
+  handleCaravanRaidSuccess() {
+      const s = this.state;
+      // 1. 은화 보상 (1000~2000)
+      const silver = 1000 + Math.floor(Math.random() * 1000);
+      s.silver += silver;
+      
+      // 2. 산업 자원 보상 (랜덤성 극대화)
+      const steel = 50 + Math.floor(Math.random() * 250);
+      const component = 1 + Math.floor(Math.random() * 14);
+      const plasteel = 10 + Math.floor(Math.random() * 70);
+      
+      s.addResource('steel', steel);
+      s.addResource('component', component);
+      s.addResource('plasteel', plasteel);
+      
+      // 3. 특수 전설 무기 지급
+      const weaponGrades = ['Legendary', 'Mythic'];
+      const grade = weaponGrades[Math.floor(Math.random() * weaponGrades.length)];
+      const result = GachaSystem.drawSpecificGrade(grade, 0);
+      
+      this.ui.showNotification("💰 습격 대성공!", `상단을 약탈하여 은화 ${silver}, 강철 ${steel}, 부품 ${component}, 플라스틸 ${plasteel}을(를) 강탈했습니다!`, "Legendary");
+      if (result) this.startPlacement(result);
+      SoundManager.playSFX('assets/audio/encounter_success.mp3');
+  }
+
+  /**
+   * [Hidden Event] 상단 습격 실패 (배상 청구)
+   */
+  handleCaravanRaidFailure() {
+      const s = this.state;
+      const lossMsg = [];
+      
+      // 1. 은화 차감 (현재의 30%)
+      const silverLoss = Math.floor(s.silver * 0.3);
+      s.silver -= silverLoss;
+      if (silverLoss > 0) lossMsg.push(`은화 -${silverLoss}`);
+      
+      // 2. 다른 자원 중 하나를 무작위로 대량 차감
+      const resources = ['steel', 'food', 'wood'];
+      const target = resources[Math.floor(Math.random() * resources.length)];
+      const currentAmount = s[target] || 0;
+      const lossAmount = Math.floor(currentAmount * 0.4);
+      s[target] -= lossAmount;
+      if (lossAmount > 0) lossMsg.push(`${target === 'steel' ? '강철' : (target === 'food' ? '식량' : '목재')} -${lossAmount}`);
+
+      this.ui.showNotification("⚖️ 배상 청구", `상단이 무사히 탈출하여 제국에 신고했습니다! 보복으로 인한 피해: ${lossMsg.join(', ')}`, "failure");
+      SoundManager.playSFX('assets/audio/raid_alert.mp3');
+  }
+
+  /**
    * [Hidden Event] 울부짖는 칼날의 선택 보상 강제 지급
    */
   triggerHowlingBladeReward() {

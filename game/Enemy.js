@@ -47,6 +47,11 @@ export class Enemy {
       this.bossTimer = 550;
     }
 
+    // [New] 상단 습격용 탈출 타이머 기믹
+    this.raidTimer = 0;
+    this.raidTimerMax = 0;
+    this.onRaidTimeout = null; // 타이머 종료 시 콜백 (탈출 성공 판정용)
+
     this.flashTimer = 0;
   }
 
@@ -73,6 +78,16 @@ export class Enemy {
       this.hp -= damageTick * (this.isBoss ? Enemy.bossBonus : 1.0);
       dot.duration -= dt;
       if (dot.duration <= 0) this.activeDots.splice(i, 1);
+    }
+    
+    // [New] 상단 습격 타이머 업데이트
+    if (this.raidTimer > 0) {
+      this.raidTimer -= dt;
+      if (this.raidTimer <= 0) {
+          if (this.onRaidTimeout) this.onRaidTimeout(this);
+          this.active = false; // 탈출하여 맵에서 사라짐
+          return;
+      }
     }
     
     if (this.hp <= 0 && this.flashTimer <= 0) {
@@ -333,6 +348,25 @@ export class Enemy {
       // 시간에 따라 색상 변경 (안정: 파랑 -> 촉박: 보라)
       ctx.fillStyle = timerPercent > 0.3 ? '#3498db' : '#9b59b6';
       ctx.fillRect(this.x - barWidth / 2, timerBarY, barWidth * timerPercent, 4);
+    }
+
+    // [New] 상단 습격 탈출 게이지 (황금색/오렌지색)
+    if (this.raidTimer > 0) {
+      const rPercent = Math.max(this.raidTimer / this.raidTimerMax, 0);
+      const rBarY = barY + barHeight + 8;
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(this.x - barWidth / 2, rBarY, barWidth, 6);
+      
+      const grad = ctx.createLinearGradient(this.x - barWidth/2, 0, this.x + barWidth/2, 0);
+      grad.addColorStop(0, '#f1c40f');
+      grad.addColorStop(1, '#e67e22');
+      ctx.fillStyle = grad;
+      ctx.fillRect(this.x - barWidth / 2, rBarY, barWidth * rPercent, 6);
+      
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 9px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText(`ESCAPING: ${Math.ceil(this.raidTimer)}s`, this.x, rBarY + 16);
     }
   }
 }

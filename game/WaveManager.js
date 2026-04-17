@@ -263,6 +263,71 @@ export class WaveManager {
   }
 
   /**
+   * [New] 상단 습격 (Caravan Raid)
+   */
+  spawnCaravanRaid() {
+    const baseHp = this.currentEnemyHp * 25;
+    const trumboCount = 3;
+    let trumbosLeft = trumboCount;
+    let anyEscaped = false;
+
+    // 1. 운반 트럼보 스폰
+    let spawnedTrumbo = 0;
+    const tInterval = setInterval(() => {
+        const trumbo = new Enemy(this.waypoints, baseHp * 2.5, 500, 'organic', true);
+        trumbo.name = `보물 트럼보 (#${spawnedTrumbo + 1})`;
+        trumbo.speed *= 0.7; // 짐이 많아 느림
+        trumbo.raidTimerMax = 100; // 100초 내에 잡아야 함
+        trumbo.raidTimer = trumbo.raidTimerMax;
+        
+        // 탈출 시 패널티 발동 콜백
+        trumbo.onRaidTimeout = () => {
+            if (!anyEscaped) {
+                anyEscaped = true;
+                if (window.gameCore) window.gameCore.handleCaravanRaidFailure();
+            }
+        };
+
+        const originalDeath = trumbo.takeDamage.bind(trumbo);
+        trumbo.takeDamage = (a, ap, e, s) => {
+            const d = originalDeath(a, ap, e, s);
+            if (d) {
+                this.onEnemyDeath(trumbo);
+                trumbosLeft--;
+                if (trumbosLeft <= 0 && !anyEscaped) {
+                    if (window.gameCore) window.gameCore.handleCaravanRaidSuccess();
+                }
+            }
+            return d;
+        };
+
+        document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: trumbo }));
+        spawnedTrumbo++;
+        if (spawnedTrumbo >= trumboCount) clearInterval(tInterval);
+    }, 2000);
+
+    // 2. 용병 경호원 스폰 (15명)
+    let spawnedGuard = 0;
+    const gInterval = setInterval(() => {
+        const guard = new Enemy(this.waypoints, baseHp * 0.4, 200, 'organic', false);
+        guard.name = '상단 경호원';
+        guard.speed *= 1.4;
+        guard.armor += 50;
+
+        const gDeath = guard.takeDamage.bind(guard);
+        guard.takeDamage = (a, ap, e, s) => {
+            const d = gDeath(a, ap, e, s);
+            if (d) this.onEnemyDeath(guard);
+            return d;
+        };
+
+        document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: guard }));
+        spawnedGuard++;
+        if (spawnedGuard >= 15) clearInterval(gInterval);
+    }, 800);
+  }
+
+  /**
    * [New] 식인 동물 무리 소환
    */
   spawnManhunterPack() {
