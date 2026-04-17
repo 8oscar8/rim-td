@@ -19,7 +19,12 @@ export class EncounterManager {
     this.modalCloseBtn = document.getElementById('event-modal-close-btn');
     this.activeEventsContainer = document.getElementById('active-events-container');
 
-    // 모달 닫기 이벤트
+    // [New] 선택 전용 버튼 캐싱
+    this.choiceBtnContainer = document.getElementById('event-modal-choice-btns');
+    this.acceptBtn = document.getElementById('event-modal-accept-btn');
+    this.rejectBtn = document.getElementById('event-modal-reject-btn');
+
+    // 모달 닫기 이벤트 (기본)
     if (this.modalCloseBtn) {
         this.modalCloseBtn.onclick = () => {
             this.modal.classList.add('hidden');
@@ -277,6 +282,45 @@ export class EncounterManager {
     this.modal.classList.remove('hidden');
     
     this.app.state.isPaused = true; // 게임 일시정지
+  }
+
+  /**
+   * [New] 선택형 모달창 표시
+   * @param {Object} event 이벤트 데이터
+   * @param {Function} onAccept 수락 시 콜백
+   * @param {Function} onReject 거절 시 콜백
+   */
+  showChoiceModal(event, onAccept, onReject) {
+    if (!this.modal) return;
+    
+    this.modalTitle.innerText = event.name;
+    this.modalTitle.style.color = "#fbbf24"; // 선택형은 황금색
+    this.modalText.innerText = event.desc;
+    
+    // 일반 닫기 버튼 숨기기
+    this.modalCloseBtn.classList.add('hidden');
+    // 선택 버튼 보이기
+    this.choiceBtnContainer.classList.remove('hidden');
+    
+    this.acceptBtn.onclick = () => {
+        this.closeModal();
+        if (onAccept) onAccept();
+    };
+    
+    this.rejectBtn.onclick = () => {
+        this.closeModal();
+        if (onReject) onReject();
+    };
+    
+    this.modal.classList.remove('hidden');
+    this.app.state.isPaused = true;
+  }
+
+  closeModal() {
+    this.modal.classList.add('hidden');
+    this.choiceBtnContainer.classList.add('hidden');
+    this.modalCloseBtn.classList.remove('hidden');
+    this.app.state.isPaused = false;
   }
 
   executeEvent(event) {

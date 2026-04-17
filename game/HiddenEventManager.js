@@ -83,7 +83,8 @@ export class HiddenEventManager {
     const events = [
         { id: 'alpha_thrumbo', name: '알파 트럼보의 출현', type: 'boss' },
         { id: 'dark_monolith', name: '암흑 모노리스', type: 'object' },
-        { id: 'imperial_guard', name: '근위대의 시련', type: 'combat' }
+        { id: 'imperial_guard', name: '근위대의 시련', type: 'combat' },
+        { id: 'howling_blade', name: '울부짖는 칼날의 선택', type: 'choice' }
     ];
 
     const selected = events[Math.floor(Math.random() * events.length)];
@@ -104,7 +105,39 @@ export class HiddenEventManager {
         if (selected.id === 'alpha_thrumbo') this.app.waveManager.spawnSpecialBoss('AlphaThrumbo');
         else if (selected.id === 'dark_monolith') this.app.waveManager.spawnSpecialBoss('DarkMonolith');
         else if (selected.id === 'imperial_guard') this.app.waveManager.spawnSpecialBoss('ImperialGuard');
+        else if (selected.id === 'howling_blade') this.triggerHowlingBlade();
     }
+  }
+
+  triggerHowlingBlade() {
+      const eventData = {
+          name: "울부짖는 칼날의 선택",
+          desc: "공허의 틈새에서 피울음을 토하는 칼날 하나가 나타났습니다. \n\n이 칼날은 정착민 10명의 생명력을 제물로 원하고 있습니다. \n수락하면 무작위 타워 10개가 즉시 파괴되지만, 히든 무기 '결속 단분자검'을 손에 넣을 수 있습니다. \n\n시련을 받아들이시겠습니까?"
+      };
+
+      this.app.encounterManager.showChoiceModal(
+          eventData,
+          () => {
+              // [수락] 유닛 10개 무작위 파괴
+              this.app.ui.addMiniNotification("피의 계약이 성사되었습니다.", "failure");
+              
+              for (let i = 0; i < 10; i++) {
+                  if (this.app.units.length > 0) {
+                      const idx = Math.floor(Math.random() * this.app.units.length);
+                      this.app.units.splice(idx, 1);
+                  }
+              }
+
+              // 보상 지급
+              const result = GachaSystem.createSpecificWeapon('결속 단분자검', 'legendary', 'None');
+              this.app.startPlacement(result);
+              this.app.ui.updateDisplays(this.app.state);
+          },
+          () => {
+              // [거절]
+              this.app.ui.addMiniNotification("칼날은 실망한 듯 공허 속으로 사라졌습니다.", "info");
+          }
+      );
   }
 
   getEventDescription(id) {
