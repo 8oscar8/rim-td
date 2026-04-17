@@ -93,15 +93,17 @@ export class HiddenEventManager {
     if (this.app.waveManager) {
         console.log(`[Hidden Event] Triggering: ${selected.name}`);
         
-        const eventData = {
-            name: `[히든] ${selected.name}`,
-            desc: this.getEventDescription(selected.id),
-            type: 'negative' // 보스전이므로 경고 색상
-        };
-
-        this.app.encounterManager.showEventModal(eventData);
+        // [Fix] 선택형 이벤트는 전용 모달을 사용하므로 일반 모달 호출 제외
+        if (selected.id !== 'howling_blade') {
+            const eventData = {
+                name: `[히든] ${selected.name}`,
+                desc: this.getEventDescription(selected.id),
+                type: 'negative' // 보스전이므로 경고 색상
+            };
+            this.app.encounterManager.showEventModal(eventData);
+        }
         
-        // 보스 스폰 로직 호출 (로직은 이미 WaveManager에 준비되어 있음)
+        // 보스 스폰 및 특수 이벤트 로직 호출
         if (selected.id === 'alpha_thrumbo') this.app.waveManager.spawnSpecialBoss('AlphaThrumbo');
         else if (selected.id === 'dark_monolith') this.app.waveManager.spawnSpecialBoss('DarkMonolith');
         else if (selected.id === 'imperial_guard') this.app.waveManager.spawnSpecialBoss('ImperialGuard');
