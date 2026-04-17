@@ -557,6 +557,11 @@ class App {
     if (timedOutBoss) {
         this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
     }
+
+    // [Bug Fix] 적의 수가 100마리를 넘으면 게임 오버
+    if (this.enemies.length >= 100) {
+        this.handleGameOver("적의 수가 너무 많아 기지가 함락되었습니다! (100마리 도달)");
+    }
   }
 
   /**
