@@ -690,9 +690,15 @@ class App {
       ctx.fillStyle = SpriteManager.getColor(this.pendingGachaResult.quality);
       ctx.beginPath(); ctx.arc(x, y, 15, 0, Math.PI * 2); ctx.fill();
       
-      ctx.strokeStyle = "rgba(0, 242, 255, 0.5)";
-      ctx.setLineDash([5, 5]);
+      // [UI 개선] 사거리 미리보기 가시성 상향
+      ctx.strokeStyle = "rgba(0, 242, 255, 0.9)"; // 더 진한 청록색
+      ctx.lineWidth = 3; // 선 두께 증가
+      ctx.setLineDash([10, 5]); // 더 긴 점선
       ctx.beginPath(); ctx.arc(x, y, range, 0, Math.PI * 2); ctx.stroke();
+      
+      // 내부 영역 연하게 투명한 채우기
+      ctx.fillStyle = "rgba(0, 242, 255, 0.08)";
+      ctx.fill();
       ctx.restore();
     }
   }
