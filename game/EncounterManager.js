@@ -153,7 +153,7 @@ export class EncounterManager {
       }
 
       uiHtml += `
-        <div class="event-tag" style="border-left-color: ${borderColor}; background: ${bgColor}">
+        <div class="event-tag" style="border-left-color: ${borderColor}; background: ${bgColor}" title="${event.desc || ''}">
             <span>${event.name}</span>
             <span class="time" style="color: ${borderColor}">${Math.max(0, Math.ceil(event.duration))}s</span>
         </div>
@@ -287,10 +287,10 @@ export class EncounterManager {
         this.handleWandererJoins();
         break;
       case 'ambrosia_sprout':
-        this.handleAmbrosiaSprout();
+        this.handleAmbrosiaSprout(event);
         break;
       case 'psychic_soothe':
-        this.handlePsychicSoothe();
+        this.handlePsychicSoothe(event);
         break;
       case 'ancient_relic':
         this.handleAncientRelic(event);
@@ -299,19 +299,19 @@ export class EncounterManager {
         this.handleWorkInspiration(event);
         break;
       case 'luciferium':
-        this.handleLuciferium();
+        this.handleLuciferium(event);
         break;
       case 'toxic_fallout':
-        this.handleToxicFallout();
+        this.handleToxicFallout(event);
         break;
       case 'solar_flare':
-        this.handleSolarFlare();
+        this.handleSolarFlare(event);
         break;
       case 'food_poisoning':
-        this.handleFoodPoisoning();
+        this.handleFoodPoisoning(event);
         break;
       case 'psychic_drone':
-        this.handlePsychicDrone();
+        this.handlePsychicDrone(event);
         break;
       case 'pyromaniac':
         this.handlePyromaniac(event);
@@ -320,7 +320,7 @@ export class EncounterManager {
         this.handleFoodRot(event);
         break;
       case 'labor_strike':
-        this.handleStrike();
+        this.handleStrike(event);
         break;
       case 'manhunter_pack':
         this.handleManhunterPack();
@@ -370,20 +370,22 @@ export class EncounterManager {
   }
 
   // 4. 암브로시아 발아 (은환 2배)
-  handleAmbrosiaSprout() {
+  handleAmbrosiaSprout(event) {
     this.activeEvents.push({
         id: 'ambrosia_sprout',
         name: '암브로시아 발아',
+        desc: event.desc,
         type: 'positive',
         duration: 120 // 120초간 지속
     });
   }
 
   // 5. 정신적 안정파 (공속 상향)
-  handlePsychicSoothe() {
+  handlePsychicSoothe(event) {
     this.activeEvents.push({
         id: 'psychic_soothe',
         name: '정신적 안정파',
+        desc: event.desc,
         type: 'positive',
         duration: 60 // 60초간 지속
     });
@@ -425,6 +427,7 @@ export class EncounterManager {
         id: 'work_inspiration',
         targetJob: job.id,
         name: `${job.name} 영감`,
+        desc: event.desc,
         type: 'positive',
         duration: 90
     });
@@ -434,40 +437,44 @@ export class EncounterManager {
   }
 
   // 8. 루시페륨 투여 (폭풍 공속/데미지 + 타워 파괴)
-  handleLuciferium() {
+  handleLuciferium(event) {
     this.activeEvents.push({
         id: 'luciferium',
         name: '루시페륨 투여',
+        desc: event.desc,
         type: 'negative',
         duration: 60 // 60초간 지속
     });
   }
 
   // 9. 흑점 폭발 (원거리 공격 중단)
-  handleSolarFlare() {
+  handleSolarFlare(event) {
     this.activeEvents.push({
         id: 'solar_flare',
         name: '흑점 폭발',
+        desc: event.desc,
         type: 'negative',
         duration: 60
     });
   }
 
   // 10. 식중독 (파견 효율 감소)
-  handleFoodPoisoning() {
+  handleFoodPoisoning(event) {
     this.activeEvents.push({
         id: 'food_poisoning',
         name: '식중독',
+        desc: event.desc,
         type: 'negative',
         duration: 45
     });
   }
 
   // 11. 정신적 파동 (사거리 감소)
-  handlePsychicDrone() {
+  handlePsychicDrone(event) {
     this.activeEvents.push({
         id: 'psychic_drone',
         name: '정신적 파동',
+        desc: event.desc,
         type: 'negative',
         duration: 60
     });
@@ -526,10 +533,11 @@ export class EncounterManager {
   }
 
   // 14. 파업 (상점/배치 금지)
-  handleStrike() {
+  handleStrike(event) {
     this.activeEvents.push({
         id: 'labor_strike',
         name: '노동 파업',
+        desc: event.desc,
         type: 'negative',
         duration: 60
     });
@@ -550,10 +558,11 @@ export class EncounterManager {
   }
 
   // 2. 독성 낙진 (파견 효율 감소)
-  handleToxicFallout() {
+  handleToxicFallout(event) {
     this.activeEvents.push({
       id: 'toxic_fallout',
       name: '독성 낙진',
+      desc: event.desc,
       type: 'negative',
       duration: 60 // 60초간 지속
     });
