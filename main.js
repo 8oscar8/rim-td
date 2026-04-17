@@ -632,10 +632,17 @@ class App {
     // [New] 보스 시간 초과 체크
     const timedOutBoss = this.enemies.find(e => e.active && e.isBoss && e.bossTimer <= 0);
     if (timedOutBoss) {
-        if (timedOutBoss.name === '암흑 모노리스') {
-            // 모노리스는 게임 오버 대신 패널티를 주고 사라짐
+        const bName = timedOutBoss.name || "";
+        
+        if (bName.includes('암흑 모노리스')) {
             timedOutBoss.active = false;
             this.applyVoidPunishment("처치 실패");
+        } else if (bName.includes('알파 트럼보')) {
+            timedOutBoss.active = false;
+            this.handleAlphaThrumboFailure();
+        } else if (bName.includes('제국 근위대')) {
+            timedOutBoss.active = false;
+            this.handleImperialGuardFailure();
         } else {
             this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
         }
@@ -706,6 +713,50 @@ class App {
         this.ui.addMiniNotification("공허의 기운이 조용히 물러납니다.", "info");
     }
     
+    this.ui.updateDisplays(s);
+    SoundManager.playSFX('assets/audio/bad_alert.mp3');
+  }
+
+  /**
+   * [Hidden Penalty] 알파 트럼보 처치 실패 (인구 감소)
+   */
+  handleAlphaThrumboFailure() {
+    this.state.population = Math.max(1, this.state.population - 1);
+    this.state.idlePopulation = Math.max(0, this.state.idlePopulation - 1);
+    
+    this.ui.addMiniNotification("알파 트럼보의 습격으로 정착민 한 명을 잃었습니다...", "failure");
+    if (this.encounterManager) {
+        this.encounterManager.showEventModal({
+            name: "💀 비극: 사냥꾼의 최후",
+            desc: "날뛰는 알파 트럼보를 저지하지 못했습니다. 분노한 짐승은 정착지에 큰 상처를 남기고 사라졌으며, 이 과정에서 용감했던 정착민 한 명이 목숨을 잃었습니다.",
+            type: 'negative'
+        });
+    }
+    this.ui.updateDisplays(this.state);
+    SoundManager.playSFX('assets/audio/bad_alert.mp3');
+  }
+
+  /**
+   * [Hidden Penalty] 제국 근위대 처치 실패 (자원 약탈)
+   */
+  handleImperialGuardFailure() {
+    const s = this.state;
+    // 은화 30% 및 주요 자원 소실
+    const lossSilver = Math.floor(s.silver * 0.3);
+    s.silver -= lossSilver;
+    
+    s.addResource('steel', -50);
+    s.addResource('plasteel', -20);
+    s.addResource('component', -5);
+
+    this.ui.addMiniNotification("제국의 징벌로 인해 막대한 자원을 몰수당했습니다.", "failure");
+    if (this.encounterManager) {
+        this.encounterManager.showEventModal({
+            name: "📉 제국의 분노: 징벌적 차압",
+            desc: "제국 근위대의 권위에 도전했으나 그들을 굴복시키지 못했습니다. 제국은 보복으로 정착지의 창고를 털어갔으며, 막대한 양의 은화와 핵심 부품들을 강제로 차압했습니다.",
+            type: 'negative'
+        });
+    }
     this.ui.updateDisplays(s);
     SoundManager.playSFX('assets/audio/bad_alert.mp3');
   }
