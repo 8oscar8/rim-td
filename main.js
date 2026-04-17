@@ -8,6 +8,7 @@ import { SpriteManager } from './engine/SpriteManager.js';
 import { SoundManager } from './engine/SoundManager.js';
 import { GachaSystem } from './game/GachaSystem.js';
 import { EncounterManager } from './game/EncounterManager.js';
+import { HiddenEventManager } from './game/HiddenEventManager.js';
 
 /**
  * Main Application Class
@@ -41,6 +42,7 @@ class App {
 
     // 5. 인카운터(이벤트) 매니저
     this.encounterManager = new EncounterManager(this);
+    this.hiddenEventManager = new HiddenEventManager(this);
 
     // 6. 게임 루프 설정
     this.loop = new GameLoop(
@@ -564,6 +566,11 @@ class App {
     // UI 동기화
     this.ui.updateDisplays(this.state);
 
+    // [New] 히든 인카운터 타이머 및 로직 업데이트
+    if (this.hiddenEventManager) {
+        this.hiddenEventManager.update(scaledDt);
+    }
+
     // [New] 무기 조합 가능 여부 체크 (20프레임마다 한 번씩 수행하여 최적화)
     if (Math.floor(Date.now() / 333) % 1 === 0) {
         this.checkCombinationAvailability();
@@ -809,6 +816,34 @@ class App {
     // 타워 제거 및 알림
     this.ui.addMiniNotification(`금단 증상으로 인해 [${tower.weaponName}] 타워가 파괴되었습니다!`, 'failure');
     this.units.splice(randomIndex, 1);
+  }
+
+  /**
+   * [Hidden Reward] 제국 근위대의 가호 (영구 공속 +20%)
+   */
+  applyImperialBuff() {
+    this.ui.showNotification("근위대의 가호", "제국 근위대의 시련을 이겨냈습니다! 모든 아군의 공격 속도가 영구적으로 20% 상승합니다.", "Legendary");
+    // GameState에 반영하거나 Tower.js에서 체크하도록 설정
+    this.state.imperialBuff = true; 
+    this.units.forEach(u => { if (u.setupStats) u.setupStats(); }); // 스탯 재계산
+  }
+
+  /**
+   * [Hidden Reward] 알파 트럼보의 유산
+   */
+  grantThrumboHorn() {
+    const result = GachaSystem.createSpecificWeapon('알파 트럼보 뿔', 'legendary', 'None');
+    this.ui.showNotification("알파의 유산", "전설적인 알파 트럼보의 뿔을 획득했습니다! 최강의 근접 파괴력을 경험하십시오.", "Legendary");
+    this.startPlacement(result);
+  }
+
+  /**
+   * [Hidden Reward] 모노리스의 지혜 (저등급 전체 강화)
+   */
+  upgradeAllLowerGradeTowers() {
+    this.ui.showNotification("모노리스의 지혜", "암흑 모노리스를 정화했습니다! Common ~ Rare 등급 유닛의 공격력이 영구적으로 1.5배 상승합니다.", "Legendary");
+    this.state.monolithBuff = true;
+    this.units.forEach(u => { if (u.setupStats) u.setupStats(); }); // 스탯 재계산
   }
 }
 

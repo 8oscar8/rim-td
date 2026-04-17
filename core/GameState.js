@@ -45,6 +45,8 @@ export class GameState {
     this.timeScale = 1.0;
     this.score = 0;
     this.totalSellCount = 0; // 누적 판매 횟수 (히든 레시피용)
+    this.gameTime = 0; // 총 플레이 시간 (초 단위)
+    this.hiddenEventCount = 0; // 히든 인카운터 발생 횟수
 
     // 5. 작업 할당 및 진행률 (v2)
     this.workers = {

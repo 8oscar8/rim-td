@@ -155,6 +155,34 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     color: #fff;
     box-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
 }
+/* 히든 인카운터: 화면 노이즈 효과 */
+@keyframes noise {
+    0% { transform: translate(0, 0); }
+    10% { transform: translate(-1px, -1px); }
+    20% { transform: translate(-2px, 2px); }
+    30% { transform: translate(1px, -2px); }
+    40% { transform: translate(-1px, 2px); }
+    50% { transform: translate(-2px, -1px); }
+    60% { transform: translate(2px, 1px); }
+    70% { transform: translate(1px, 1px); }
+    80% { transform: translate(-1px, -2px); }
+    90% { transform: translate(2px, -1px); }
+    100% { transform: translate(0, 0); }
+}
+
+.screen-noise::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 0, 0, 0.03);
+    pointer-events: none;
+    z-index: 9999;
+    animation: noise 0.2s infinite;
+}
+
+.screen-noise {
+    animation: noise 0.1s infinite;
+}
 
 .shop-btn {
     width: 100%;

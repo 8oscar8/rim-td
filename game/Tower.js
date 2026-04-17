@@ -86,7 +86,10 @@ export class Tower {
     const encounterManager = this.gameCore.encounterManager;
     const luciMul = encounterManager ? encounterManager.getGlobalLuciferiumMultiplier() : 1.0;
     
-    return Math.floor(this.baseDamage * upgradeMul * luciMul);
+    // [Hidden Reward] 모노리스의 지혜: 1.5배 데미지 (Common~Rare 한정)
+    const monolithMul = (this.gameCore.state.monolithBuff && ['Common', 'Uncommon', 'Rare'].includes(this.weaponData.grade)) ? 1.5 : 1.0;
+    
+    return Math.floor(this.baseDamage * upgradeMul * luciMul * monolithMul);
   }
 
   /**
@@ -97,7 +100,10 @@ export class Tower {
     const encounterManager = this.gameCore.encounterManager;
     const globalMul = encounterManager ? encounterManager.getGlobalAttackSpeedMultiplier() : 1.0;
     
-    return this.baseAttackSpeed * auraMul * globalMul;
+    // [Hidden Reward] 근위대의 가호: 1.2배 공속
+    const imperialMul = this.gameCore.state.imperialBuff ? 1.2 : 1.0;
+    
+    return this.baseAttackSpeed * auraMul * globalMul * imperialMul;
   }
 
   /**
