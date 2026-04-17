@@ -17,6 +17,7 @@ import { HiddenEventManager } from './game/HiddenEventManager.js';
 class App {
   constructor() {
     window.app = this; // 전역 접근 허용 (UI 이벤트용)
+    window.GachaSystem = GachaSystem; // 콘솔 테스트용 노출
     this.state = new GameState();
     this.renderer = new Renderer('game-canvas');
     this.ui = new UIManager(this);
@@ -841,7 +842,20 @@ class App {
    */
   grantThrumboHorn() {
     const result = GachaSystem.createSpecificWeapon('알파 트럼보 뿔', 'legendary', 'None');
-    this.ui.showNotification("알파의 유산", "전설적인 알파 트럼보의 뿔을 획득했습니다! 최강의 근접 파괴력을 경험하십시오.", "Legendary");
+    
+    // 1. 화려한 보상 안내 모달 지원
+    const eventData = {
+        name: "🔔 전설적인 승리: 알파의 유산",
+        desc: "최정예 사냥꾼들의 활약으로 마침내 '알파 트럼보'를 쓰러뜨렸습니다! \n\n시체 속에서 발견된 '알파 트럼보 뿔'은 그 자체로 현존하는 최강의 흉기가 될 것입니다. 이제 이 뿔을 정착지의 방어선에 배치하십시오.",
+        type: 'positive'
+    };
+    
+    if (this.encounterManager) {
+        this.encounterManager.showEventModal(eventData);
+    }
+
+    // 2. 사운드 및 배치 모드 실행
+    SoundManager.playSFX('assets/audio/encounter_success.mp3');
     this.startPlacement(result);
   }
 

@@ -106,9 +106,29 @@ export class HiddenEventManager {
         // 보스 스폰 및 특수 이벤트 로직 호출
         if (selected.id === 'alpha_thrumbo') this.triggerAlphaThrumbo();
         else if (selected.id === 'dark_monolith') this.app.waveManager.spawnSpecialBoss('DarkMonolith');
-        else if (selected.id === 'imperial_guard') this.app.waveManager.spawnSpecialBoss('ImperialGuard');
+        else if (selected.id === 'imperial_guard') this.triggerImperialGuard();
         else if (selected.id === 'howling_blade') this.triggerHowlingBlade();
     }
+  }
+
+  triggerImperialGuard() {
+      const eventData = {
+          name: "제국 근위대의 시련",
+          desc: "정착지의 명성이 은하계 은신처까지 퍼졌습니다. \n\n제국 근위대장이 당신의 방어 능력을 직접 시험하겠다고 통보해 왔습니다. 기습에 대비하고 실력을 증명하시겠습니까? \n\n성공 시 전령의 축복(영구 공속 +20%)을 얻을 수 있습니다."
+      };
+
+      this.app.encounterManager.showChoiceModal(
+          eventData,
+          () => {
+              // [수락] 근위대 기습 시작
+              this.app.ui.addMiniNotification("제국의 정예병들이 전입했습니다!", "Legendary");
+              this.app.waveManager.spawnImperialGuardAmbush();
+          },
+          () => {
+              // [거절]
+              this.app.ui.addMiniNotification("제국은 당신의 비겁함에 실망하며 물러갔습니다.", "info");
+          }
+      );
   }
 
   triggerAlphaThrumbo() {
