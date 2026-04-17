@@ -86,10 +86,7 @@ export class Tower {
     const encounterManager = this.gameCore.encounterManager;
     const luciMul = encounterManager ? encounterManager.getGlobalLuciferiumMultiplier() : 1.0;
     
-    // [Hidden Reward] 모노리스의 지혜: 1.5배 데미지 (Common~Rare 한정)
-    const monolithMul = (this.gameCore.state.monolithBuff && ['Common', 'Uncommon', 'Rare'].includes(this.weaponData.grade)) ? 1.5 : 1.0;
-    
-    return Math.floor(this.baseDamage * upgradeMul * luciMul * monolithMul);
+    return Math.floor(this.baseDamage * upgradeMul * luciMul);
   }
 
   /**

@@ -911,12 +911,57 @@ class App {
   }
 
   /**
-   * [Hidden Reward] 모노리스의 지혜 (저등급 전체 강화)
+   * [Hidden Reward] 공허의 지식 (전투/생산 비약적 발전)
    */
-  upgradeAllLowerGradeTowers() {
-    this.ui.showNotification("모노리스의 지혜", "암흑 모노리스를 정화했습니다! Common ~ Rare 등급 유닛의 공격력이 영구적으로 1.5배 상승합니다.", "Legendary");
-    this.state.monolithBuff = true;
-    this.units.forEach(u => { if (u.setupStats) u.setupStats(); }); // 스탯 재계산
+  applyVoidWisdomReward() {
+    const s = this.state;
+    const results = [];
+    
+    // 1. 전투 기술 전수 (랜덤 3~5단계)
+    const combatTypes = ['sharp', 'blunt', 'ranged'];
+    const koCombat = { sharp: '날붙이', blunt: '둔기', ranged: '원거리' };
+    const upgradeCount = 3 + Math.floor(Math.random() * 3); // 3, 4, 5 중 하나
+    
+    const upgradedTypes = {};
+    for (let i = 0; i < upgradeCount; i++) {
+        const type = combatTypes[Math.floor(Math.random() * combatTypes.length)];
+        s.upgrades[type]++;
+        upgradedTypes[type] = (upgradedTypes[type] || 0) + 1;
+    }
+    
+    for (const [type, count] of Object.entries(upgradedTypes)) {
+        results.push(`⚔️ ${koCombat[type]} +${count}`);
+    }
+
+    // 2. 생산 기술 도약 (전체 생산/기술 +1)
+    const prodTypes = ['logging', 'mining', 'farming', 'trade', 'education', 'artisan'];
+    const koProd = {
+        logging: '벌목', mining: '채광', farming: '농사',
+        trade: '교역', education: '교육', artisan: '제작'
+    };
+    
+    prodTypes.forEach(type => {
+        if ((s.upgrades[type] || 0) < 5) {
+            s.upgrades[type]++;
+            results.push(`🛠️ ${koProd[type]} +1`);
+        }
+    });
+
+    // 3. 결과 모달 표시 및 UI 갱신
+    this.ui.updateDisplays(s);
+    this.units.forEach(u => { if (u.setupStats) u.setupStats(); }); // 전투력 즉시 반영
+
+    const report = "공허의 지식이 정착민들의 의식 속에 직접 새겨졌습니다. \n정착지의 전투 및 생산 기술이 한 단계 진화했습니다! \n\n" + results.join('\n');
+    
+    if (this.encounterManager) {
+        this.encounterManager.showEventModal({
+            name: "🌑 공허의 지식 흡수",
+            desc: report,
+            type: 'positive'
+        });
+    }
+    
+    SoundManager.playSFX('assets/audio/encounter_success.mp3');
   }
 
   /**

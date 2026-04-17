@@ -195,9 +195,9 @@ export class WaveManager {
             boss.hpRegen = boss.maxHp * 0.025; // 초재생 능력: 초당 최대 체력의 2.5% 회복
             break;
         case 'DarkMonolith':
-            boss = new Enemy(this.waypoints, baseHp, 0, 'none', true);
+            boss = new Enemy(this.waypoints, baseHp * 1.5, 0, 'none', true);
             boss.name = '암흑 모노리스';
-            boss.gradeFilter = { mode: 'below', grade: 'Epic' };
+            boss.gradeFilter = { mode: 'below', grade: 'Special' }; // Special 등급까지 피격 가능 (= Legendary 이상 면역)
             break;
     }
 
@@ -209,7 +209,7 @@ export class WaveManager {
                 this.onEnemyDeath(boss);
                 if (type === 'ImperialGuard') window.gameCore.applyImperialBuff();
                 else if (type === 'AlphaThrumbo') window.gameCore.grantThrumboHorn();
-                else if (type === 'DarkMonolith') window.gameCore.upgradeAllLowerGradeTowers();
+                else if (type === 'DarkMonolith') window.gameCore.applyVoidWisdomReward();
             }
             return died;
         };

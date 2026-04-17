@@ -106,7 +106,7 @@ export class HiddenEventManager {
         
         // 보스 스폰 및 특수 이벤트 로직 호출
         if (selected.id === 'alpha_thrumbo') this.triggerAlphaThrumbo();
-        else if (selected.id === 'dark_monolith') this.app.waveManager.spawnSpecialBoss('DarkMonolith');
+        else if (selected.id === 'dark_monolith') this.triggerDarkMonolith();
         else if (selected.id === 'imperial_guard') this.triggerImperialGuard();
         else if (selected.id === 'caravan_raid') this.triggerCaravanRaid();
         else if (selected.id === 'howling_blade') this.triggerHowlingBlade();
@@ -170,6 +170,26 @@ export class HiddenEventManager {
           () => {
               // [거절]
               this.app.ui.addMiniNotification("알파 트럼보는 정착지를 무시하고 멀리 떠나갔습니다.", "info");
+          }
+      );
+  }
+
+  triggerDarkMonolith() {
+      const eventData = {
+          name: "공허의 뒤틀림: 암흑 모노리스",
+          desc: "공허의 틈새에서 거대한 암흑 모노리스가 솟아오르려 합니다. \n\n이 구조물은 전설 이상의 무기에는 상처조치 입지 않는 기묘한 특성을 지녔으며, 파괴 시 정착민들이 공허의 지식을 흡수하여 비약적인 기술 도약을 이룰 수 있습니다. \n\n하지만 실패 시 정착민들의 정신이 붕괴될 것입니다. 시련을 받아들이시겠습니까?"
+      };
+
+      this.app.encounterManager.showChoiceModal(
+          eventData,
+          () => {
+              // [수락] 모노리스 스폰
+              this.app.ui.addMiniNotification("공허의 에너지가 실체화됩니다!", "Legendary");
+              this.app.waveManager.spawnSpecialBoss('DarkMonolith');
+          },
+          () => {
+              // [거절]
+              this.app.ui.addMiniNotification("공허의 기운이 평행 우주로 흩어집니다.", "info");
           }
       );
   }
