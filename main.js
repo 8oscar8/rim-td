@@ -290,8 +290,22 @@ class App {
       this.units.splice(selectedIdx, 1);
       this.state.silver += price;
       
+      // [Hidden] 판매 33회 달성 시 전설의 꽁치검 지급
+      this.state.totalSellCount++;
+      if (this.state.totalSellCount === 33) {
+          const result = GachaSystem.createSpecificWeapon('전설의 꽁치검', 'legendary', 'None');
+          const event = {
+              name: "정착지의 전설: 판매왕",
+              desc: "당신은 무려 33개의 유닛을 팔아치우는 냉혹한 효율을 보여주었습니다! \n\n그 미친듯한 거래 능력에 감탄한 상인들이 전설의 무기 '전설의 꽁치검'을 선물로 보냈습니다.",
+              type: 'positive'
+          };
+          if (this.encounterManager) this.encounterManager.showEventModal(event);
+          this.startPlacement(result);
+          SoundManager.playSFX('assets/audio/encounter_success.mp3');
+      }
+
       SoundManager.playSFX('assets/audio/buy.mp3');
-      this.ui.addMiniNotification(`${u.weaponName} 판매 완료 (+${price} 은)`);
+      this.ui.addMiniNotification(`${u.weaponName} 판매 완료 (+${price} 은) [누적 ${this.state.totalSellCount}회]`);
       this.ui.updateDisplays(this.state);
       return true;
     }

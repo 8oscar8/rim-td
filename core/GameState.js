@@ -44,6 +44,7 @@ export class GameState {
     this.isPaused = false; 
     this.timeScale = 1.0;
     this.score = 0;
+    this.totalSellCount = 0; // 누적 판매 횟수 (히든 레시피용)
 
     // 5. 작업 할당 및 진행률 (v2)
     this.workers = {
