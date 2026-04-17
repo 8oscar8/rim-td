@@ -234,6 +234,10 @@ export class EncounterManager {
       {
         name: '곤충 군락', weight: 15, type: 'negative', id: 'infestation',
         desc: "깊은 바위산 천장에서 기분 나쁜 긁는 소리가 들리기 시작합니다... 곤충들이 굴을 뚫고 정착지를 습격했습니다!"
+      },
+      {
+        name: '궤도 폭격기 보급', weight: 5, type: 'positive', id: 'orbital_supply',
+        desc: "행성 궤도에 대기 중이던 우주군으로부터 궤도 폭격 목표 지시기가 도착했습니다! 위기의 순간 전장을 청소할 수 있습니다."
       }
     ];
 
@@ -327,6 +331,9 @@ export class EncounterManager {
         break;
       case 'infestation':
         this.handleInfestation();
+        break;
+      case 'orbital_supply':
+        this.handleOrbitalSupply();
         break;
     }
   }
@@ -600,5 +607,12 @@ export class EncounterManager {
   // 파업 상태 확인
   isStrikeActive() {
     return this.activeEvents.some(e => e.id === 'labor_strike');
+  }
+
+  // 17. 궤도 폭격기 보급 (아이템 수량 증가)
+  handleOrbitalSupply() {
+    this.app.state.items.orbital_strike = (this.app.state.items.orbital_strike || 0) + 1;
+    this.app.ui.addMiniNotification("궤도 폭격 지시기 획득!", "Legendary");
+    this.app.ui.updateDisplays(this.app.state);
   }
 }
