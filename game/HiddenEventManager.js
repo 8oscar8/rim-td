@@ -104,11 +104,31 @@ export class HiddenEventManager {
         }
         
         // 보스 스폰 및 특수 이벤트 로직 호출
-        if (selected.id === 'alpha_thrumbo') this.app.waveManager.spawnSpecialBoss('AlphaThrumbo');
+        if (selected.id === 'alpha_thrumbo') this.triggerAlphaThrumbo();
         else if (selected.id === 'dark_monolith') this.app.waveManager.spawnSpecialBoss('DarkMonolith');
         else if (selected.id === 'imperial_guard') this.app.waveManager.spawnSpecialBoss('ImperialGuard');
         else if (selected.id === 'howling_blade') this.triggerHowlingBlade();
     }
+  }
+
+  triggerAlphaThrumbo() {
+      const eventData = {
+          name: "알파 트럼보의 발견",
+          desc: "매우 희귀한 변종인 '알파 트럼보' 한 마리가 정착지 인근에서 발견되었습니다. \n\n이 짐승은 극도로 위험하지만, 사냥에 성공하면 전설적인 전리품인 '알파 트럼보 뿔'을 손에 넣을 수 있습니다. \n\n알파 트럼보를 공격하여 사냥을 시작하시겠습니까?"
+      };
+
+      this.app.encounterManager.showChoiceModal(
+          eventData,
+          () => {
+              // [수락] 알파 트럼보 스폰
+              this.app.ui.addMiniNotification("사냥이 시작되었습니다!", "Legendary");
+              this.app.waveManager.spawnSpecialBoss('AlphaThrumbo');
+          },
+          () => {
+              // [거절]
+              this.app.ui.addMiniNotification("알파 트럼보는 정착지를 무시하고 멀리 떠나갔습니다.", "info");
+          }
+      );
   }
 
   triggerHowlingBlade() {
