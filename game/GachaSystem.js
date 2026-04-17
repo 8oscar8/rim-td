@@ -50,6 +50,8 @@ export class GachaSystem {
     let selectedMaterial = '강철'; 
     if (weapon.fixedMaterial) {
       selectedMaterial = weapon.fixedMaterial;
+    } else if (weapon.type === 'ranged') {
+      selectedMaterial = 'None';
     } else {
       const matRand = Math.random() * 100;
       let cumulativeMat = 0;
@@ -104,6 +106,8 @@ export class GachaSystem {
     let selectedMaterial = '강철'; 
     if (weapon.fixedMaterial) {
       selectedMaterial = weapon.fixedMaterial;
+    } else if (weapon.type === 'ranged') {
+      selectedMaterial = 'None';
     } else {
       const matRand = Math.random() * 100;
       let cumulativeMat = 0;
@@ -178,6 +182,8 @@ export class GachaSystem {
     let selectedMaterial = '강철'; 
     if (weapon.fixedMaterial) {
       selectedMaterial = weapon.fixedMaterial;
+    } else if (weapon.type === 'ranged') {
+      selectedMaterial = 'None';
     } else {
       let mProbs = { ...MATERIAL_PROBABILITIES };
       mProbs['나무'] = 5; // 나무 확률 최소화
