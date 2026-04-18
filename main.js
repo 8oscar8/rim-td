@@ -551,8 +551,7 @@ class App {
       this.state.population++;
       this.state.idlePopulation++;
       
-      // 다음 인구 필요 식량 지수적 증가 (1.3배씩 증가)
-      this.state.foodToNextPop = Math.floor(100 * Math.pow(1.3, this.state.population - 3));
+      this.state.updateFoodThreshold();
       
       this.handleWorkComplete('population_up');
     }
@@ -727,6 +726,7 @@ class App {
         }
 
         this.state.population -= actualLoss;
+        this.state.updateFoodThreshold(); // 식량 요구량 재계산
         
         this.ui.addMiniNotification(`알파 트럼보의 습격으로 정착민 ${actualLoss}명을 잃었습니다...`, "failure");
         if (this.encounterManager) {

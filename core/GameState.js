@@ -87,4 +87,10 @@ export class GameState {
     const level = this.upgrades[type] || 0;
     return 1 + (level * 0.1); // 레벨당 10% 증가
   }
+
+  // 인구수에 따른 다음 식량 요구량 동적 업데이트
+  updateFoodThreshold() {
+    // 기본 100부터 시작하여 (인구-3)승 만큼 1.3배씩 증가
+    this.foodToNextPop = Math.floor(100 * Math.pow(1.3, Math.max(0, this.population - 3)));
+  }
 }
