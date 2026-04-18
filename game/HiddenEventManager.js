@@ -11,9 +11,9 @@ export class HiddenEventManager {
     this.pityBonus = 0; // 발생 실패 시마다 증가하는 보정 확률
   }
 
-  // 15~20분 (900~1200초) 사이의 무작위 간격
+  // 20~30분 (1200~1800초) 사이의 무작위 간격
   getRandomInterval() {
-    return 900 + Math.random() * 300;
+    return 1200 + Math.random() * 600;
   }
 
   update(dt) {
@@ -23,16 +23,16 @@ export class HiddenEventManager {
     // 게임 시간 누적
     s.gameTime += dt;
 
-    // 세션당 최대 2회 제한
-    if (s.hiddenEventCount >= 2) return;
+    // 세션당 최대 3회 제한
+    if (s.hiddenEventCount >= 3) return;
 
     // 1. 이벤트 주기 타이머 갱신
     this.nextEventTimer -= dt;
 
     // 2. 경고 공지 처리 (발생 10초 전)
     if (!this.isWarningActive && this.nextEventTimer <= 10) {
-        // 발생 조건 체크 (최소 15분 경과 및 20웨이브 이상)
-        if (s.gameTime >= 900 && s.waveNumber >= 20) {
+        // 발생 조건 체크 (최소 20분 경과 및 30웨이브 이상)
+        if (s.gameTime >= 1200 && s.waveNumber >= 30) {
             this.startWarning();
         } else {
             // 조건 미충족 시 타이머 재설정 (조금 짧은 주기로 재시도)
@@ -66,7 +66,7 @@ export class HiddenEventManager {
 
     // 확률 체크 (기본 30% + 피티 보너스)
     const chance = 0.3 + this.pityBonus;
-    if (Math.random() < chance || this.app.state.gameTime > 1800) { // 30분 넘으면 확정
+    if (Math.random() < chance || this.app.state.gameTime > 2700) { // 45분 넘으면 확정
         this.executeRandomHiddenEvent();
         this.app.state.hiddenEventCount++;
         this.nextEventTimer = this.getRandomInterval();
