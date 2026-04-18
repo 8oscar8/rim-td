@@ -242,19 +242,19 @@ class App {
   }
 
   handleCanvasClick(e) {
+    if (this.inputLock) return; // UI 클릭 후 즉각 반응 방지
+
     if (this.placementMode && this.pendingGachaResult) {
       this.confirmPlacement();
       return;
     }
 
-    const rect = this.renderer.canvas.getBoundingClientRect();
-    const mouseX = (e.clientX - rect.left) * (this.renderer.canvas.width / rect.width);
-    const mouseY = (e.clientY - rect.top) * (this.renderer.canvas.height / rect.height);
-
+    // 유닛 선택 로직
     let selectedAny = false;
     this.units.forEach(u => {
-      const dist = Math.hypot(u.x - mouseX, u.y - mouseY);
+      const dist = Math.hypot(u.x - this.mousePos.x, u.y - this.mousePos.y);
       if (dist < 30) {
+        // 기존 선택 해제 및 새로운 유닛 선택
         this.units.forEach(u2 => u2.selected = false);
         u.selected = true;
         this.ui.showUnitDetail(u);
@@ -264,6 +264,7 @@ class App {
 
     if (!selectedAny) {
       this.units.forEach(u => u.selected = false);
+      this.ui.hideUnitDetail();
     }
   }
 
@@ -389,36 +390,6 @@ class App {
     return points;
   }
 
-  /**
-   * 마우스 이동 처리 (배치 가이드)
-   */
-  handleMouseMove(e) {
-    const rect = this.renderer.canvas.getBoundingClientRect();
-    this.mousePos = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
-  }
-
-  /**
-   * 캔버스 클릭 처리 (설치/선택)
-   */
-  handleCanvasClick(e) {
-    if (this.inputLock) return; // UI 클릭 후 즉각 반응 방지
-    
-    // 우클릭은 취소 (contextmenu 이벤트를 따로 잡거나 mousedown 사용 권장하나 일단 click에서 처리)
-    if (this.placementMode) {
-        this.confirmPlacement();
-    } else {
-        // 유닛 선택 로직
-        const found = this.units.find(u => !u.isBlueprint && Math.hypot(u.x - this.mousePos.x, u.y - this.mousePos.y) < 30);
-        if (found) {
-            this.ui.showUnitDetail(found);
-        } else {
-            this.ui.hideUnitDetail();
-        }
-    }
-  }
 
   /**
    * 캔버스 우클릭 처리 (취소)
