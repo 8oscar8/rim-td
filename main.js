@@ -696,14 +696,43 @@ class App {
     const actualLoss = Math.min(this.state.population - 1, lossCount); // 최소 1명은 생존 보장
     
     if (actualLoss > 0) {
+        let remainingToKill = actualLoss;
+        
+        // 1. 먼저 대기 인구에서 차감
+        const idleLoss = Math.min(this.state.idlePopulation, remainingToKill);
+        this.state.idlePopulation -= idleLoss;
+        remainingToKill -= idleLoss;
+        
+        // 2. 남은 사망자가 있다면 파견 인원(workers) 중에서 무작위로 선별하여 사망 처리
+        if (remainingToKill > 0) {
+            const workerTypes = ['logging', 'mining', 'farming', 'research', 'trading'];
+            const lostJobs = [];
+
+            while (remainingToKill > 0) {
+                // 현재 인원이 있는 작업 종류만 필터링
+                const activeJobs = workerTypes.filter(type => this.state.workers[type] > 0);
+                if (activeJobs.length === 0) break; // 더 이상 죽일 작업 인원 없음
+
+                const targetJob = activeJobs[Math.floor(Math.random() * activeJobs.length)];
+                this.state.workers[targetJob]--;
+                remainingToKill--;
+                lostJobs.push(targetJob);
+            }
+            
+            if (lostJobs.length > 0) {
+                const jobKo = { logging: '벌목', mining: '채광', farming: '농사', research: '연구', trading: '교역' };
+                const jobSummary = lostJobs.map(j => jobKo[j] || j).join(', ');
+                console.log(`[Death] 파견 인원 사망 발생: ${jobSummary}`);
+            }
+        }
+
         this.state.population -= actualLoss;
-        this.state.idlePopulation = Math.max(0, this.state.idlePopulation - actualLoss);
         
         this.ui.addMiniNotification(`알파 트럼보의 습격으로 정착민 ${actualLoss}명을 잃었습니다...`, "failure");
         if (this.encounterManager) {
             this.encounterManager.showEventModal({
                 name: "💀 비극: 사냥꾼들의 전멸",
-                desc: `날뛰는 알파 트럼보를 저지하지 못했습니다. 분노한 짐승은 정착지에 큰 상처를 남기고 사라졌으며, 이 과정에서 용감했던 정착민 ${actualLoss}명이 끔찍하게 목숨을 잃었습니다.`,
+                desc: `날뛰는 알파 트럼보를 저지하지 못했습니다. 분노한 짐승은 정착지에 큰 상처를 남기고 사라졌으며, 이 과정에서 용감했던 정착민 ${actualLoss}명이 끔찍하게 목숨을 잃었습니다. \n\n(사망자 중 일부는 작업 현장에서 참변을 당했습니다.)`,
                 type: 'negative'
             });
         }
