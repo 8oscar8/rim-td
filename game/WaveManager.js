@@ -1,4 +1,5 @@
 import { Enemy } from './Enemy.js';
+import { WAVE_HP_DATA } from './WaveHPData.js';
 
 /**
  * WaveManager.js
@@ -60,8 +61,8 @@ export class WaveManager {
     this.isWaveActive = true;
     this.isWaveCompleted = false;
     
-    // 라운드별 적 체력 및 보상 지수 계산
-    this.currentEnemyHp = this.baseEnemyHp * Math.pow(1.12, this.waveNumber - 1);
+    // 라운드별 적 체력 리스트에서 가져오기
+    this.currentEnemyHp = WAVE_HP_DATA[this.waveNumber - 1] || 50;
     this.currentReward = Math.floor(this.waveNumber / 8);
 
     if (this.onWaveStart) this.onWaveStart(this.waveNumber);
