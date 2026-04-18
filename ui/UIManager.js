@@ -753,9 +753,9 @@ export class UIManager {
             this.sellUnitsBtn.style.filter = "none";
             if (sellText) sellText.textContent = `판매 (${price})`;
         } else {
-            this.sellUnitsBtn.disabled = !canInteract;
-            this.sellUnitsBtn.style.opacity = canInteract ? "1" : "0.4";
-            this.sellUnitsBtn.style.filter = canInteract ? "none" : "grayscale(1)";
+            this.sellUnitsBtn.disabled = true;
+            this.sellUnitsBtn.style.opacity = "0.4";
+            this.sellUnitsBtn.style.filter = "grayscale(1)";
             if (sellText) sellText.textContent = `판매 (유닛 선택 필요)`;
         }
     }
