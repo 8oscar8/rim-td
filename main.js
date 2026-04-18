@@ -692,17 +692,25 @@ class App {
    * [Hidden Penalty] 알파 트럼보 처치 실패 (인구 감소)
    */
   handleAlphaThrumboFailure() {
-    this.state.population = Math.max(1, this.state.population - 1);
-    this.state.idlePopulation = Math.max(0, this.state.idlePopulation - 1);
+    const lossCount = 1 + Math.floor(Math.random() * 4); // 1~4명 무작위 사망
+    const actualLoss = Math.min(this.state.population - 1, lossCount); // 최소 1명은 생존 보장
     
-    this.ui.addMiniNotification("알파 트럼보의 습격으로 정착민 한 명을 잃었습니다...", "failure");
-    if (this.encounterManager) {
-        this.encounterManager.showEventModal({
-            name: "💀 비극: 사냥꾼의 최후",
-            desc: "날뛰는 알파 트럼보를 저지하지 못했습니다. 분노한 짐승은 정착지에 큰 상처를 남기고 사라졌으며, 이 과정에서 용감했던 정착민 한 명이 목숨을 잃었습니다.",
-            type: 'negative'
-        });
+    if (actualLoss > 0) {
+        this.state.population -= actualLoss;
+        this.state.idlePopulation = Math.max(0, this.state.idlePopulation - actualLoss);
+        
+        this.ui.addMiniNotification(`알파 트럼보의 습격으로 정착민 ${actualLoss}명을 잃었습니다...`, "failure");
+        if (this.encounterManager) {
+            this.encounterManager.showEventModal({
+                name: "💀 비극: 사냥꾼들의 전멸",
+                desc: `날뛰는 알파 트럼보를 저지하지 못했습니다. 분노한 짐승은 정착지에 큰 상처를 남기고 사라졌으며, 이 과정에서 용감했던 정착민 ${actualLoss}명이 끔찍하게 목숨을 잃었습니다.`,
+                type: 'negative'
+            });
+        }
+    } else {
+        this.ui.addMiniNotification("알파 트럼보가 분노했지만 기적적으로 인명 피해는 없었습니다.", "info");
     }
+    
     this.ui.updateDisplays(this.state);
     SoundManager.playSFX('assets/audio/bad_alert.mp3');
   }
