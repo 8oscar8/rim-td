@@ -266,8 +266,8 @@ export class Enemy {
       this.slowTimer = Math.max(this.slowTimer, 0.5); // 장판 안에 있는 동안 지속 갱신
     } else if (effect === 'toxin') {
       // 독성 장판: 매 프레임 방어력 고정 부식 + 미세 도트뎀
-      const minArmor = Math.floor(this.initialArmor * 0.3);
-      if (this.armor > minArmor) this.armor -= 0.15; // 초당 약 9 정도의 방깎
+      const minArmor = Math.max(0, Math.floor(this.initialArmor * 0.3));
+      this.armor = Math.max(minArmor, this.armor - 0.15); // 방어력 하한선 보장
       this.hp -= 0.1; // 아주 미세한 체력 감소
     } else if ((effect === 'fear' || effect === 'burn_fear') && this.type === 'organic') {
       this.fearTimer = Math.max(this.fearTimer, duration);
