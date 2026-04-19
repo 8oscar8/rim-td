@@ -43,6 +43,14 @@
                     <span class="label"><img src="assets/silver.png" class="res-mini-icon"> 은</span>
                     <span class="value" id="silver-val">100</span>
                 </div>
+                <!-- 무드 스탯 추가 -->
+                <div class="status-card mood-card" onmouseenter="window.app.ui.showResourceTooltip(event, 'mood')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
+                    <span class="label"><img src="assets/mood.png" id="mood-icon" class="res-mini-icon"> 무드</span>
+                    <div class="mood-bar-container">
+                        <div id="mood-bar-fill" class="mood-bar-fill"></div>
+                    </div>
+                    <span class="mood-val-text" id="mood-val">60%</span>
+                </div>
             </div>
 
             <div class="status-section">
