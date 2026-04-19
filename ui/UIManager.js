@@ -596,10 +596,22 @@ export class UIManager {
       
       this.detailDps.textContent = (total * burst * spd).toFixed(1);
       this.detailAtk.textContent = Math.floor(base);
-      // 공격력 보너스 텍스트 생성 (버프 상세 내역 포함)
-      let bonusHtml = `(+${Math.floor(bonus)} 훈련)`;
-      const activeBuffs = [];
+      // 공격력 보너스 계산 (훈련 정수 보너스와 버프 배율 분리)
       const state = this.app.state;
+      const upgradeMul = state.getUpgradeMultiplier(typeKey);
+      const trainingBonus = Math.floor(base * (upgradeMul - 1));
+      
+      const moodMul = (state.mood >= 85) ? 1.1 : 1.0;
+      const luciMul = tower.isLuciferiumActive ? 1.5 : 1.0;
+      const goJuiceMul = (tower.goJuiceTimer > 0) ? 1.5 : 1.0;
+      const totalMul = moodMul * luciMul * goJuiceMul;
+
+      let bonusHtml = `(+${trainingBonus} 훈련)`;
+      if (totalMul > 1.0) {
+          bonusHtml += ` <span style="color:var(--accent-gold); font-weight:800;">×${totalMul.toFixed(2)}</span>`;
+      }
+
+      const activeBuffs = [];
       if (state.mood >= 85) activeBuffs.push("무드+10%");
       if (tower.goJuiceTimer > 0) activeBuffs.push("고주스+50%");
       if (tower.isLuciferiumActive) activeBuffs.push("루시페륨+50%");
