@@ -270,11 +270,13 @@ export class Enemy {
       this.armor = Math.max(minArmor, this.armor - 0.15); // 방어력 하한선 보장
       this.hp -= 0.1; // 아주 미세한 체력 감소
     } else if (effect === 'fear' || effect === 'burn_fear') {
-      // 패닉(공포) 효과는 유기체 적에게만 적용
+      // 패닉(공포) 효과는 유기체에게만 적용되며, 확률적으로만 발동하도록 하향 (무한 역주행 방지)
       if (this.type === 'organic') {
-        this.fearTimer = Math.max(this.fearTimer, duration);
+        if (Math.random() < 0.015) { // 프레임당 1.5% 확률 (초당 평균 0.9회 발동)
+          this.fearTimer = Math.max(this.fearTimer, duration);
+        }
       }
-      // 화염 피해는 기계 포함 모든 적이 받음 (단, 기계는 공포에 질리지 않음)
+      // 화염 피해는 확률에 상관없이 지속 적용
       if (effect === 'burn_fear') this.hp -= 0.35; 
     }
   }
