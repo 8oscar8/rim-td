@@ -1201,6 +1201,8 @@ export class UIManager {
     const curLv = s.upgrades[type] || 0;
     
     let effect = "";
+    let requirements = [];
+    let title = "";
 
     // 1. 전투 업그레이드 (blunt, sharp, ranged)
     if (['blunt', 'sharp', 'ranged'].includes(type)) {
