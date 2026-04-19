@@ -1412,7 +1412,7 @@ export class UIManager {
         mining: { name: '채광 작업', desc: '강철을 주력으로 생산하며, 숙련도가 오르면 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>, <span style="color:var(--accent-gold)">부품(Component)</span>, <span style="color:#00f2ff">우라늄(Uranium)</span>, 그리고 희귀 보석인 <span style="color:#2ecc71">비취(Jade)</span>를 추가로 채굴할 수 있습니다. 둔기(Blunt) 강화와 기계식 무기 제작의 핵심입니다.' },
         farming: { name: '농사 작업', desc: '정착지의 주 식량원을 확보합니다. 식량이 일정량에 도달할 때마다 정착민 인구가 자동으로 증가하여 운영 효율이 높아집니다.' },
         research: { name: '연구 활동', desc: '연구 포인트를 축적합니다. 기술 수준(Tech Level)을 높여 상위 등급의 아이템 제작 권한을 해금하고 전반적인 능력을 향상시킵니다.' },
-        trading: { name: '교역 활동', desc: '외부 상단과의 거래를 통해 은화(Silver)를 벌어들입니다. 무역 네트워크 강화 시 매우 희귀한 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>이나 비취를 대량으로 수입할 수 있습니다.' }
+        trading: { name: '교역 활동', desc: '외부 상단과의 거래를 통해 은화(Silver)를 벌어들입니다. 무역 네트워크 강화 시 매우 희귀한 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>이나 <span style="color:#2ecc71">비취(Jade)</span>를 대량으로 수입할 수 있습니다.' }
     };
 
     const data = workData[type];
