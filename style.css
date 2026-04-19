@@ -626,6 +626,17 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .mood-neutral { background: #eab308 !important; } /* 보통 */
 .mood-good { background: #22c55e !important; }    /* 좋음 */
 .mood-high { background: #3b82f6 !important; }    /* 매우 좋음 */
+ 
+/* 약초 자원 카드 스타일 */
+.herbal-card {
+    border-left: 3px solid var(--accent-green);
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
+    margin-top: 5px;
+}
+.herbal-card .label {
+    color: var(--accent-green);
+    font-weight: bold;
+}
 
 /* Encounter Modal (RimWorld Style Popup) */
 #encounter-modal {

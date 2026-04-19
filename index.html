@@ -51,6 +51,11 @@
                     </div>
                     <span class="mood-val-text" id="mood-val">60%</span>
                 </div>
+                <!-- 약초 자원 추가 -->
+                <div class="status-card herbal-card" onmouseenter="window.app.ui.showResourceTooltip(event, 'herbalMedicine')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
+                    <span class="label"><img src="assets/약초.webp" class="res-mini-icon"> 약초</span>
+                    <span class="value" id="herbal-val">0</span>
+                </div>
             </div>
 
             <div class="status-section">

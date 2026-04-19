@@ -16,6 +16,7 @@ export class GameState {
     this.foodToNextPop = 100; // 다음 인구 증가를 위한 필요 식량
     this.researchPoints = 0; // 연구 수치 (Tech Points)
     this.mood = 100; // 정착민 무드 (0-100, 100에서 시작)
+    this.herbalMedicine = 0; // 약초 (Herbal Medicine)
 
     this.techLevel = 'primitive'; // primitive -> industrial -> advanced -> spacer -> ultra
 

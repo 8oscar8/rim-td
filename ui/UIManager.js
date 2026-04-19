@@ -24,6 +24,7 @@ export class UIManager {
     this.moodBarFill = document.getElementById('mood-bar-fill');
     this.enemyVal = document.getElementById('enemy-val');
     this.silverVal = document.getElementById('silver-val');
+    this.herbalVal = document.getElementById('herbal-val'); // [New] 약초 수치
 
     // 2. 자원 정보
     this.resWood = document.getElementById('res-wood');
@@ -759,6 +760,11 @@ export class UIManager {
         else this.moodBarFill.classList.add('mood-high');
     }
 
+    // [New] 약초 수치 업데이트
+    if (this.herbalVal) {
+        this.herbalVal.textContent = Math.floor(state.herbalMedicine || 0);
+    }
+
     if (this.enemyVal) {
       const enemyCount = this.app.enemies ? this.app.enemies.length : 0;
       this.enemyVal.textContent = `${enemyCount} / 100`;
@@ -1454,9 +1460,9 @@ export class UIManager {
   showWorkTooltip(e, type) {
     this.currentTooltipSource = { method: 'showWorkTooltip', args: [type] };
     const workData = {
-        logging: { name: '벌목 작업', desc: '목재를 획득합니다. 목재는 주로 날붙이(Sharp) 계열 무기 강화와 화염병(Molotov) 제작에 사용됩니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 작업 완료 시 낮은 확률로 힐링 이벤트가 발생하여 정착민들의 무드가 상승합니다.' },
+        logging: { name: '벌목 작업', desc: '목재를 획득합니다. 목재는 주로 날붙이(Sharp) 계열 무기 강화와 화염병(Molotov) 제작에 사용됩니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: 5% 확률로 약초 획득' },
         mining: { name: '채광 작업', desc: '강철을 주력으로 생산하며, 숙련도가 오르면 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>, <span style="color:var(--accent-gold)">부품(Component)</span>, <span style="color:#00f2ff">우라늄(Uranium)</span>, 그리고 희귀 보석인 <span style="color:#2ecc71">비취(Jade)</span>를 추가로 채굴할 수 있습니다.' },
-        farming: { name: '농사 작업', desc: '정착지의 주 식량원을 확보합니다. 식량이 일정량에 도달할 때마다 정착민 인구가 자동으로 증가하여 운영 효율이 높아집니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 작업 완료 시 낮은 확률로 힐링 이벤트가 발생하여 정착민들의 무드가 상승합니다.' },
+        farming: { name: '농사 작업', desc: '정착지의 주 식량원을 확보합니다. 식량이 일정량에 도달할 때마다 정착민 인구가 자동으로 증가하여 운영 효율이 높아집니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: 5% 확률로 약초 획득' },
         research: { name: '연구 활동', desc: '연구 포인트를 축적하며, 연구 도중 낮은 확률로 <span style="color:var(--accent-gold)">부품(Component)</span>을 발견할 수도 있습니다. 기술 수준(Tech Level)을 높여 상위 등급의 아이템 제작 권한을 해금합니다.' },
         trading: { name: '교역 활동', desc: '외부 상단과의 거래를 통해 은화(Silver)를 벌어들입니다. 무역 네트워크 강화 시 매우 희귀한 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>이나 <span style="color:#2ecc71">비취(Jade)</span>를 대량으로 수입할 수 있습니다.' }
     };
@@ -1497,6 +1503,12 @@ export class UIManager {
                    - 웨이브 클리어 시 <span style="color:#fff">+7.0%</span><br>
                    - 벌목/농사 작업 중 낮은 확률로 힐링 발생<br>
                    - 긍정적인 랜덤 인카운터 조우 시 상승` 
+        },
+        herbalMedicine: {
+            name: '야생 약초 (Herbal Medicine)',
+            desc: `자연에서 채집한 귀중한 약용 식물입니다.<br><br>
+                   • <span style="color:#fbbf24">획득 경로</span>: 벌목(Logging)이나 농사(Farming) 작업 완료 시 <span style="color:#fff">5% 확률</span>로 발견합니다.<br>
+                   • <span style="color:#4ade80">용도</span>: 추후 정착민의 부상 치료나 특수 강화 아이템 제작의 핵심 재료로 사용될 예정입니다.`
         },
         food: { name: '식량 (Food)', desc: `생존을 위한 필수 자원입니다. 식량 게이지가 <span style="color:var(--accent-gold)">100%</span> (현재 목표: ${s.foodToNextPop})에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.` },
         silver: { name: '은화 (Silver)', desc: '기본적인 화폐입니다. 유닛 구매, 업그레이드, 거래 등에 광범위하게 사용됩니다.' },

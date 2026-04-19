@@ -252,8 +252,14 @@ class App {
             { msg: "기분 좋은 바람이 불어와 작업 효율이 올랐습니다. (+2% 무드)", bonus: 2 }
         ];
         const evt = events[Math.floor(Math.random() * events.length)];
-        s.mood = Math.min(100, s.mood + evt.bonus);
+        s.mood = Math.min(100, (s.mood || 0) + evt.bonus);
         this.ui.addMiniNotification(`[무드 보너스] ${evt.msg}`, 'jackpot');
+    }
+
+    // [New] 약초 발견 로직 (5% 고정 확률)
+    if ((type === 'logging' || type === 'farming') && Math.random() < 0.05) {
+        s.herbalMedicine += 1;
+        this.ui.addMiniNotification("귀중한 야생 약초를 발견했습니다! (약초 +1)", "info");
     }
   }
 
