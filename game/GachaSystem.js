@@ -230,7 +230,7 @@ export class GachaSystem {
   static getGradeProbabilitiesString() {
     const korGrades = {
       Common: '일', Uncommon: '우', Rare: '희', Epic: '에',
-      Legendary: '전', Mythic: '신'
+      Legendary: '신', Mythic: '전'
     };
     return Object.entries(GRADE_PROBABILITIES)
       .map(([grade, prob]) => `${korGrades[grade] || grade}(${prob}%)`)

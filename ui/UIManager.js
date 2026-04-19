@@ -478,7 +478,11 @@ export class UIManager {
       };
       
       // 도파민 모드: 제목에 등급, 내용에 무기 이름, 밑에 확률 표시
-      const gradeStr = grade.toUpperCase();
+      // 등급 명칭 매핑 (사용자 위계: 전설 > 신화)
+      const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
+      const displayGrade = gradeMap[grade] || grade;
+      const gradeStr = displayGrade.toUpperCase();
+      
       // 가차 결과일 때만 확률 표시
       const isGacha = title.includes("배치") || title.includes("GACHA");
       const probStr = (isGacha && probs[grade]) ? `<div class="prob-tag">${probs[grade]} CHANCE</div>` : '';
@@ -547,7 +551,9 @@ export class UIManager {
       if (this.rowRange) this.rowRange.classList.remove('hidden');
       if (this.rowShred) this.rowShred.classList.add('hidden'); // 일단 숨김 후 체크
       
-      this.detailGrade.textContent = `[${tower.weaponData.grade || 'Common'}]`;
+      const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
+      const displayGrade = gradeMap[tower.weaponData.grade] || tower.weaponData.grade || 'Common';
+      this.detailGrade.textContent = `[${displayGrade}]`;
       this.detailGrade.style.color = ""; // 색상 초기화
       
       let typeKey = tower.weaponType || 'blunt';
@@ -1252,9 +1258,11 @@ export class UIManager {
     let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
 
     if (type === 'random') {
-      Object.entries(probs).forEach(([grade, prob]) => {
-        html += `<div class="tooltip-row" style="color: ${gradeColors[grade]}">
-          <span class="res-name">${grade}:</span>
+      Object.entries(probs).forEach(([g, prob]) => {
+        const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
+        const displayGrade = gradeMap[g] || g;
+        html += `<div class="tooltip-row" style="color: ${gradeColors[g]}">
+          <span class="res-name">${displayGrade}:</span>
           <span class="res-val">${prob}%</span>
         </div>`;
       });
@@ -1267,9 +1275,11 @@ export class UIManager {
         Mythic: 5.0
       };
       
-      Object.entries(advancedWeights).forEach(([grade, prob]) => {
-        html += `<div class="tooltip-row" style="color: ${gradeColors[grade]}">
-          <span class="res-name">${grade}:</span>
+      Object.entries(advancedWeights).forEach(([g, prob]) => {
+        const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
+        const displayGrade = gradeMap[g] || g;
+        html += `<div class="tooltip-row" style="color: ${gradeColors[g]}">
+          <span class="res-name">${displayGrade}:</span>
           <span class="res-val">${prob.toFixed(1)}%</span>
         </div>`;
       });
