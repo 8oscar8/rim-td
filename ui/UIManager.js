@@ -86,6 +86,8 @@ export class UIManager {
     this.rowAp = document.getElementById('row-ap');
     this.rowRange = document.getElementById('row-range');
     this.rowSpd = document.getElementById('row-spd');
+    this.rowShred = document.getElementById('row-shred');
+    this.detailShred = document.getElementById('detail-shred');
   }
 
   initEvents() {
@@ -519,6 +521,7 @@ export class UIManager {
       if (this.lblSpd) this.lblSpd.textContent = "공속";
       if (this.rowAp) this.rowAp.classList.remove('hidden');
       if (this.rowRange) this.rowRange.classList.remove('hidden');
+      if (this.rowShred) this.rowShred.classList.add('hidden'); // 일단 숨김 후 체크
       
       this.detailGrade.textContent = `[${tower.weaponData.grade || 'Common'}]`;
       this.detailGrade.style.color = ""; // 색상 초기화
@@ -558,9 +561,16 @@ export class UIManager {
         this.detailAtk.classList.remove('buff-text');
       }
       
-      // 방관 정보 (선택 사항)
+      // 방관 정보
       const apEl = document.getElementById('detail-ap');
       if (apEl) apEl.textContent = `${Math.floor(tower.ap * 100)}%`;
+
+      // [New] 방깎 정보 표시
+      const shredVal = tower.weaponData.shred || 0;
+      if (shredVal > 0 && this.rowShred) {
+        this.rowShred.classList.remove('hidden');
+        if (this.detailShred) this.detailShred.textContent = shredVal;
+      }
 
       // [New] 조합 버튼 노출 및 처리
       if (this.combineUnitBtn) {
@@ -619,6 +629,7 @@ export class UIManager {
       // 불필요한 행 숨기기 (사거리, 방관)
       if (this.rowAp) this.rowAp.classList.add('hidden');
       if (this.rowRange) this.rowRange.classList.add('hidden');
+      if (this.rowShred) this.rowShred.classList.add('hidden'); // 몬스터는 방깎 표시 안 함
 
       // HP 정보 (DPS 위치에 표시)
       const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
