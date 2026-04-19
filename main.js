@@ -634,6 +634,7 @@ class App {
         if (en.active && Math.hypot(en.x - f.x, en.y - f.y) <= (f.radius || 60)) {
           if (f.type === 'smoke') en.applyEffect('smoke', 0.5);
           if (f.type === 'toxin') en.applyEffect('toxin', 0.5);
+          if (f.type === 'molotov') en.applyEffect('burn_fear', 0.5);
         }
       });
 
@@ -1093,10 +1094,6 @@ class App {
             case 'pulse_grenade':
                 en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
                 break;
-            case 'molotov':
-                en.handleStatusEffect('burn_fear');
-                en.takeDamage(20, 0.1, 'burn_fear', 'Rare', 0);
-                break;
         }
     });
 
@@ -1119,6 +1116,17 @@ class App {
                 ctx.save();
                 ctx.fillStyle = 'rgba(46, 204, 113, 0.3)';
                 ctx.shadowBlur = 15; ctx.shadowColor = '#2ecc71';
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+        });
+    } else if (type === 'molotov') {
+        this.fieldEffects.push({
+            type: 'molotov', x: x, y: y, radius: radius, duration: 7.0,
+            render: (ctx) => {
+                ctx.save();
+                ctx.fillStyle = 'rgba(230, 126, 34, 0.35)'; // 주황색 화염
+                ctx.shadowBlur = 20; ctx.shadowColor = '#e67e22';
                 ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
                 ctx.restore();
             }

@@ -271,6 +271,7 @@ export class Enemy {
       this.hp -= 0.1; // 아주 미세한 체력 감소
     } else if ((effect === 'fear' || effect === 'burn_fear') && this.type === 'organic') {
       this.fearTimer = Math.max(this.fearTimer, duration);
+      if (effect === 'burn_fear') this.hp -= 0.35; // 불길 위 도트뎀 추가
     }
   }
 
