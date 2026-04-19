@@ -26,6 +26,7 @@ export class WaveManager {
     this.baseEnemyHp = 50;
     this.baseReward = 1; 
     this.totalEnemiesInWave = 0; 
+    this.enemiesKilledInWave = 0; // [New] 이번 웨이브에서 처치된 적 수 추적
     
     // 보스 구성 정보
     this.bossToSpawn = 0;
@@ -37,6 +38,7 @@ export class WaveManager {
     this.isWaveActive = false;
     this.enemiesToSpawn = 0;
     this.totalEnemiesInWave = 0;
+    this.enemiesKilledInWave = 0;
     this.nextWaveTimer = 120;
   }
 
@@ -66,6 +68,7 @@ export class WaveManager {
     this.nextWaveTimer = 120; 
     this.isWaveActive = true;
     this.isWaveCompleted = false;
+    this.enemiesKilledInWave = 0; // 새 웨이브 시작 시 처치 수 초기화
     
     // 라운드별 적 체력 리스트에서 가져오기
     this.currentEnemyHp = WAVE_HP_DATA[this.waveNumber - 1] || 50;
@@ -97,10 +100,13 @@ export class WaveManager {
             this.spawnBossEnemy(enemiesList);
           }
         } 
-        // 웨이브 종료 체크
-        else if (enemiesList.length === 0 && !this.isWaveCompleted) {
+        // [New Fix] 필드 전멸이 아닌, '이번 웨이브의 모든 적 처치' 시 클리어 판정
+        else if (this.enemiesKilledInWave >= this.totalEnemiesInWave && !this.isWaveCompleted) {
           this.isWaveCompleted = true;
-          if (this.nextWaveTimer > 10) this.nextWaveTimer = 10; // 잔여 적 소탕 시 타이머 단축
+          // 필드가 완전히 비었을 때만 타이머 단축 (기존 로직 유지)
+          if (enemiesList.length === 0 && this.nextWaveTimer > 10) {
+              this.nextWaveTimer = 10;
+          }
           if (this.onWaveComplete) this.onWaveComplete();
         }
       }
@@ -136,7 +142,10 @@ export class WaveManager {
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect) => {
       const died = originalTakeDamage(amount, ap, effect);
-      if (died) this.onEnemyDeath(enemy);
+      if (died) {
+          this.enemiesKilledInWave++;
+          this.onEnemyDeath(enemy);
+      }
       return died;
     };
     enemiesList.push(enemy);
@@ -160,7 +169,10 @@ export class WaveManager {
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect) => {
       const died = originalTakeDamage(amount, ap, effect);
-      if (died) this.onEnemyDeath(enemy);
+      if (died) {
+          this.enemiesKilledInWave++;
+          this.onEnemyDeath(enemy);
+      }
       return died;
     };
     enemiesList.push(enemy);
