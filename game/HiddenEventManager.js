@@ -134,7 +134,11 @@ export class HiddenEventManager {
               this.app.state.addResource('silver', silver);
               this.app.state.addResource('food', food);
               
-              this.app.ui.addMiniNotification(`상단은 안전한 통행에 감사를 표하며 물자를 보냈습니다! (은화+${silver}, 식량+${food})`, "info");
+              this.app.encounterManager.showEventModal({
+                  name: "평화적인 해결",
+                  desc: `상단은 안전한 통행에 감사를 표하며 물자 보따리를 투척하고 떠나갔습니다! \n\n보상: 은화 +${silver}, 식량 +${food}`,
+                  type: 'positive'
+              });
               this.app.ui.updateDisplays(this.app.state);
           }
       );
@@ -155,7 +159,11 @@ export class HiddenEventManager {
           },
           () => {
               // [거절]
-              this.app.ui.addMiniNotification("제국은 당신의 비겁함에 실망하며 물러갔습니다.", "info");
+              this.app.encounterManager.showEventModal({
+                  name: "시련 거부",
+                  desc: "제국은 당신의 비겁함에 실망하며 조용히 물러갔습니다. 아무런 보상도, 패널티도 없습니다.",
+                  type: 'info'
+              });
           }
       );
   }
@@ -175,7 +183,11 @@ export class HiddenEventManager {
           },
           () => {
               // [거절]
-              this.app.ui.addMiniNotification("알파 트럼보는 정착지를 무시하고 멀리 떠나갔습니다.", "info");
+              this.app.encounterManager.showEventModal({
+                  name: "사양함",
+                  desc: "알파 트럼보는 정착지를 무시하고 유유히 지평선 너머로 사라졌습니다.",
+                  type: 'info'
+              });
           }
       );
   }
@@ -230,7 +242,11 @@ export class HiddenEventManager {
           },
           () => {
               // [거절]
-              this.app.ui.addMiniNotification("칼날은 실망한 듯 공허 속으로 사라졌습니다.", "info");
+              this.app.encounterManager.showEventModal({
+                  name: "유혹을 떨쳐냄",
+                  desc: "칼날은 당신의 확고한 의지에 실망했는지, 기괴한 비명을 지르며 공허 속으로 사라졌습니다.",
+                  type: 'info'
+              });
           }
       );
   }
