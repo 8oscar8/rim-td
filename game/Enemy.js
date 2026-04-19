@@ -269,9 +269,13 @@ export class Enemy {
       const minArmor = Math.max(0, Math.floor(this.initialArmor * 0.3));
       this.armor = Math.max(minArmor, this.armor - 0.15); // 방어력 하한선 보장
       this.hp -= 0.1; // 아주 미세한 체력 감소
-    } else if ((effect === 'fear' || effect === 'burn_fear') && this.type === 'organic') {
-      this.fearTimer = Math.max(this.fearTimer, duration);
-      if (effect === 'burn_fear') this.hp -= 0.35; // 불길 위 도트뎀 추가
+    } else if (effect === 'fear' || effect === 'burn_fear') {
+      // 패닉(공포) 효과는 유기체 적에게만 적용
+      if (this.type === 'organic') {
+        this.fearTimer = Math.max(this.fearTimer, duration);
+      }
+      // 화염 피해는 기계 포함 모든 적이 받음 (단, 기계는 공포에 질리지 않음)
+      if (effect === 'burn_fear') this.hp -= 0.35; 
     }
   }
 
