@@ -319,12 +319,10 @@ export class UIManager {
           return Math.floor(level * multiplier);
       };
 
-      const nextLevelCost = getCategoryUpgradeCost(type, nextLevel);
-
-      // 자원 매핑 (수정: 날붙이는 나무, 둔기는 강철 단일 사용)
+      // 자원 매핑 (수정: 은화도 메인 자원과 동일하게 배율 적용)
       const resourceMap = {
-        blunt: ['steel'],
-        sharp: ['wood'],
+        blunt: ['steel', 'silver'],
+        sharp: ['wood', 'silver'],
         ranged: ['plasteel', 'silver']
       };
       
@@ -1196,15 +1194,9 @@ export class UIManager {
         const el1 = document.getElementById(`${type}-cost-1`);
         const el2 = document.getElementById(`${type}-cost-2`);
         if (el1) el1.textContent = nextCost;
-
-        // [New] 중복 자원 영역 처리 (날붙이/둔기는 단일 자원이므로 두 번째 칸 숨김)
         if (el2) {
-            if (type === 'ranged') {
-                el2.textContent = nextCost; 
-                if (el2.parentElement) el2.parentElement.style.display = "block";
-            } else {
-                if (el2.parentElement) el2.parentElement.style.display = "none";
-            }
+            el2.textContent = nextCost;
+            if (el2.parentElement) el2.parentElement.style.display = "block"; // 항상 표시로 복구
         }
 
         // [New] 강화 효율 텍스트 동적 업데이트
@@ -1217,9 +1209,12 @@ export class UIManager {
         }
 
         let hasRes = false;
-        if (type === 'blunt') hasRes = state.steel >= nextCost;
-        else if (type === 'sharp') hasRes = state.wood >= nextCost;
-        else if (type === 'ranged') hasRes = state.plasteel >= nextCost && state.silver >= nextCost;
+        const resMap = {
+            blunt: ['steel', 'silver'],
+            sharp: ['wood', 'silver'],
+            ranged: ['plasteel', 'silver']
+        };
+        hasRes = resMap[type].every(r => state[r] >= nextCost);
 
         btn.disabled = !hasRes;
         btn.style.opacity = hasRes ? "1" : "0.4";
@@ -1476,8 +1471,8 @@ export class UIManager {
         const nextLvCost = getCost(type, nextLv);
 
         const resourceMap = {
-            blunt: [{ name: '강철', key: 'steel' }],
-            sharp: [{ name: '목재', key: 'wood' }],
+            blunt: [{ name: '강철', key: 'steel' }, { name: '은화', key: 'silver' }],
+            sharp: [{ name: '목재', key: 'wood' }, { name: '은화', key: 'silver' }],
             ranged: [{ name: '플라스틸', key: 'plasteel' }, { name: '은화', key: 'silver' }]
         };
         const resList = resourceMap[type];
