@@ -9,7 +9,7 @@ export class Enemy {
   // 전역 보스 피해 배율 (훈련 등에 의해 변동 가능)
   static bossBonus = 1.0; 
 
-  constructor(waypoints, hp, reward, type = 'organic', isBoss = false) {
+  constructor(waypoints, hp, reward, type = 'organic', isBoss = false, armor = 0) {
     this.waypoints = waypoints;
     this.currentWaypointIndex = 0;
     
@@ -19,7 +19,7 @@ export class Enemy {
     this.isBoss = isBoss;
     this.maxHp = hp;
     this.hp = hp;
-    this.armor = isBoss ? Math.floor(hp * 0.2) : Math.floor(hp * 0.1); 
+    this.armor = armor; 
     this.reward = reward;
     this.speed = isBoss ? 60 : 80; 
     this.radius = isBoss ? 20 : 8;

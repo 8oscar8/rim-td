@@ -124,7 +124,15 @@ export class WaveManager {
       if (this.waveNumber % 5 === 0 || Math.random() < 0.2) type = 'mech';
     }
     
-    const enemy = new Enemy(this.waypoints, this.currentEnemyHp, this.currentReward, type);
+    // [New] 일반 적 방어력 공식 적용
+    let armor = 0;
+    if (this.waveNumber <= 50) {
+        armor = Math.floor((this.waveNumber - 1) * (50 / 49));
+    } else {
+        armor = Math.floor(50 + (this.waveNumber - 50) * 3);
+    }
+    
+    const enemy = new Enemy(this.waypoints, this.currentEnemyHp, this.currentReward, type, false, armor);
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect) => {
       const died = originalTakeDamage(amount, ap, effect);
@@ -143,7 +151,10 @@ export class WaveManager {
     const bossName = this.bossNames[(this.waveNumber / 10 - 1) % this.bossNames.length];
     const type = (this.waveNumber >= 20) ? 'mech' : 'organic';
 
-    const enemy = new Enemy(this.waypoints, bossHp, bossReward, type, true);
+    // [New] 보스 전용 방어력 공식: Floor(Wave / 10)^1.5 * 30
+    const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 30);
+
+    const enemy = new Enemy(this.waypoints, bossHp, bossReward, type, true, armor);
     enemy.name = bossName;
 
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
@@ -165,8 +176,9 @@ export class WaveManager {
    */
   spawnMerchantCaravan() {
     const caravanCount = 5;
+    const armor = Math.floor(this.waveNumber * 0.5); // 상단은 방어력이 낮음
     for (let i = 0; i < caravanCount; i++) {
-        const muffalo = new Enemy(this.waypoints, 500, 200, 'organic');
+        const muffalo = new Enemy(this.waypoints, 500, 200, 'organic', false, armor);
         muffalo.name = '짐 실은 머팔로';
         muffalo.speed *= 0.6;
         
@@ -189,21 +201,23 @@ export class WaveManager {
   spawnSpecialBoss(type) {
     let boss;
     const baseHp = this.currentEnemyHp * 20;
+    // 특수 보스 방어력 보정
+    const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 35); 
     
     switch(type) {
         case 'ImperialGuard':
-            boss = new Enemy(this.waypoints, baseHp, 1000, 'mech', true);
+            boss = new Enemy(this.waypoints, baseHp, 1000, 'mech', true, armor);
             boss.name = '제국 근위대장';
             boss.shield = baseHp * 0.5;
             break;
         case 'AlphaThrumbo':
-            boss = new Enemy(this.waypoints, baseHp * 2, 2000, 'organic', true);
+            boss = new Enemy(this.waypoints, baseHp * 2, 2000, 'organic', true, armor * 0.5);
             boss.name = '알파 트럼보';
             boss.hpRegen = boss.maxHp * 0.025; // 초재생 능력: 초당 최대 체력의 2.5% 회복
             break;
         case 'DarkMonolith':
             // 저등급 유닛만 데미지를 줄 수 있으므로 체력을 대폭 하향 (기존 보스의 60% 수준)
-            boss = new Enemy(this.waypoints, baseHp * 0.6, 0, 'none', true);
+            boss = new Enemy(this.waypoints, baseHp * 0.6, 0, 'none', true, armor * 1.5);
             boss.name = '암흑 모노리스';
             boss.gradeFilter = { mode: 'below', grade: 'Epic' }; // Epic 등급 이하만 피격 가능 (= Special 이상 면역)
             break;
@@ -230,9 +244,10 @@ export class WaveManager {
    */
   spawnImperialGuardAmbush() {
       const baseHp = this.currentEnemyHp * 20;
+      const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 30);
       
       // 1. 근위대장 (보스) 스폰
-      const boss = new Enemy(this.waypoints, baseHp * 1.5, 1000, 'mech', true);
+      const boss = new Enemy(this.waypoints, baseHp * 1.5, 1000, 'mech', true, armor * 1.2);
       boss.name = '제국 근위대장';
       boss.shieldMax = baseHp * 0.5;
       boss.shield = boss.shieldMax;
@@ -251,7 +266,7 @@ export class WaveManager {
       // 2. 근위병 (정예) 12개체 스폰
       let spawned = 0;
       const interval = setInterval(() => {
-          const guard = new Enemy(this.waypoints, baseHp * 0.3, 150, 'mech', false);
+          const guard = new Enemy(this.waypoints, baseHp * 0.3, 150, 'mech', false, armor * 0.8);
           guard.name = '제국 근위병';
           guard.speed *= 1.3; // 정예병이므로 빠름
           guard.shieldMax = baseHp * 0.1;
@@ -280,9 +295,10 @@ export class WaveManager {
     let anyEscaped = false;
 
     // 1. 운반 트럼보 스폰
+    const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 20);
     let spawnedTrumbo = 0;
     const tInterval = setInterval(() => {
-        const trumbo = new Enemy(this.waypoints, baseHp * 2.5, 500, 'organic', true);
+        const trumbo = new Enemy(this.waypoints, baseHp * 2.5, 500, 'organic', true, armor);
         trumbo.name = `보물 트럼보 (#${spawnedTrumbo + 1})`;
         trumbo.speed *= 0.7; // 짐이 많아 느림
         trumbo.raidTimerMax = 100; // 100초 내에 잡아야 함
@@ -317,7 +333,7 @@ export class WaveManager {
     // 2. 용병 경호원 스폰 (15명)
     let spawnedGuard = 0;
     const gInterval = setInterval(() => {
-        const guard = new Enemy(this.waypoints, baseHp * 0.4, 200, 'organic', false);
+        const guard = new Enemy(this.waypoints, baseHp * 0.4, 200, 'organic', false, armor * 0.6);
         guard.name = '상단 경호원';
         guard.speed *= 1.4;
         guard.armor += 50;
@@ -344,8 +360,9 @@ export class WaveManager {
     const animalReward = 1 + Math.floor(this.waveNumber / 20); // 보상은 미미함
     
     let spawnCount = 0;
+    const armor = Math.floor(this.waveNumber * 0.3); // 동물 무리는 방어력이 매우 낮음
     const interval = setInterval(() => {
-        const animal = new Enemy(this.waypoints, animalHp, animalReward, 'organic');
+        const animal = new Enemy(this.waypoints, animalHp, animalReward, 'organic', false, armor);
         animal.name = Math.random() < 0.5 ? '식인 다람쥐' : '식인 멧돼지';
         animal.speed *= 1.6; // 매우 빠름
         
@@ -392,11 +409,14 @@ export class WaveManager {
         if (rand > 0.8) config = insectTypes[2];      // 메가스파이더
         else if (rand > 0.5) config = insectTypes[1]; // 스펠로피드
 
+        const armor = Math.floor(this.waveNumber * 0.8);
         const insect = new Enemy(
             this.waypoints,
             baseHp * config.hpMul,
             this.currentReward || 1,
-            'organic'
+            'organic',
+            false,
+            armor
         );
         
         // 곤충 개별 커스텀
