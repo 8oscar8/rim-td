@@ -1239,7 +1239,7 @@ export class UIManager {
             farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: '고급 농경', desc: '식량 생산량 +25%' },
             mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '대규모 채굴', desc: '강철 생산량 +25% 및 희귀 자원 발견 확률 +4%' },
             logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '기계식 벌목', desc: '목재 생산량 +25%' },
-            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크', desc: '기본 수익 대폭 증가 및 플라스틸 거래 수량/확률 상승' }
+            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크', desc: '은화 수익 및 플라스틸/비취옥 거래 수량/확률 상승' }
         };
         
         const costData = costs[type];

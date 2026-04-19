@@ -158,12 +158,13 @@ class App {
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률(10+5%*lv) 및 획득량 증가
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률 상향 (20+8%*lv)
         const tradeBonus = up.trade * 0.08;
+        const jadeBonus = up.trade * 0.01; // 레벨당 1% 확률 증가
         if (!isFailure) {
             if (Math.random() < 0.20 + tradeBonus) { 
                 const amt = Math.floor((Math.random() * 4 + 2) * getBonus(up.trade)); // 획득량 상향
                 s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
             }
-            if (Math.random() < 0.015) { 
+            if (Math.random() < 0.015 + jadeBonus) { 
                 const amt = Math.floor(Math.random() * 2) + 1; 
                 s.jade += amt; bonusLoot += ` (비취 +${amt}!)`; 
             }
