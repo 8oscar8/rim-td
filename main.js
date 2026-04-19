@@ -588,8 +588,8 @@ class App {
     if (isBoss) {
       s.addResource('steel', 10);
       s.addResource('component', 1);
-      s.mood = Math.min(100, s.mood + 5); // 보스 처치 시 대폭 상승
-      this.ui.addMiniNotification(`[처치] 보스 제거! 강철+10, 부품+1, 무드+5%`, "info");
+      s.mood = Math.min(100, s.mood + 14); // 보스 처치 시 대폭 상승 (14%)
+      this.ui.addMiniNotification(`[처치] 보스 제거! 강철+10, 부품+1, 무드+14%`, "info");
       SoundManager.playSFX('assets/audio/encounter_success.mp3'); // 보스 처치 쾌감 부여
     } else if (lootMsg) {
       // 모든 전리품 획득 시 [전리품] 태그와 함께 알림
