@@ -1500,7 +1500,7 @@ export class UIManager {
         },
         silver: { 
             name: '은화 암시장 거래', cost: '은화 300', color: 'var(--accent-gold)',
-            desc: '대규모 상단이나 암시장 큰손과 대범한 거래를 진행합니다. <br>• 주요 보상: <span style="color:var(--accent-gold)">잭팟(은화 5000)</span>, <span style="color:#2ecc71">비취</span>, 대량의 고급 자원' 
+            desc: '거래를 통해 희귀한 자원을 확보합니다. 하지만 거래에 실패할 확률이 높습니다. <br>• 주요 보상: <span style="color:var(--accent-gold)">잭팟(은화 2000)</span>, <span style="color:var(--accent-gold)">부품</span>, 플라스틸, 우라늄 소량' 
         }
     };
 

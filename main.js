@@ -1134,12 +1134,11 @@ class App {
         else if (rand < 0.45) { s.plasteel += 15; result = { msg: "강철을 분해해 플라스틸을 얻었습니다. (+15 플라스틸)", grade: "Rare" }; }
         else if (rand < 0.70) { s.uranium += 8; result = { msg: "강철 더미에서 우라늄을 추출했습니다. (+8 우라늄)", grade: "Uncommon" }; }
     } else if (type === 'silver') {
-        // 은화 도박 (고급/암시장)
-        if (rand < 0.05) { s.silver += 5000; result = { msg: "[잭팟] 암시장에서 큰 이득을 봤습니다!! (+5000 은)", grade: "Mythic" }; }
-        else if (rand < 0.15) { s.component += 10; result = { msg: "고급 부품 상자를 입수했습니다! (+10 부품)", grade: "Legendary" }; }
-        else if (rand < 0.35) { s.jade += 5; result = { msg: "희귀한 비취들을 수입했습니다! (+5 비취)", grade: "Epic" }; }
-        else if (rand < 0.60) { s.uranium += 30; result = { msg: "우라늄 연료봉을 대량 구매했습니다. (+30 우라늄)", grade: "Rare" }; }
-        else if (rand < 0.85) { s.plasteel += 40; result = { msg: "벌크 플라스틸 거래 성공! (+40 플라스틸)", grade: "Epic" }; }
+        // 은화 도박 (암시장 - 너프 버전)
+        if (rand < 0.01) { s.silver += 2000; result = { msg: "[잭팟] 암시장 거래 성공! (+2000 은)", grade: "Mythic" }; }
+        else if (rand < 0.05) { s.component += 2; result = { msg: "정밀 부품을 소량 입수했습니다. (+2 부품)", grade: "Legendary" }; }
+        else if (rand < 0.15) { s.uranium += 5; result = { msg: "우라늄 연료를 확보했습니다. (+5 우라늄)", grade: "Rare" }; }
+        else if (rand < 0.35) { s.plasteel += 8; result = { msg: "플라스틸 합금을 구매했습니다. (+8 플라스틸)", grade: "Uncommon" }; }
     }
 
     this.ui.addMiniNotification(result.msg, result.grade);
