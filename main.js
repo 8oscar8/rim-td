@@ -9,6 +9,7 @@ import { SoundManager } from './engine/SoundManager.js';
 import { GachaSystem } from './game/GachaSystem.js';
 import { EncounterManager } from './game/EncounterManager.js';
 import { HiddenEventManager } from './game/HiddenEventManager.js';
+import { ITEM_DB } from './game/WeaponData.js';
 
 /**
  * Main Application Class
@@ -39,6 +40,8 @@ class App {
     // 4. 배치 모드 및 자원 관련 상태
     this.placementMode = false;
     this.pendingGachaResult = null;
+    this.isItemTargeting = false;
+    this.pendingItemId = null;
     this.mousePos = { x: 0, y: 0 };
     this.passiveSilverTimer = 0; // 2초당 1은 지급을 위한 타이머
 
@@ -249,6 +252,12 @@ class App {
     const clickX = (e.clientX - rect.left) * (this.renderer.canvas.width / rect.width);
     const clickY = (e.clientY - rect.top) * (this.renderer.canvas.height / rect.height);
     
+    // 아이템 타겟팅 모드 처리
+    if (this.isItemTargeting && this.pendingItemId) {
+      this.confirmItemUsage(clickX, clickY);
+      return;
+    }
+
     // 배치 모드 처리
     if (this.placementMode && this.pendingGachaResult) {
       this.confirmPlacement();
@@ -426,7 +435,11 @@ class App {
    * 캔버스 우클릭 처리 (취소)
    */
   handleCanvasRightClick(e) {
-    if (this.placementMode) {
+    if (this.isItemTargeting) {
+        this.isItemTargeting = false;
+        this.pendingItemId = null;
+        this.ui.addMiniNotification("아이템 사용 취소");
+    } else if (this.placementMode) {
         this.cancelPlacement();
     } else {
         this.ui.hideUnitDetail();
@@ -996,6 +1009,25 @@ class App {
       ctx.fill();
       ctx.restore();
     }
+
+    // 7. 아이템 타겟팅 모드 렌더링
+    if (this.isItemTargeting && this.pendingItemId) {
+        const itemData = ITEM_DB[this.pendingItemId];
+        const radius = itemData ? itemData.radius : 100;
+        const ctx = this.renderer.ctx;
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(255, 200, 0, 0.9)"; // 노란색 타겟팅 링
+        ctx.lineWidth = 3;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.arc(this.mousePos.x, this.mousePos.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = "rgba(255, 200, 0, 0.1)";
+        ctx.fill();
+        ctx.restore();
+    }
   }
 
   /**
@@ -1008,72 +1040,69 @@ class App {
         return;
     }
 
-    let success = false;
-    switch (type) {
-        case 'orbital_strike':
-            // 보스 제외 모든 적 제거
-            const targets = this.enemies.filter(en => !en.isBoss);
-            targets.forEach(en => {
-                en.flashTimer = 0.5; // 강력한 번쩍임
-                en.hp = 0;
-            });
-            this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
-            success = true;
-            break;
-
-        case 'frag_grenade':
-            // 전원 고위력 데미지 + 유기체 기절 (방깎 제거)
-            this.enemies.forEach(en => {
-                en.flashTimer = 0.3;
-                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 0);
-            });
-            this.ui.addMiniNotification("파쇄 수류탄 투척!", "Common");
-            success = true;
-            break;
-
-        case 'pulse_grenade':
-            // 전원 EMP(기절) (방깎 제거)
-            this.enemies.forEach(en => {
-                en.flashTimer = 0.3;
-                en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
-            });
-            this.ui.addMiniNotification("펄스 수류탄 일제 폭발!", "Uncommon");
-            success = true;
-            break;
-
-        case 'molotov':
-            // 전원 화염 + 공포
-            this.enemies.forEach(en => {
-                en.handleStatusEffect('burn_fear');
-                en.takeDamage(20, 0.1, 'burn_fear', 'Rare', 0);
-            });
-            this.ui.addMiniNotification("화염병 투척!", "Rare");
-            success = true;
-            break;
-
-        case 'smoke_launcher':
-            // 전원 시야 차단 (슬로우)
-            this.enemies.forEach(en => { en.handleStatusEffect('smoke'); });
-            this.ui.addMiniNotification("연막 차단기 가동!", "Rare");
-            success = true;
-            break;
-
-        case 'toxin_grenade':
-            // 전원 독성 중독 + 강력한 방어력 부식 (Shred 50)
-            this.enemies.forEach(en => {
-                en.handleStatusEffect('toxin');
-                en.takeDamage(10, 0.8, 'toxin', 'Epic', 50);
-            });
-            this.ui.addMiniNotification("독소 수류탄 살포! (장갑 부식)", "Epic");
-            success = true;
-            break;
-    }
-
-    if (success) {
+    // 궤도 폭격은 전장 전체 즉시 발동
+    if (type === 'orbital_strike') {
+        const targets = this.enemies.filter(en => !en.isBoss);
+        targets.forEach(en => {
+            en.flashTimer = 0.5;
+            en.hp = 0;
+        });
+        this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
         this.state.items[type]--;
         this.ui.updateDisplays(this.state);
-        // 화면 흔들림 효과 등 추가 가능
+        return;
     }
+
+    // 그 외 투척류 아이템은 지점 타겟팅 모드로 진입
+    this.isItemTargeting = true;
+    this.pendingItemId = type;
+    this.ui.addMiniNotification(`[${type}] 타격 위치를 선택하세요. (우클릭 취소)`, "info");
+  }
+
+  /**
+   * 아이템 지점 타격 실행
+   */
+  confirmItemUsage(x, y) {
+    const type = this.pendingItemId;
+    const item = ITEM_DB[type];
+    if (!item) return;
+
+    const radius = item.radius || 100;
+    const targets = this.enemies.filter(en => Math.hypot(en.x - x, en.y - y) <= radius);
+    
+    targets.forEach(en => {
+        en.flashTimer = 0.3;
+        switch (type) {
+            case 'frag_grenade':
+                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 0);
+                break;
+            case 'pulse_grenade':
+                en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
+                break;
+            case 'molotov':
+                en.handleStatusEffect('burn_fear');
+                en.takeDamage(20, 0.1, 'burn_fear', 'Rare', 0);
+                break;
+            case 'smoke_launcher':
+                en.handleStatusEffect('smoke');
+                break;
+            case 'toxin_grenade':
+                en.handleStatusEffect('toxin');
+                en.takeDamage(10, 0.8, 'toxin', 'Epic', 50);
+                break;
+        }
+    });
+
+    const itemName = item.name || type;
+    this.ui.addMiniNotification(`${itemName} 투척!`, "info");
+    
+    this.state.items[type]--;
+    this.isItemTargeting = false;
+    this.pendingItemId = null;
+    this.ui.updateDisplays(this.state);
+    
+    // 이펙트 레이어 등에 연출 추가 가능
+    SoundManager.playSFX('assets/audio/buy.mp3'); // 던지는 소리 등으로 대체 가능
   }
 
   /**

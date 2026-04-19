@@ -50,11 +50,11 @@ export const WEAPON_DB = {
 
 // 소모성 아이템 DB (타워로 건설 불가, 인벤토리에서 사용)
 export const ITEM_DB = {
-  '파쇄 수류탄': { type: 'item', grade: 'Common', dmg: 250, ap: 0.2, effect: 'aoe_dmg', shred: 0, radius: 100 },
-  '펄스 수류탄': { type: 'item', grade: 'Uncommon', dmg: 50, ap: 0.5, effect: 'emp', shred: 0, radius: 120 },
-  '화염병': { type: 'item', grade: 'Rare', dmg: 20, ap: 0.1, effect: 'burn_fear', radius: 80 },
-  '연막 발사기': { type: 'item', grade: 'Rare', dmg: 0, ap: 0, effect: 'smoke', radius: 150 },
-  '독소 수류탄': { type: 'item', grade: 'Epic', dmg: 10, ap: 0.8, effect: 'toxin', shred: 50, radius: 120 }
+  'frag_grenade': { name: '파쇄 수류탄', type: 'item', grade: 'Common', dmg: 250, ap: 0.2, effect: 'frag_stun', shred: 0, radius: 100 },
+  'pulse_grenade': { name: '펄스 수류탄', type: 'item', grade: 'Uncommon', dmg: 50, ap: 0.5, effect: 'emp', shred: 0, radius: 120 },
+  'molotov': { name: '화염병', type: 'item', grade: 'Rare', dmg: 20, ap: 0.1, effect: 'burn_fear', radius: 80 },
+  'smoke_launcher': { name: '연막 발사기', type: 'item', grade: 'Rare', dmg: 0, ap: 0, effect: 'smoke', radius: 150 },
+  'toxin_grenade': { name: '독소 수류탄', type: 'item', grade: 'Epic', dmg: 10, ap: 0.8, effect: 'toxin', shred: 50, radius: 120 }
 };
 
 export const MATERIAL_DB = {
