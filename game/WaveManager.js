@@ -54,6 +54,12 @@ export class WaveManager {
     
     // 10라운드마다 보스 등장 여부 결정
     this.bossToSpawn = (this.waveNumber % 10 === 0) ? 1 : 0;
+    
+    // [New] 보스 라운드일 경우 일반 몹 스폰을 취소하고 보스만 단독 등장
+    if (this.bossToSpawn > 0) {
+      this.enemiesToSpawn = 0;
+    }
+    
     this.totalEnemiesInWave = this.enemiesToSpawn + this.bossToSpawn;
     
     this.spawnTimer = 0;
