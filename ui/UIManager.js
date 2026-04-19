@@ -1199,24 +1199,61 @@ export class UIManager {
     const type = btn.getAttribute('data-type');
     const s = this.app.state;
     const curLv = s.upgrades[type] || 0;
-    const nextLv = curLv + 1;
     
-    // 요구 자원 매핑 (handleUpgrade와 동일 로직)
-    const resourceMap = {
-        blunt: [{ name: '은화', key: 'silver' }, { name: '강철', key: 'steel' }],
-        sharp: [{ name: '목재', key: 'wood' }, { name: '은화', key: 'silver' }],
-        ranged: [{ name: '플라스틸', key: 'plasteel' }, { name: '은화', key: 'silver' }]
-    };
-    
-    const resList = resourceMap[type];
-    const requirements = resList.map(r => ({
-      name: r.name,
-      req: nextLv,
-      cur: s[r.key]
-    }));
+    let requirements = [];
+    let title = "";
 
-    const typeName = type === 'blunt' ? '둔기' : (type === 'sharp' ? '날붙이' : '원거리');
-    this.renderTooltip(e, requirements, `${typeName} 강화 Lv.${nextLv} 요구사항`);
+    // 1. 전투 업그레이드 (blunt, sharp, ranged)
+    if (['blunt', 'sharp', 'ranged'].includes(type)) {
+        const nextLv = curLv + 1;
+        const resourceMap = {
+            blunt: [{ name: '은화', key: 'silver' }, { name: '강철', key: 'steel' }],
+            sharp: [{ name: '목재', key: 'wood' }, { name: '은화', key: 'silver' }],
+            ranged: [{ name: '플라스틸', key: 'plasteel' }, { name: '은화', key: 'silver' }]
+        };
+        const resList = resourceMap[type];
+        requirements = resList.map(r => ({
+            name: r.name,
+            req: nextLv,
+            cur: s[r.key]
+        }));
+        const names = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
+        title = `${names[type] || type} 전투 훈련 요구사항 (Lv.${curLv} → ${nextLv})`;
+    }
+    // 2. 생산 업그레이드 (커브 적용)
+    else {
+        if (curLv >= 5) {
+            this.renderTooltip(e, [], "최대 레벨 도달");
+            return;
+        }
+        const silverCurve = [200, 500, 1200, 2800, 5500];
+        const resCurve = [100, 250, 600, 1400, 2750];
+        
+        const costs = {
+            education: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '현대 교육' },
+            artisan: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '숙련 장인' },
+            farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: '고급 농경' },
+            mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '대규모 채굴' },
+            logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '기계식 벌목' },
+            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크' }
+        };
+        
+        const costData = costs[type];
+        if (costData) {
+            const nameMap = { silver: '은화', steel: '강철', wood: '나무', food: '식량', researchPoints: '연구 포인트' };
+            Object.entries(costData).forEach(([k, v]) => {
+                if (k === 'name') return;
+                requirements.push({
+                    name: nameMap[k] || k,
+                    req: v,
+                    cur: s[k] || 0
+                });
+            });
+            title = `${costData.name || type} 강화 요구사항 (Lv.${curLv} → ${curLv + 1})`;
+        }
+    }
+
+    this.renderTooltip(e, requirements, title);
   }
   renderTooltip(e, requirements, title) {
     let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
