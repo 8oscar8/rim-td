@@ -1139,14 +1139,14 @@ class App {
         else if (rand < 0.45) { s.plasteel += 12; result = { msg: "암시장 플라스틸 거래 성공 (+12 플라스틸)", grade: "Uncommon" }; }
     }
 
-    const title = type === 'silver' ? "암시장 거래 결과" : "자원 정제 완료";
-    if (result.grade !== 'info') {
-        this.ui.showNotification(title, result.msg, result.grade);
-    } else {
-        this.ui.addMiniNotification(result.msg, result.grade);
-    }
+    const isSuccess = result.grade !== 'info';
+    const title = isSuccess ? (type === 'silver' ? "암시장 거래 성공" : "자원 정제 성공") : (type === 'silver' ? "암시장 거래 실패" : "자원 정제 실패");
+    const displayGrade = isSuccess ? result.grade : 'failure';
+    
+    this.ui.showNotification(title, result.msg, displayGrade);
+    
     this.ui.updateDisplays(s);
-    SoundManager.playSFX('assets/audio/buy.mp3');
+    if (isSuccess) SoundManager.playSFX('assets/audio/buy.mp3');
   }
 
   /**

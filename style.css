@@ -379,6 +379,13 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     padding: 12px 24px;
     animation: none;
 }
+#notification-banner.failure {
+    border-color: #ff4d4d;
+    background: rgba(40, 0, 0, 0.9);
+    padding: 12px 24px;
+    animation: shake 0.3s;
+}
+#notification-banner.failure h4 { color: #ff4d4d; }
 #notification-banner.info h4 { font-size: 13px; letter-spacing: 1px; margin-bottom: 2px; color: var(--accent-blue); }
 #notification-banner.info p { font-size: 15px; font-weight: 500; margin: 0; text-shadow: none; }
 #notification-banner.info .prob-tag { display: none; }
