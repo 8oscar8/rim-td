@@ -58,6 +58,8 @@ export class Tower {
     this.rotation = 0; 
     this.target = null; 
     this.isBlueprint = true;
+    this.auraBuffTimer = 0;
+    this.goJuiceTimer = 0; // [New] 고주스 버프 타이머
     this.buildProgress = 0;
 
     // 과열 시스템
@@ -82,16 +84,15 @@ export class Tower {
     if (typeKey === 'melee') typeKey = 'sharp'; // 매핑 동기화
     
     const lv = this.gameCore.state.upgrades[typeKey] || 0;
-    const upgradeMul = this.gameCore.state.getUpgradeMultiplier(typeKey);
-    const encounterManager = this.gameCore.encounterManager;
-    const luciMul = encounterManager ? encounterManager.getGlobalLuciferiumMultiplier() : 1.0;
+    if (typeKey === 'melee') typeKey = 'sharp';
     
-    // [New] 무드 수치에 따른 공격력 보정
-    let moodMul = 1.0;
-    const mood = this.gameCore.state.mood || 0;
-    if (mood >= 85) moodMul = 1.1; // 매우 높음: +10%
-
-    return Math.floor(this.baseDamage * upgradeMul * luciMul * moodMul);
+    const state = this.gameCore.state;
+    const upgradeMul = state.getUpgradeMultiplier(typeKey);
+    const luciMul = this.isLuciferiumActive ? 1.5 : 1.0;
+    const moodMul = (state.mood >= 85) ? 1.1 : 1.0;
+    const goJuiceMul = (this.goJuiceTimer > 0) ? 1.5 : 1.0;
+    
+    return Math.floor(this.baseDamage * upgradeMul * luciMul * moodMul * goJuiceMul);
   }
 
   /**
@@ -99,13 +100,14 @@ export class Tower {
    */
   get attackSpeed() {
     const auraMul = (this.auraBuffTimer > 0) ? 1.4 : 1.0;
+    const goJuiceMul = (this.goJuiceTimer > 0) ? 1.5 : 1.0; // [New] 고주스 공속 보너스
     const encounterManager = this.gameCore.encounterManager;
     const globalMul = encounterManager ? encounterManager.getGlobalAttackSpeedMultiplier() : 1.0;
     
     // [Hidden Reward] 근위대의 가호: 1.2배 공속
     const imperialMul = this.gameCore.state.imperialBuff ? 1.2 : 1.0;
     
-    return this.baseAttackSpeed * auraMul * globalMul * imperialMul;
+    return this.baseAttackSpeed * auraMul * goJuiceMul * globalMul * imperialMul;
   }
 
   /**
@@ -148,6 +150,7 @@ export class Tower {
     }
 
     if (this.auraBuffTimer > 0) this.auraBuffTimer -= dt;
+    if (this.goJuiceTimer > 0) this.goJuiceTimer -= dt;
 
     // 휘두르기 애니메이션 업데이트
     if (this.isSwinging) {

@@ -456,7 +456,8 @@ export class UIManager {
                 '화염병': 'molotov',
                 '연막 발사기': 'smoke_launcher',
                 '독소 수류탄': 'toxin_grenade',
-                '정신충격창': 'psychic_lance'
+                '정신충격창': 'psychic_lance',
+                '고주스': 'go_juice'
             };
             const itemKey = itemKeyMap[weaponName];
             if (itemKey) {
@@ -868,7 +869,8 @@ export class UIManager {
         molotov: 'molotov',
         smoke_launcher: 'smoke',
         toxin_grenade: 'toxin',
-        psychic_lance: 'psychic'
+        psychic_lance: 'psychic',
+        go_juice: 'gojuice'
     };
 
     for (const [key, idSuffix] of Object.entries(itemMap)) {
@@ -1164,7 +1166,9 @@ export class UIManager {
             '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
             '화염병': { silver: 350, wood: 100, component: 5 },
             '연막 발사기': { silver: 400, steel: 180, component: 5 },
-            '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 }
+            '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 },
+            '정신충격창': { silver: 1500, uranium: 100, plasteel: 50, jade: 10, component: 20 },
+            '고주스': { food: 50, herbalMedicine: 30, uranium: 20, component: 10 }
         };
 
         this.specialCraftBtns.forEach(btn => {
@@ -1298,7 +1302,8 @@ export class UIManager {
     const nameMap = { 
         silver: '은화', steel: '강철', wood: '나무', 
         component: '부품', plasteel: '플라스틸', 
-        jade: '비취', uranium: '우라늄' 
+        jade: '비취', uranium: '우라늄',
+        food: '식량', herbalMedicine: '약초'
     };
     
     if (cost) {

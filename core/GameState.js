@@ -74,7 +74,8 @@ export class GameState {
         molotov: 0,
         smoke_launcher: 0,
         toxin_grenade: 0,
-        psychic_lance: 0
+        psychic_lance: 0,
+        go_juice: 0
     };
     this.itemCooldowns = {
         orbital_strike: 0,
@@ -84,6 +85,7 @@ export class GameState {
         smoke_launcher: 0,
         toxin_grenade: 0,
         psychic_lance: 0,
+        go_juice: 0,
         herbal_care: 0,
         financial_care: 0
     };

@@ -710,6 +710,13 @@ class App {
         }
       });
 
+      // 범위 내의 타워들에게 효과 적용 (고주스 등)
+      this.units.forEach(u => {
+          if (!u.isBlueprint && Math.hypot(u.x - f.x, u.y - f.y) <= (f.radius || 60)) {
+              if (f.type === 'go_juice') u.applyEffect('go_juice', 0.5);
+          }
+      });
+
       return f.duration > 0;
     });
 
@@ -1339,6 +1346,30 @@ class App {
                 ctx.fillStyle = 'rgba(230, 126, 34, 0.35)'; // 주황색 화염
                 ctx.shadowBlur = 20; ctx.shadowColor = '#e67e22';
                 ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+        });
+    }
+
+    if (type === 'go_juice') {
+        this.fieldEffects.push({
+            type: 'go_juice', x: x, y: y, radius: radius, duration: 15.0,
+            render: (ctx) => {
+                ctx.save();
+                ctx.fillStyle = 'rgba(100, 255, 100, 0.15)'; // 연한 연두색 자극제 영역
+                ctx.strokeStyle = 'rgba(100, 255, 100, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.shadowBlur = 15; ctx.shadowColor = '#64ff64';
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.stroke();
+                
+                // 자극적인 파동 연출 (내부 원 소실 애니메이션 느낌)
+                const pulse = (Date.now() % 1000) / 1000;
+                ctx.beginPath(); ctx.arc(x, y, radius * pulse, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(100, 255, 100, ${0.4 * (1 - pulse)})`;
+                ctx.stroke();
+                
                 ctx.restore();
             }
         });
