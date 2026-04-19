@@ -602,9 +602,8 @@ export class UIManager {
           
           // 연구 포인트 부족 시 비활성화
           const canAfford = (this.app.state.researchPoints >= 200);
-          this.combineUnitBtn.disabled = !canAfford;
           this.combineUnitBtn.style.opacity = canAfford ? "1" : "0.5";
-          this.combineUnitBtn.style.pointerEvents = canAfford ? "auto" : "none";
+          // disabled나 pointer-events: none을 제거하여 툴팁 호버가 작동하도록 함
 
           this.combineUnitBtn.onclick = () => {
             if (canAfford) this.app.combineUnits(tower);
@@ -865,21 +864,18 @@ export class UIManager {
     const canInteract = !state.isPaused;
     const canBuyRandom = state.silver >= 50 && canInteract;
     if (this.buyRandomBtn) {
-      this.buyRandomBtn.disabled = !canBuyRandom;
       this.buyRandomBtn.style.opacity = canBuyRandom ? "1" : "0.4";
       this.buyRandomBtn.style.filter = canBuyRandom ? "none" : "grayscale(0.5)";
     }
 
     const canBuyAdvanced = state.silver >= 1000 && canInteract;
     if (this.buyAdvancedBtn) {
-        this.buyAdvancedBtn.disabled = !canBuyAdvanced;
         this.buyAdvancedBtn.style.opacity = canBuyAdvanced ? "1" : "0.4";
         this.buyAdvancedBtn.style.filter = canBuyAdvanced ? "none" : "grayscale(0.5)";
     }
 
     const canExchangeJade = state.jade >= 1 && canInteract;
     if (this.exchangeJadeBtn) {
-        this.exchangeJadeBtn.disabled = !canExchangeJade;
         this.exchangeJadeBtn.style.opacity = canExchangeJade ? "1" : "0.4";
     }
 
@@ -890,12 +886,10 @@ export class UIManager {
         
         if (selectedUnit) {
             const price = this.app.calculateSellPrice(selectedUnit);
-            this.sellUnitsBtn.disabled = false;
             this.sellUnitsBtn.style.opacity = "1";
             this.sellUnitsBtn.style.filter = "none";
             if (sellText) sellText.textContent = `판매 (${price})`;
         } else {
-            this.sellUnitsBtn.disabled = true;
             this.sellUnitsBtn.style.opacity = "0.4";
             this.sellUnitsBtn.style.filter = "grayscale(1)";
             if (sellText) sellText.textContent = `판매 (유닛 선택 필요)`;
@@ -923,7 +917,6 @@ export class UIManager {
             if (costR) costR.textContent = rCost;
 
             const canUp = state.silver >= sCost && state.researchPoints >= rCost && canInteract;
-            this.techUpBtn.disabled = !canUp;
             this.techUpBtn.style.opacity = canUp ? "1" : "0.4";
         }
     }
@@ -947,9 +940,8 @@ export class UIManager {
         else if (grade === 'Mythic') resMet = state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20;
         
         const canCraft = techMet && resMet;
-        btn.disabled = !canCraft;
+        // disabled나 pointerEvents: none을 제거하여 툴팁 호버가 가능하도록 변경
         btn.style.opacity = canCraft ? "1" : "0.4";
-        btn.style.pointerEvents = canCraft ? "auto" : "none";
       });
     }
 
