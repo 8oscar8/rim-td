@@ -654,36 +654,25 @@ export class UIManager {
   }
 
   /**
-   * 몬스터 정보 실시간 갱신 (주로 HP)
+   * 몬스터 정보 실시간 갱신 (HP 및 방어력)
    */
   updateEnemyDetail(enemy) {
     if (!enemy || !enemy.active) {
       this.hideUnitDetail();
       return;
     }
-    const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
-    if (this.detailDps) this.detailDps.textContent = hpText;
-    
-    // 보호막이 있다면 추가 표시 가능
-    if (enemy.shield > 0) {
-       this.detailDps.textContent += ` (+${Math.floor(enemy.shield)} SHIELD)`;
-    }
-  }
 
-  /**
-   * 몬스터 정보 실시간 갱신 (주로 HP)
-   */
-  updateEnemyDetail(enemy) {
-    if (!enemy || !enemy.active) {
-      this.hideUnitDetail();
-      return;
-    }
+    // 1. HP 정보 갱신
     const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
-    if (this.detailDps) this.detailDps.textContent = hpText;
-    
-    // 보호막이 있다면 추가 표시 가능
+    let finalHpText = hpText;
     if (enemy.shield > 0) {
-       this.detailDps.textContent += ` (+${Math.floor(enemy.shield)} SHIELD)`;
+      finalHpText += ` (+${Math.floor(enemy.shield)} SHIELD)`;
+    }
+    if (this.detailDps) this.detailDps.textContent = finalHpText;
+
+    // 2. 방어력 실시간 갱신 (방깎 반영)
+    if (this.detailAtk) {
+      this.detailAtk.textContent = Math.floor(enemy.armor);
     }
   }
 
