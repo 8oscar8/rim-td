@@ -441,41 +441,6 @@ export class Tower {
       ctx.fillText('JADE', this.x, this.y + 20);
       ctx.restore();
     }
-
-    // [New] 범용 버프 이펙트 (무드 보너스, 고주스 등)
-    const state = this.gameCore.state;
-    const isMoodBuff = state.mood >= 85;
-    const isGoJuiceBuff = this.goJuiceTimer > 0;
-    const isLuciBuff = this.isLuciferiumActive;
-
-    if (isMoodBuff || isGoJuiceBuff || isLuciBuff) {
-        ctx.save();
-        
-        const time = Date.now() * 0.005;
-        const pulse = Math.sin(time) * 3;
-        
-        // 1. 후광 효과 (Glow)
-        let color = "rgba(255, 215, 0, 0.25)"; // 무드 보너함: 금색
-        if (isGoJuiceBuff) color = "rgba(100, 255, 100, 0.3)"; // 고주스: 연두색
-        if (isLuciBuff) color = "rgba(255, 50, 50, 0.3)"; // 루시페륨: 빨간색
-        
-        ctx.shadowBlur = 10 + pulse;
-        ctx.shadowColor = color;
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 20 + pulse, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // 2. 부동 아이콘 효과
-        if (isMoodBuff && !this.isBlueprint) {
-           ctx.fillStyle = "#fbbf24";
-           ctx.font = "12px Inter";
-           ctx.textAlign = "center";
-           ctx.fillText("✨", this.x + 18, this.y - 18 + Math.sin(time*0.5)*2);
-        }
-        
-        ctx.restore();
-    }
   }
 
   // 체력 및 과열 게이지 렌더링
