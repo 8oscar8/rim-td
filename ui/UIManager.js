@@ -94,6 +94,8 @@ export class UIManager {
     this.rowSpd = document.getElementById('row-spd');
     this.rowShred = document.getElementById('row-shred');
     this.detailShred = document.getElementById('detail-shred');
+    this.rowEffect = document.getElementById('row-effect');
+    this.detailEffect = document.getElementById('detail-effect');
     this.tooltip = document.getElementById('custom-tooltip');
     this.currentTooltipSource = null; // 실시간 갱신을 위한 현재 툴팁 정보 저장
     this._isRefreshingTooltip = false; // 무한 루프 방지 플래그
@@ -650,6 +652,28 @@ export class UIManager {
       if (shredVal > 0 && this.rowShred) {
         this.rowShred.classList.remove('hidden');
         if (this.detailShred) this.detailShred.textContent = shredVal;
+      } else if (this.rowShred) {
+        this.rowShred.classList.add('hidden');
+      }
+
+      // [New] 특수 기믹(Effect) 정보 표시
+      const effectId = tower.weaponData.effect;
+      const effectNames = {
+        'stun': '기절',
+        'knockback': '넉백',
+        'armor_break': '방어 파쇄',
+        'aoe_dmg': '범위 공격',
+        'aura_cd': '오오라(재사용)',
+        'instakill': '즉사',
+        'max_hp_percent': '비율 데미지',
+        'stun_long': '강력 기절'
+      };
+      
+      if (effectId && effectNames[effectId] && this.rowEffect) {
+          this.rowEffect.classList.remove('hidden');
+          if (this.detailEffect) this.detailEffect.textContent = effectNames[effectId];
+      } else if (this.rowEffect) {
+          this.rowEffect.classList.add('hidden');
       }
 
       // [New] 조합 버튼 노출 및 처리
