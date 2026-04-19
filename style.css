@@ -597,12 +597,13 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 
 /* Mood Bar */
 .mood-bar-container {
-    width: 60px;
-    height: 8px;
+    width: 160px; /* 60px에서 160px로 대폭 확장 */
+    height: 10px;
     background: rgba(0, 0, 0, 0.4);
-    border-radius: 4px;
+    border-radius: 5px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 0 10px;
 }
 
 .mood-bar-fill {
