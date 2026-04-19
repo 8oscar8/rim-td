@@ -184,7 +184,8 @@ export class EncounterManager {
   triggerMentalBreak() {
     // 25% 확률로 정신적 한계를 극복함 (이겨냄)
     if (Math.random() < 0.25) {
-        this.app.ui.addMiniNotification("정신적 한계에 다다랐으나, 불굴의 의지로 이겨냈습니다!", "jackpot");
+        // [New] 황금색 신화 등급 연출로 극복함 표시!
+        this.app.ui.showNotification("잭팟", "불굴의 의지로 이겨냈습니다!", "Mythic");
         this.applyCatharsis();
         return;
     }
