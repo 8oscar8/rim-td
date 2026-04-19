@@ -411,10 +411,10 @@ export class UIManager {
         
         const costs = {
             '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
-            '펄스 수류탄': { silver: 500, steel: 250, component: 10 },
+            '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
             '화염병': { silver: 350, wood: 100, component: 5 },
             '연막 발사기': { silver: 400, steel: 180, component: 5 },
-            '독소 수류탄': { silver: 1000, steel: 400, component: 15 }
+            '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 }
         };
 
         const cost = costs[weaponName];
@@ -1005,10 +1005,10 @@ export class UIManager {
     if (this.specialCraftBtns) {
         const specialCosts = {
             '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
-            '펄스 수류탄': { silver: 500, steel: 250, component: 10 },
+            '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
             '화염병': { silver: 350, wood: 100, component: 5 },
             '연막 발사기': { silver: 400, steel: 180, component: 5 },
-            '독소 수류탄': { silver: 1000, steel: 400, component: 15 }
+            '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 }
         };
 
         this.specialCraftBtns.forEach(btn => {
@@ -1077,15 +1077,15 @@ export class UIManager {
     const s = this.app.state;
     const costs = {
         '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
-        '펄스 수류탄': { silver: 500, steel: 250, component: 10 },
+        '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
         '화염병': { silver: 350, wood: 100, component: 5 },
         '연막 발사기': { silver: 400, steel: 180, component: 5 },
-        '독소 수류탄': { silver: 1000, steel: 400, component: 15 }
+        '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 }
     };
 
     const cost = costs[weaponName];
     const requirements = [];
-    const nameMap = { silver: '은화', steel: '강철', wood: '나무', component: '부품' };
+    const nameMap = { silver: '은화', steel: '강철', wood: '나무', component: '부품', plasteel: '플라스틸', jade: '비취' };
     
     for (const [res, amt] of Object.entries(cost)) {
         requirements.push({ name: nameMap[res] || res, req: amt, cur: s[res] || 0 });
