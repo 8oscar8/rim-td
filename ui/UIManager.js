@@ -1491,10 +1491,15 @@ export class UIManager {
    */
   showWorkTooltip(e, type) {
     this.currentTooltipSource = { method: 'showWorkTooltip', args: [type] };
+    const s = this.app.state;
+    const up = s.upgrades;
+    const loggingProb = 5 + (up.logging * 2);
+    const farmingProb = 5 + (up.farming * 2);
+
     const workData = {
-        logging: { name: '벌목 작업', desc: '목재를 획득합니다. 목재는 주로 날붙이(Sharp) 계열 무기 강화와 화염병(Molotov) 제작에 사용됩니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: 5% 확률로 약초 획득' },
+        logging: { name: '벌목 작업', desc: `목재를 획득합니다. 목재는 주로 날붙이(Sharp) 계열 무기 강화와 화염병(Molotov) 제작에 사용됩니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: <span style="color:#fff">${loggingProb}%</span> 확률로 약초 획득 (레벨당 +2%)` },
         mining: { name: '채광 작업', desc: '강철을 주력으로 생산하며, 숙련도가 오르면 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>, <span style="color:var(--accent-gold)">부품(Component)</span>, <span style="color:#00f2ff">우라늄(Uranium)</span>, 그리고 희귀 보석인 <span style="color:#2ecc71">비취(Jade)</span>를 추가로 채굴할 수 있습니다.' },
-        farming: { name: '농사 작업', desc: '정착지의 주 식량원을 확보합니다. 식량이 일정량에 도달할 때마다 정착민 인구가 자동으로 증가하여 운영 효율이 높아집니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: 5% 확률로 약초 획득' },
+        farming: { name: '농사 작업', desc: `정착지의 주 식량원을 확보합니다. 식량이 일정량에 도달할 때마다 정착민 인구가 자동으로 증가하여 운영 효율이 높아집니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: <span style="color:#fff">${farmingProb}%</span> 확률로 약초 획득 (레벨당 +2%)` },
         research: { name: '연구 활동', desc: '연구 포인트를 축적하며, 연구 도중 낮은 확률로 <span style="color:var(--accent-gold)">부품(Component)</span>을 발견할 수도 있습니다. 기술 수준(Tech Level)을 높여 상위 등급의 아이템 제작 권한을 해금합니다.' },
         trading: { name: '교역 활동', desc: '외부 상단과의 거래를 통해 은화(Silver)를 벌어들입니다. 무역 네트워크 강화 시 매우 희귀한 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>이나 <span style="color:#2ecc71">비취(Jade)</span>를 대량으로 수입할 수 있습니다.' }
     };
@@ -1519,6 +1524,11 @@ export class UIManager {
   showResourceTooltip(e, type) {
     this.currentTooltipSource = { method: 'showResourceTooltip', args: [type] };
     const s = this.app.state;
+    const up = s.upgrades;
+    const loggingProb = 5 + (up.logging * 2);
+    const farmingProb = 5 + (up.farming * 2);
+    const maxProb = Math.max(loggingProb, farmingProb);
+
     const resData = {
         wave: { name: '현재 웨이브 (Wave)', desc: '현재 진행 중인 습격 단계입니다. 총 <span style="color:var(--accent-gold)">100 웨이브</span>까지 버텨내면 정착지 방어에 최종 성공하게 됩니다.' },
         enemyCount: { name: '적 개체수 (Enemy Count)', desc: '전장에 남아있는 적의 총 숫자입니다. 이 수치가 <span style="color:#ff4d4d">100</span>을 초과하면 기기 과부하 및 방어선 붕괴로 <span style="color:#ff4d4d">게임 오버</span>됩니다.' },
@@ -1526,7 +1536,7 @@ export class UIManager {
         mood: { 
             name: '정착민 무드 (행복도)', 
             desc: `정착민들의 현재 심리 상태입니다. 무드에 따라 다양한 보너스나 페널티가 발생합니다.<br><br>
-                   • <span style="color:#3b82f6">매우 높음 (85%+)</span>: 작업 속도 및 유닛 공격력 +10%<br>
+                   • <span style="color:#3b82f6">매우 높음 (85%+)</span>: 작업 속도 및 유닛 공격력 +10% (곱연산 적용)<br>
                    • <span style="color:#22c55e">좋음 (60%~85%)</span>: 정상적인 상태<br>
                    • <span style="color:#ef4444">정신 이상 임계치 (25% 미만)</span>: 정신 이상이 발생할 확률이 매우 높습니다.<br><br>
                    <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
@@ -1539,7 +1549,7 @@ export class UIManager {
         herbalMedicine: {
             name: '야생 약초 (Herbal Medicine)',
             desc: `자연에서 채집한 귀중한 약용 식물입니다.<br><br>
-                   • <span style="color:#fbbf24">획득 경로</span>: 벌목(Logging)이나 농사(Farming) 작업 완료 시 <span style="color:#fff">5% 확률</span>로 발견합니다.<br>
+                   • <span style="color:#fbbf24">획득 경로</span>: 벌목(Logging)이나 농사(Farming) 작업 완료 시 <span style="color:#fff">${maxProb}%</span> 확률로 발견합니다. (강화 시 증가)<br>
                    • <span style="color:#4ade80">사용 (클릭)</span>: 약초 <span style="color:#fff">50개</span>를 사용하여 무드를 <span style="color:#fff">25</span> 회복합니다. (클릭하여 사용)`
         },
         financialTherapy: {
