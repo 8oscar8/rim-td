@@ -1429,6 +1429,37 @@ export class UIManager {
     }
   }
 
+  /**
+   * [New] 자원 상세 설명 툴팁
+   */
+  showResourceTooltip(e, type) {
+    this.currentTooltipSource = { method: 'showResourceTooltip', args: [type] };
+    const resData = {
+        food: { name: '식량 (Food)', desc: '생존을 위한 필수 자원입니다. 식량이 <span style="color:var(--accent-gold)">100</span>에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.' },
+        silver: { name: '은화 (Silver)', desc: '기본적인 화폐입니다. 유닛 구매, 업그레이드, 거래 등에 광범위하게 사용됩니다.' },
+        steel: { name: '강철 (Steel)', desc: '건설과 제작에 쓰이는 기본 자원입니다. 둔기 무기 강화와 각종 기계 부품 제작에 필요합니다.' },
+        wood: { name: '목재 (Wood)', desc: '날붙이(Sharp) 계열 무기 강화와 화염병 제작 등에 사용되는 초기 자원입니다.' },
+        plasteel: { name: '플라스틸 (Plasteel)', desc: '첨단 기술이 적용된 합금입니다. 우주세기 무기 제작과 원거리 무기 강화에 필수적입니다.' },
+        uranium: { name: '우라늄 (Uranium)', desc: '희귀하고 밀도 높은 금속입니다. 파괴적인 파괴력을 가진 중화기 제작에 사용됩니다.' },
+        jade: { name: '비취 (Jade)', desc: '매우 아름다운 보석입니다. 미니 모노리스의 활성화나 특수 아이템 제작의 매계체로 쓰입니다.' },
+        component: { name: '부품 (Component)', desc: '복잡한 기계 장치입니다. 모든 고급 무기 제작에 빠짐없이 들어가는 귀중한 자재입니다.' },
+        researchPoints: { name: '연구 포인트', desc: '새로운 기술을 해금하고 정착지의 전반적인 생산성을 높이는 데 사용됩니다.' }
+    };
+
+    const data = resData[type];
+    if (!data) return;
+
+    let html = `<div class="tooltip-title" style="color: #fff">${data.name}</div>`;
+    html += `<div class="tooltip-body" style="font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; margin: 10px 0;">${data.desc}</div>`;
+    html += `<div class="tooltip-footer" style="color: #888; font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">* 정착지에 보관된 자산 가치를 나타냅니다.</div>`;
+
+    if (this.tooltip) {
+      this.tooltip.innerHTML = html;
+      this.tooltip.classList.remove('hidden');
+      this.moveTooltip(e);
+    }
+  }
+
   showGachaTooltip(e, type) {
     this.currentTooltipSource = { method: 'showGachaTooltip', args: [type] };
     const s = this.app.state;
