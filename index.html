@@ -334,9 +334,12 @@
                             <span class="text">Legendary 제작 (<img src="assets/plasteel.png" class="inline-icon"> 50, <img src="assets/uranium.png" class="inline-icon"> 30, <img src="assets/research.png" class="inline-icon"> 300, <img src="assets/부품.webp" class="inline-icon"> 20)</span>
                         </button>
                         <button class="shop-btn special-craft" data-weapon="인공자아핵"
-                            style="margin-top: 10px; border: 1px solid var(--accent-gold); background: rgba(255,215,0,0.1);"
+                            style="margin-top: 10px; border: 1px solid var(--accent-gold); background: rgba(255,215,0,0.1); height: auto; padding: 10px;"
                             onmouseenter="window.app.ui.showSpecialCraftTooltip(event, this)" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
-                            <span class="text" style="color: var(--accent-gold); font-weight: 800;">🌌 인공자아핵 (최종 병기 제작)</span>
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                <img src="assets/인공자아핵.webp" style="width: 32px; height: 32px; border-radius: 4px; box-shadow: 0 0 10px var(--accent-gold);">
+                                <span class="text" style="color: var(--accent-gold); font-weight: 800; font-size: 1rem;">🌌 인공자아핵 (최종 병기 제작)</span>
+                            </div>
                         </button>
                     </div>
                 </div>

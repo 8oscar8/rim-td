@@ -1413,7 +1413,8 @@ export class UIManager {
         silver: '은화', steel: '강철', wood: '나무', 
         component: '부품', plasteel: '플라스틸', 
         jade: '비취', uranium: '우라늄',
-        food: '식량', herbalMedicine: '약초'
+        food: '식량', herbalMedicine: '약초',
+        researchPoints: '연구 포인트'
     };
     
     if (cost) {
@@ -1424,7 +1425,7 @@ export class UIManager {
 
     let effect = "";
     if (weaponName === '인공자아핵') {
-        effect = "주변 아군 타워의 공격력과 공격 속도를 <span style='color:#00f2ff'>1.5배</span> 강화합니다.";
+        effect = `<span style="color:#ff4d4d; font-weight:bold;">[기술 수준: 초월 연구 필요]</span><br>주변 아군 타워의 공격력과 공격 속도를 <span style='color:#00f2ff'>1.5배</span> 강화합니다.`;
     }
 
     this.renderTooltip(e, requirements, `${weaponName} 제작 요구사항`, effect);
