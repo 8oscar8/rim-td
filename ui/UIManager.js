@@ -166,7 +166,7 @@ export class UIManager {
           this.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
           this.updateDisplays(this.app.state);
         } else {
-          alert("비취옥이 부족합니다!");
+          this.addMiniNotification("비취옥이 부족합니다!", 'failure');
         }
       };
     }
@@ -176,7 +176,7 @@ export class UIManager {
       this.sellUnitsBtn.onclick = () => {
         const success = this.app.sellSelectedUnit();
         if (!success) {
-          alert("판매할 유닛을 먼저 선택해주세요!");
+          this.addMiniNotification("판매할 유닛을 먼저 선택해주세요!", 'failure');
         }
       };
     }
@@ -205,7 +205,7 @@ export class UIManager {
 
           this.addMiniNotification(`기술 업그레이드 완료: ${this.app.state.techLevel}`);
         } else {
-          alert("자원이 부족합니다!");
+          this.addMiniNotification("자원이 부족합니다!", 'failure');
         }
         this.updateDisplays(this.app.state);
       };
@@ -325,7 +325,7 @@ export class UIManager {
         const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
         this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
       } else {
-        alert("자원이 부족합니다!");
+        this.addMiniNotification("자원이 부족합니다!", 'failure');
       }
       this.updateDisplays(s);
     };
@@ -390,7 +390,7 @@ export class UIManager {
             this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
             this.updateDisplays(s);
         } else {
-            alert("자원이 부족합니다!");
+            this.addMiniNotification("자원이 부족합니다!", 'failure');
         }
       };
 
@@ -451,7 +451,7 @@ export class UIManager {
             
             this.updateDisplays(s);
         } else {
-            alert("자원이 부족합니다!");
+            this.addMiniNotification("자원이 부족합니다!", 'failure');
         }
       };
     });
