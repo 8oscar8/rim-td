@@ -198,7 +198,7 @@ export class EncounterManager {
       },
       { 
         name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
-        desc: "지독한 독성 낙진이 대기를 뒤덮었습니다! 외부 활동이 제한되어 모든 파견 임무의 효율이 50% 감소합니다."
+        desc: "지독한 독성 낙진이 대기를 뒤덮었습니다! 외부 활동이 불가능해져 모든 파견 임무가 60초간 전면 중단됩니다."
       },
       { 
         name: '흑점 폭발', weight: 15, type: 'negative', id: 'solar_flare',
