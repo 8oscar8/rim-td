@@ -288,6 +288,19 @@ export class Enemy {
       ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
     }
 
+    // [New] 선택된 상태 표시 (선택 링)
+    if (this.selected) {
+      ctx.save();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 2]);
+      ctx.lineDashOffset = -Date.now() * 0.01;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius + 5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     // [New] 초재생/재생 효과 연출 (초록색 펄스 오오라)
     if (this.hpRegen > 0 && this.hp < this.maxHp && this.active) {
       ctx.save();

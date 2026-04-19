@@ -10,6 +10,8 @@ export class UIManager {
     this.app = app;
     this.fetchElements();
     this.initEvents();
+    this.selectedUnit = null; // 선택된 타워
+    this.selectedEnemy = null; // 선택된 몬스터
   }
 
   fetchElements() {
@@ -501,6 +503,7 @@ export class UIManager {
       }
       
       this.detailGrade.textContent = `[${tower.weaponData.grade || 'Common'}]`;
+      this.detailGrade.style.color = ""; // 색상 초기화
       
       let typeKey = tower.weaponType || 'blunt';
       if (typeKey === 'melee') typeKey = 'sharp';
@@ -565,11 +568,73 @@ export class UIManager {
   }
 
   hideUnitDetail() {
+    this.selectedUnit = null;
+    this.selectedEnemy = null;
     const detailArea = document.getElementById('unit-detail-area');
     if (detailArea) {
         // 실제로는 패널을 숨기지 않고 텍스트를 초기화하거나 스타일만 조정 가능
         // 여기서는 간단히 조합 버튼만 숨깁니다.
         if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
+    }
+  }
+
+  /**
+   * 몬스터 정보 표시
+   */
+  showEnemyDetail(enemy) {
+    if (!enemy) return;
+    this.selectedUnit = null;
+    this.selectedEnemy = enemy;
+
+    try {
+      this.detailName.textContent = enemy.name || "침입자";
+      this.detailGrade.textContent = enemy.isBoss ? "[BOSS]" : "[ENEMY]";
+      this.detailGrade.style.color = enemy.isBoss ? "var(--accent-red)" : "";
+      
+      const typeNames = { organic: '생체', mech: '기계' };
+      this.detailType.textContent = typeNames[enemy.type] || enemy.type;
+      
+      // HP 정보 (DPS 위치에 표시)
+      const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
+      this.detailDps.textContent = hpText;
+      this.detailDps.classList.remove('buff-text');
+      
+      // 방어력 정보 (공격력 위치에 표시)
+      this.detailAtk.textContent = Math.floor(enemy.armor);
+      if (this.detailAtkBonus) this.detailAtkBonus.textContent = " (방어력)";
+      if (this.detailUpLv) this.detailUpLv.textContent = "-";
+      
+      // 기타 정보
+      this.detailRange.textContent = "-";
+      this.detailSpd.textContent = enemy.speed;
+
+      // 조합 버튼 숨기기
+      if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
+      
+      // 방관 정보 레이블 변경 (임시)
+      const apEl = document.getElementById('detail-ap');
+      if (apEl) apEl.textContent = "-";
+
+      // 몬스터 클릭 시 강조 효과 등을 위해 App에 상태 전달 가능
+    } catch (e) {
+      console.error("UI Enemy Detail Update Error:", e);
+    }
+  }
+
+  /**
+   * 몬스터 정보 실시간 갱신 (주로 HP)
+   */
+  updateEnemyDetail(enemy) {
+    if (!enemy || !enemy.active) {
+      this.hideUnitDetail();
+      return;
+    }
+    const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
+    if (this.detailDps) this.detailDps.textContent = hpText;
+    
+    // 보호막이 있다면 추가 표시 가능
+    if (enemy.shield > 0) {
+       this.detailDps.textContent += ` (+${Math.floor(enemy.shield)} SHIELD)`;
     }
   }
 
@@ -612,9 +677,11 @@ export class UIManager {
       this.techLevelVal.textContent = names[state.techLevel] || state.techLevel;
     }
 
-    // 선택된 유닛 정보 실시간 갱신 (버프/스탯 변화 반영)
+    // 선택된 유닛 또는 몬스터 정보 실시간 갱신
     if (this.selectedUnit && this.selectedUnit.active) {
       this.showUnitDetail(this.selectedUnit);
+    } else if (this.selectedEnemy && this.selectedEnemy.active) {
+      this.updateEnemyDetail(this.selectedEnemy);
     }
 
     if (this.popVal) this.popVal.textContent = state.population;

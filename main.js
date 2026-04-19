@@ -249,21 +249,40 @@ class App {
       return;
     }
 
-    // 유닛 선택 로직
+    // 1. 유닛 선택 로직 (타워)
     let selectedAny = false;
     this.units.forEach(u => {
       const dist = Math.hypot(u.x - this.mousePos.x, u.y - this.mousePos.y);
       if (dist < 30) {
-        // 기존 선택 해제 및 새로운 유닛 선택
+        // 기존 선택 모두 해제
         this.units.forEach(u2 => u2.selected = false);
+        this.enemies.forEach(e2 => e2.selected = false);
+        
         u.selected = true;
         this.ui.showUnitDetail(u);
         selectedAny = true;
       }
     });
 
+    // 2. 몬스터 선택 로직 (유닛이 선택되지 않았을 때)
+    if (!selectedAny) {
+        this.enemies.forEach(en => {
+            const dist = Math.hypot(en.x - this.mousePos.x, en.y - this.mousePos.y);
+            if (dist < (en.radius + 15)) { // 클릭 판정을 위해 반경에 보정치 15 추가
+                // 기존 선택 모두 해제
+                this.units.forEach(u2 => u2.selected = false);
+                this.enemies.forEach(e2 => e2.selected = false);
+                
+                en.selected = true;
+                this.ui.showEnemyDetail(en);
+                selectedAny = true;
+            }
+        });
+    }
+
     if (!selectedAny) {
       this.units.forEach(u => u.selected = false);
+      this.enemies.forEach(en => en.selected = false);
       this.ui.hideUnitDetail();
     }
   }
