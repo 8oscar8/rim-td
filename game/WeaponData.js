@@ -37,7 +37,7 @@ export const WEAPON_DB = {
 
   '기관단총(SMG)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 20, burst: 3, spd: 0.45, ap: 0.15, range: 240 },
   '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310 },
-  '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 60, burst: 3, spd: 0.4, ap: 0.3, effect: 'aoe_dmg', range: 140 },
+  '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 60, burst: 3, spd: 0.4, ap: 0.3, effect: 'aoe_knockback', range: 140 },
 
   '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: 'armor_break', shred: 20, range: 480 },
   '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 75, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280 },

@@ -58,7 +58,7 @@ export class Projectile {
    * 투사체가 적에게 명중했을 때의 처리 분기
    */
   handleImpact(enemies, fieldEffects) {
-    const aoeEffects = ['aoe_dmg', 'emp', 'smoke', 'burn_fear', 'toxin', 'splash', 'splash_knockback'];
+    const aoeEffects = ['aoe_dmg', 'aoe_knockback', 'emp', 'smoke', 'burn_fear', 'toxin', 'splash', 'splash_knockback'];
     const isAOE = aoeEffects.includes(this.effect);
     
     if (isAOE) {
@@ -150,7 +150,7 @@ export class Projectile {
         ctx.stroke();
         ctx.restore();
       }
-    } else if (this.effect === 'aoe_dmg') {
+    } else if (this.effect === 'aoe_dmg' || this.effect === 'aoe_knockback') {
       // 산탄총 투사체 (사각형/슬러그 모양)
       ctx.save();
       ctx.translate(this.x, this.y);

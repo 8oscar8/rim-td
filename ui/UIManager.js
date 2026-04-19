@@ -663,6 +663,7 @@ export class UIManager {
         'knockback': '넉백',
         'armor_break': '방어 파쇄',
         'aoe_dmg': '범위 공격',
+        'aoe_knockback': '광역 넉백',
         'aura_cd': '오오라(재사용)',
         'instakill': '즉사',
         'max_hp_percent': '비율 데미지',
