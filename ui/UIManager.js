@@ -1184,9 +1184,25 @@ export class UIManager {
 
   moveTooltip(e) {
     if (this.tooltip) {
-      // fixed position이므로 clientX/Y 사용
-      this.tooltip.style.left = (e.clientX + 20) + 'px';
-      this.tooltip.style.top = (e.clientY + 20) + 'px';
+      const margin = 20;
+      const tooltipWidth = this.tooltip.offsetWidth;
+      const tooltipHeight = this.tooltip.offsetHeight;
+      
+      let x = e.clientX + margin;
+      let y = e.clientY + margin;
+
+      // 우측 경계 체크: 화면 밖으로 나가면 왼쪽으로 반전
+      if (x + tooltipWidth > window.innerWidth) {
+          x = e.clientX - tooltipWidth - margin;
+      }
+      
+      // 하단 경계 체크: 화면 밖으로 나가면 위쪽으로 반전
+      if (y + tooltipHeight > window.innerHeight) {
+          y = e.clientY - tooltipHeight - margin;
+      }
+
+      this.tooltip.style.left = x + 'px';
+      this.tooltip.style.top = y + 'px';
     }
   }
 
