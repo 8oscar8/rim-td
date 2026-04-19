@@ -52,6 +52,7 @@ export class Enemy {
     this.raidTimerMax = 0;
     this.onRaidTimeout = null; // 타이머 종료 시 콜백 (탈출 성공 판정용)
 
+    this.selected = false;
     this.flashTimer = 0;
   }
 

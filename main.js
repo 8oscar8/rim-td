@@ -242,44 +242,56 @@ class App {
   }
 
   handleCanvasClick(e) {
-    if (this.inputLock) return; // UI 클릭 후 즉각 반응 방지
+    if (this.inputLock) return;
 
+    // 마우스 위치 재계산 (이벤트 객체 기준)
+    const rect = this.renderer.canvas.getBoundingClientRect();
+    const clickX = (e.clientX - rect.left) * (this.renderer.canvas.width / rect.width);
+    const clickY = (e.clientY - rect.top) * (this.renderer.canvas.height / rect.height);
+    
+    // 배치 모드 처리
     if (this.placementMode && this.pendingGachaResult) {
       this.confirmPlacement();
       return;
     }
 
-    // 1. 유닛 선택 로직 (타워)
     let selectedAny = false;
-    this.units.forEach(u => {
-      const dist = Math.hypot(u.x - this.mousePos.x, u.y - this.mousePos.y);
-      if (dist < 30) {
-        // 기존 선택 모두 해제
-        this.units.forEach(u2 => u2.selected = false);
-        this.enemies.forEach(e2 => e2.selected = false);
-        
-        u.selected = true;
-        this.ui.showUnitDetail(u);
-        selectedAny = true;
-      }
-    });
 
-    // 2. 몬스터 선택 로직 (유닛이 선택되지 않았을 때)
-    if (!selectedAny) {
-        this.enemies.forEach(en => {
-            const dist = Math.hypot(en.x - this.mousePos.x, en.y - this.mousePos.y);
-            if (dist < (en.radius + 15)) { // 클릭 판정을 위해 반경에 보정치 15 추가
-                // 기존 선택 모두 해제
-                this.units.forEach(u2 => u2.selected = false);
-                this.enemies.forEach(e2 => e2.selected = false);
-                
-                en.selected = true;
-                this.ui.showEnemyDetail(en);
-                selectedAny = true;
-            }
-        });
+    // [New] 몬스터 우선 선택 로직 (움직이는 적이므로 우선순위 부여)
+    for (const en of this.enemies) {
+        if (!en.active) continue;
+        const dist = Math.hypot(en.x - clickX, en.y - clickY);
+        // 판정 범위를 더욱 넉넉하게 (반경 + 35)
+        if (dist < (en.radius + 35)) { 
+            this.units.forEach(u2 => u2.selected = false);
+            this.enemies.forEach(e2 => e2.selected = false);
+            
+            en.selected = true;
+            this.ui.showEnemyDetail(en);
+            selectedAny = true;
+            console.log(`[Click] Monster selected: ${en.name || 'Enemy'}`);
+            break; 
+        }
     }
 
+    // 2. 유닛 선택 로직 (몬스터가 선택되지 않았을 때)
+    if (!selectedAny) {
+        for (const u of this.units) {
+          const dist = Math.hypot(u.x - clickX, u.y - clickY);
+          if (dist < 35) {
+            this.units.forEach(u2 => u2.selected = false);
+            this.enemies.forEach(e2 => e2.selected = false);
+            
+            u.selected = true;
+            this.ui.showUnitDetail(u);
+            selectedAny = true;
+            console.log(`[Click] Tower selected: ${u.weaponName}`);
+            break; 
+          }
+        }
+    }
+
+    // 3. 선택 해제
     if (!selectedAny) {
       this.units.forEach(u => u.selected = false);
       this.enemies.forEach(en => en.selected = false);
