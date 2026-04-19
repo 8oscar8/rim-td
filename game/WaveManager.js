@@ -299,9 +299,9 @@ export class WaveManager {
     let spawnedTrumbo = 0;
     const tInterval = setInterval(() => {
         const trumbo = new Enemy(this.waypoints, baseHp * 2.5, 500, 'organic', true, armor);
-        trumbo.name = `보물 트럼보 (#${spawnedTrumbo + 1})`;
+        trumbo.name = `보물 머팔로 (#${spawnedTrumbo + 1})`;
         trumbo.speed *= 0.7; // 짐이 많아 느림
-        trumbo.raidTimerMax = 100; // 100초 내에 잡아야 함
+        trumbo.raidTimerMax = 180; // 180초(3분) 내에 잡아야 함
         trumbo.raidTimer = trumbo.raidTimerMax;
         
         // 탈출 시 패널티 발동 콜백
