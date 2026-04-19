@@ -302,12 +302,29 @@ export class UIManager {
       console.log(`[UIManager] handleUpgrade triggered for: ${type}`);
       const s = this.app.state;
       const currentLevel = s.upgrades[type] || 0;
-      const nextLevelCost = currentLevel + 1;
+      const nextLevel = currentLevel + 1;
+      
+      // 구간별 가중치 비용 계산 로직
+      const getCategoryUpgradeCost = (category, level) => {
+          let multiplier = 1.0;
+          if (category === 'sharp') {
+              if (level >= 101) multiplier = 3.0;
+              else if (level >= 51) multiplier = 2.0;
+          } else if (category === 'blunt') {
+              if (level >= 101) multiplier = 2.5;
+              else if (level >= 51) multiplier = 1.5;
+          } else if (category === 'ranged') {
+              multiplier = 1.0; // 원거리는 기존 방식 유지
+          }
+          return Math.floor(level * multiplier);
+      };
 
-      // 자원 매핑 (이미지 및 요청 사항 기반)
+      const nextLevelCost = getCategoryUpgradeCost(type, nextLevel);
+
+      // 자원 매핑 (수정: 날붙이는 나무, 둔기는 강철 단일 사용)
       const resourceMap = {
-        blunt: ['silver', 'steel'],
-        sharp: ['wood', 'silver'],
+        blunt: ['steel'],
+        sharp: ['wood'],
         ranged: ['plasteel', 'silver']
       };
       
@@ -1166,24 +1183,43 @@ export class UIManager {
         if (!btn) return;
         const lv = state.upgrades[type] || 0;
         const next = lv + 1;
+        
+        // 가중치 비용 계산 (내부 헬퍼)
+        const getCost = (t, l) => {
+            let mul = 1.0;
+            if (t === 'sharp') { if (l >= 101) mul = 3.0; else if (l >= 51) mul = 2.0; }
+            else if (t === 'blunt') { if (l >= 101) mul = 2.5; else if (l >= 51) mul = 1.5; }
+            return Math.floor(l * mul);
+        };
+        const nextCost = getCost(type, next);
+
         const el1 = document.getElementById(`${type}-cost-1`);
         const el2 = document.getElementById(`${type}-cost-2`);
-        if (el1) el1.textContent = next;
-        if (el2) el2.textContent = next;
+        if (el1) el1.textContent = nextCost;
+
+        // [New] 중복 자원 영역 처리 (날붙이/둔기는 단일 자원이므로 두 번째 칸 숨김)
+        if (el2) {
+            if (type === 'ranged') {
+                el2.textContent = nextCost; 
+                if (el2.parentElement) el2.parentElement.style.display = "block";
+            } else {
+                if (el2.parentElement) el2.parentElement.style.display = "none";
+            }
+        }
 
         // [New] 강화 효율 텍스트 동적 업데이트
         const effectEl = btn.querySelector('.up-effect');
         if (effectEl) {
             let rate = 10;
-            if (lv >= 100) rate = 30;     // 101강 이상 (현재 100이면 다음이 101이므로 30%로 보임)
-            else if (lv >= 50) rate = 20; // 51강 이상
+            if (lv >= 100) rate = 30;
+            else if (lv >= 50) rate = 20;
             effectEl.textContent = `+${rate}%`;
         }
 
         let hasRes = false;
-        if (type === 'blunt') hasRes = state.silver >= next && state.steel >= next;
-        else if (type === 'sharp') hasRes = state.wood >= next && state.silver >= next;
-        else if (type === 'ranged') hasRes = state.plasteel >= next && state.silver >= next;
+        if (type === 'blunt') hasRes = state.steel >= nextCost;
+        else if (type === 'sharp') hasRes = state.wood >= nextCost;
+        else if (type === 'ranged') hasRes = state.plasteel >= nextCost && state.silver >= nextCost;
 
         btn.disabled = !hasRes;
         btn.style.opacity = hasRes ? "1" : "0.4";
@@ -1429,15 +1465,25 @@ export class UIManager {
     // 1. 전투 업그레이드 (blunt, sharp, ranged)
     if (['blunt', 'sharp', 'ranged'].includes(type)) {
         const nextLv = curLv + 1;
+        
+        // 가중치 비용 계산 (툴팁용)
+        const getCost = (t, l) => {
+            let mul = 1.0;
+            if (t === 'sharp') { if (l >= 101) mul = 3.0; else if (l >= 51) mul = 2.0; }
+            else if (t === 'blunt') { if (l >= 101) mul = 2.5; else if (l >= 51) mul = 1.5; }
+            return Math.floor(l * mul);
+        };
+        const nextLvCost = getCost(type, nextLv);
+
         const resourceMap = {
-            blunt: [{ name: '은화', key: 'silver' }, { name: '강철', key: 'steel' }],
-            sharp: [{ name: '목재', key: 'wood' }, { name: '은화', key: 'silver' }],
+            blunt: [{ name: '강철', key: 'steel' }],
+            sharp: [{ name: '목재', key: 'wood' }],
             ranged: [{ name: '플라스틸', key: 'plasteel' }, { name: '은화', key: 'silver' }]
         };
         const resList = resourceMap[type];
         requirements = resList.map(r => ({
             name: r.name,
-            req: nextLv,
+            req: nextLvCost,
             cur: s[r.key]
         }));
         const names = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
