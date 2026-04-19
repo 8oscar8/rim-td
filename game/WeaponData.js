@@ -71,7 +71,7 @@ export const ITEM_DB = {
     desc: '지면에 6초간 독가스 구름을 형성합니다. 영역 내 적들은 방어력이 지속적으로 부식(최대 30%)됩니다.'
   },
   'orbital_strike': { 
-    name: '궤도 폭격', type: 'item', grade: 'Legendary', dmg: 9999, ap: 1.0, effect: 'orbital', radius: 0, cooldown: 60,
+    name: '궤도 폭격', type: 'item', grade: 'Legendary', dmg: 999999, ap: 1.0, effect: 'orbital', radius: 0, cooldown: 60,
     desc: '위성에서 발사되는 파괴적인 광선입니다. 보스를 제외한 전장의 모든 적을 즉시 소멸시킵니다.'
   },
   'psychic_lance': { 
