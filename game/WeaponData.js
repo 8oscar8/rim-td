@@ -29,6 +29,7 @@ export const WEAPON_DB = {
   '단궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 11, spd: 0.33, ap: 0.1, effect: 'arrow', range: 230 },
   '곡궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.32, ap: 0.1, effect: 'arrow', range: 260 },
   '자동권총': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 10, spd: 1.0, ap: 0.1, effect: null, range: 240 },
+  '인공자아핵': { type: 'special', tech: 'ultra', grade: 'Mythic', dmg: 0, spd: 0, ap: 0, range: 280, effect: 'aura_persona', fixedMaterial: 'None' },
 
   '장궁': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 17, spd: 0.28, ap: 0.2, effect: 'arrow', range: 300 },
   '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260 },
@@ -91,7 +92,17 @@ export const SPECIAL_CRAFT_DB = {
     '연막 발사기': { silver: 400, steel: 180, component: 5 },
     '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 },
     '정신충격창': { silver: 1500, uranium: 100, plasteel: 50, jade: 10, component: 20 },
-    '고주스': { food: 500, herbalMedicine: 50, uranium: 20, component: 10 }
+    '고주스': { food: 500, herbalMedicine: 50, uranium: 20, component: 10 },
+    '인공자아핵': { 
+        silver: 5000, 
+        wood: 1000, 
+        steel: 2000, 
+        plasteel: 500, 
+        uranium: 200, 
+        jade: 100, 
+        component: 50, 
+        researchPoints: 2000 
+    }
 };
 
 export const MATERIAL_DB = {

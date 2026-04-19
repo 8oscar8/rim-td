@@ -696,7 +696,8 @@ export class UIManager {
         'aura_cd': '주위 공속 증가',
         'instakill': '즉사 확률',
         'max_hp_percent': '체력 비례 피해',
-        'stun_long': '장기 기절'
+        'stun_long': '장기 기절',
+        'aura_persona': '궁극의 오라 (공/공속 1.5배)'
       };
       
       if (effectId && effectNames[effectId] && this.rowEffect) {
@@ -1043,10 +1044,14 @@ export class UIManager {
                     break;
                 }
             }
-            btn.disabled = !canAfford || !canInteract;
-            btn.style.opacity = (canAfford && canInteract) ? "1" : "0.4";
-            btn.style.filter = (canAfford && canInteract) ? "none" : "grayscale(0.5)";
-            btn.style.cursor = (canAfford && canInteract) ? "pointer" : "not-allowed";
+            // [New] 기술 단계 및 자원 보완 체크
+            let techMet = true;
+            if (weaponName === '인공자아핵' && state.techLevel !== 'ultra') techMet = false;
+
+            btn.disabled = !canAfford || !canInteract || !techMet;
+            btn.style.opacity = (canAfford && canInteract && techMet) ? "1" : "0.4";
+            btn.style.filter = (canAfford && canInteract && techMet) ? "none" : "grayscale(0.5)";
+            btn.style.cursor = (canAfford && canInteract && techMet) ? "pointer" : "not-allowed";
         });
     }
 

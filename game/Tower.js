@@ -71,7 +71,9 @@ export class Tower {
     
     // 특수 버프 상태
     this.isLuciferiumActive = false;
-    this.auraBuffTimer = 0; // 엘텍스 지팡이 등 주변 버프 수신용
+    this.goJuiceTimer = 0; // 고주스 투약 지속 시간
+    this.auraBuffTimer = 0; // 근처 엘텍스 지팡이 등에 의한 버프 타이머
+    this.personaBuffTimer = 0; // [New] 인공자아핵 버프 타이머
   }
 
   /**
@@ -91,8 +93,9 @@ export class Tower {
     const luciMul = this.isLuciferiumActive ? 1.5 : 1.0;
     const moodMul = (state.mood >= 85) ? 1.1 : 1.0;
     const goJuiceMul = (this.goJuiceTimer > 0) ? 1.5 : 1.0;
+    const personaMul = (this.personaBuffTimer > 0) ? 1.5 : 1.0; // [New] 인공자아핵 공격력 보너스
     
-    return Math.floor(this.baseDamage * upgradeMul * luciMul * moodMul * goJuiceMul);
+    return Math.floor(this.baseDamage * upgradeMul * luciMul * moodMul * goJuiceMul * personaMul);
   }
 
   /**
@@ -106,8 +109,9 @@ export class Tower {
     
     // [Hidden Reward] 근위대의 가호: 1.2배 공속
     const imperialMul = this.gameCore.state.imperialBuff ? 1.2 : 1.0;
+    const personaSpdMul = (this.personaBuffTimer > 0) ? 1.5 : 1.0; // [New] 인공자아핵 공속 보너스
     
-    return this.baseAttackSpeed * auraMul * goJuiceMul * globalMul * imperialMul;
+    return this.baseAttackSpeed * auraMul * goJuiceMul * globalMul * imperialMul * personaSpdMul;
   }
 
   /**
@@ -136,6 +140,18 @@ export class Tower {
     this.isLuciferiumActive = globalEffects.luciferium || false;
 
     if (this.cooldown > 0) this.cooldown -= dt;
+    if (this.goJuiceTimer > 0) this.goJuiceTimer -= dt;
+    if (this.auraBuffTimer > 0) this.auraBuffTimer -= dt;
+    if (this.personaBuffTimer > 0) this.personaBuffTimer -= dt;
+
+    // [New] 인공자아핵 오라 발산 (주변 타워 강화)
+    if (this.weaponData.effect === 'aura_persona') {
+      this.gameCore.units.forEach(u => {
+        if (u !== this && !u.isBlueprint && Math.hypot(u.x - this.x, u.y - this.y) < this.range) {
+          u.personaBuffTimer = 0.2; 
+        }
+      });
+    }
 
     // 과열 처리
     if (this.isOverheated) {
