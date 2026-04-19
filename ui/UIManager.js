@@ -595,7 +595,7 @@ export class UIManager {
       const burst = tower.weaponData.burst || 1;
       
       this.detailDps.textContent = (total * burst * spd).toFixed(1);
-      this.detailAtk.textContent = Math.floor(base);
+      this.detailAtk.textContent = Math.floor(total);
       // 공격력 보너스 계산 (훈련 정수 보너스와 버프 배율 분리)
       const state = this.app.state;
       const upgradeMul = state.getUpgradeMultiplier(typeKey);
@@ -606,7 +606,7 @@ export class UIManager {
       const goJuiceMul = (tower.goJuiceTimer > 0) ? 1.5 : 1.0;
       const totalMul = moodMul * luciMul * goJuiceMul;
 
-      let bonusHtml = `(+${trainingBonus} 훈련)`;
+      let bonusHtml = `(${Math.floor(base)} +${trainingBonus} 훈련)`;
       if (totalMul > 1.0) {
           bonusHtml += ` <span style="color:var(--accent-gold); font-weight:800;">×${totalMul.toFixed(2)}</span>`;
       }
