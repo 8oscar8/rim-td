@@ -1417,6 +1417,18 @@ export class UIManager {
         researchPoints: '연구 포인트'
     };
     
+    const koLevels = { primitive: '원시', industrial: '산업', advanced: '첨단', spacer: '우주', ultra: '초월' };
+    
+    if (weaponName === '인공자아핵') {
+        const curTech = state.techLevel || 'primitive';
+        requirements.push({ 
+            name: '기술 수준', 
+            req: koLevels['ultra'], 
+            cur: koLevels[curTech],
+            isShort: curTech !== 'ultra'
+        });
+    }
+
     if (cost) {
         for (const [res, amt] of Object.entries(cost)) {
             requirements.push({ name: nameMap[res] || res, req: amt, cur: s[res] || 0 });
@@ -1425,7 +1437,7 @@ export class UIManager {
 
     let effect = "";
     if (weaponName === '인공자아핵') {
-        effect = `<span style="color:#ff4d4d; font-weight:bold;">[기술 수준: 초월 연구 필요]</span><br>주변 아군 타워의 공격력과 공격 속도를 <span style='color:#00f2ff'>1.5배</span> 강화합니다.`;
+        effect = `주변 아군 타워의 공격력과 공격 속도를 <span style='color:#00f2ff'>1.5배</span> 강화합니다.`;
     }
 
     this.renderTooltip(e, requirements, `${weaponName} 제작 요구사항`, effect);
