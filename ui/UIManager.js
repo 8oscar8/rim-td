@@ -494,8 +494,8 @@ export class UIManager {
       const displayGrade = gradeMap[grade] || grade;
       const gradeStr = displayGrade.toUpperCase();
       
-      // 가차 결과일 때만 확률 표시
-      const isGacha = title.includes("배치") || title.includes("GACHA");
+      // 가차 또는 도박 결과일 때만 확률 표시/강조 연출
+      const isGacha = title.includes("배치") || title.includes("GACHA") || title.includes("정제") || title.includes("거래");
       const probStr = (isGacha && probs[grade]) ? `<div class="prob-tag">${probs[grade]} CHANCE</div>` : '';
 
       t.innerHTML = `${gradeStr}`;
