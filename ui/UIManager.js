@@ -1154,10 +1154,10 @@ export class UIManager {
         else if (grade === 'Mythic' && techIdx < 4) techMet = false;
 
         let resMet = false;
-        if (grade === 'Rare') resMet = state.wood >= 30 && state.steel >= 30 && state.component >= 1;
-        else if (grade === 'Epic') resMet = state.steel >= 50 && state.plasteel >= 10 && state.component >= 5;
-        else if (grade === 'Legendary') resMet = state.plasteel >= 30 && state.uranium >= 20 && state.researchPoints >= 100 && state.component >= 10;
-        else if (grade === 'Mythic') resMet = state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20;
+        if (grade === 'Rare') resMet = state.wood >= 30 && state.steel >= 30 && state.component >= 1 && state.researchPoints >= 50;
+        else if (grade === 'Epic') resMet = state.steel >= 50 && state.plasteel >= 10 && state.component >= 5 && state.researchPoints >= 100;
+        else if (grade === 'Legendary') resMet = state.plasteel >= 30 && state.uranium >= 20 && state.researchPoints >= 300 && state.component >= 10;
+        else if (grade === 'Mythic') resMet = state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 500 && state.component >= 20;
         
         const canCraft = techMet && resMet;
         btn.disabled = !canCraft;
@@ -1317,26 +1317,28 @@ export class UIManager {
       requirements = [
         { name: '나무', req: 30, cur: s.wood },
         { name: '강철', req: 30, cur: s.steel },
+        { name: '연구', req: 50, cur: s.researchPoints },
         { name: '부품', req: 1, cur: s.component }
       ];
     } else if (grade === 'Epic') {
       requirements = [
         { name: '강철', req: 50, cur: s.steel },
         { name: '플라스틸', req: 10, cur: s.plasteel },
+        { name: '연구', req: 100, cur: s.researchPoints },
         { name: '부품', req: 5, cur: s.component }
       ];
     } else if (grade === 'Legendary') {
       requirements = [
         { name: '플라스틸', req: 30, cur: s.plasteel },
         { name: '우라늄', req: 20, cur: s.uranium },
-        { name: '연구', req: 100, cur: s.researchPoints },
+        { name: '연구', req: 300, cur: s.researchPoints },
         { name: '부품', req: 10, cur: s.component }
       ];
     } else if (grade === 'Mythic') {
       requirements = [
         { name: '플라스틸', req: 50, cur: s.plasteel },
         { name: '우라늄', req: 30, cur: s.uranium },
-        { name: '연구', req: 300, cur: s.researchPoints },
+        { name: '연구', req: 500, cur: s.researchPoints },
         { name: '부품', req: 20, cur: s.component }
       ];
     }
