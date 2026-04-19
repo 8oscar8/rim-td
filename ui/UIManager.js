@@ -1251,7 +1251,7 @@ export class UIManager {
     };
     const gradeColors = {
       Common: '#ccc', Uncommon: '#4dff88', Rare: '#3498db', 
-      Epic: '#9b59b6', Legendary: '#f1c40f', Mythic: '#ff00ff'
+      Epic: '#9b59b6', Legendary: '#ff00ff', Mythic: '#f1c40f'
     };
 
     let title = type === 'random' ? "무작위 유닛 구매 확률" : "고급 무기 상자 확률 (Rare 이상)";
