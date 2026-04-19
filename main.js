@@ -599,9 +599,9 @@ class App {
 
   handleWaveComplete() {
     console.log(`[Wave] ${this.state.waveNumber} 완료!`);
-    // [New] 웨이브 클리어 시 무드 보너스 +10
-    this.state.mood = Math.min(100, this.state.mood + 10);
-    this.ui.addMiniNotification(`웨이브 ${this.state.waveNumber} 클리어! 정착민 무드 +10%`, "info");
+    // [New] 웨이브 클리어 시 무드 보너스 +7
+    this.state.mood = Math.min(100, this.state.mood + 7);
+    this.ui.addMiniNotification(`웨이브 ${this.state.waveNumber} 클리어! 정착민 무드 +7%`, "info");
   }
 
   handleWaveStart(num) {

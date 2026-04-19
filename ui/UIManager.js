@@ -1494,7 +1494,7 @@ export class UIManager {
                    <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
                    • <span style="color:#fbbf24">무드 회복 수단</span>:<br>
                    - 적 처치 시 <span style="color:#fff">+0.75%</span> (알림 미표시)<br>
-                   - 웨이브 클리어 시 <span style="color:#fff">+10.0%</span><br>
+                   - 웨이브 클리어 시 <span style="color:#fff">+7.0%</span><br>
                    - 벌목/농사 작업 중 낮은 확률로 힐링 발생<br>
                    - 긍정적인 랜덤 인카운터 조우 시 상승` 
         },
