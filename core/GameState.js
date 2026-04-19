@@ -73,6 +73,14 @@ export class GameState {
         smoke_launcher: 0,
         toxin_grenade: 0
     };
+    this.itemCooldowns = {
+        orbital_strike: 0,
+        frag_grenade: 0,
+        pulse_grenade: 0,
+        molotov: 0,
+        smoke_launcher: 0,
+        toxin_grenade: 0
+    };
   }
 
   addResource(type, amount) {

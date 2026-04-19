@@ -773,10 +773,17 @@ export class UIManager {
         const cardEl = document.getElementById(`btn-item-${idSuffix}`);
         if (countEl) {
             const count = items[key] || 0;
+            const cooldown = state.itemCooldowns[key] || 0;
+            
             countEl.innerText = count;
             if (cardEl) {
+                // 수량 체크
                 if (count > 0) cardEl.classList.remove('empty');
                 else cardEl.classList.add('empty');
+                
+                // 쿨타임 체크 (수량이 있을 때만 쿨타임 표시)
+                if (cooldown > 0 && count > 0) cardEl.classList.add('on-cooldown');
+                else cardEl.classList.remove('on-cooldown');
             }
         }
     }

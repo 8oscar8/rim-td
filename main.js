@@ -640,6 +640,13 @@ class App {
       return f.duration > 0;
     });
 
+    // 6. 아이템 쿨타임 업데이트
+    for (const key in this.state.itemCooldowns) {
+        if (this.state.itemCooldowns[key] > 0) {
+            this.state.itemCooldowns[key] = Math.max(0, this.state.itemCooldowns[key] - scaledDt);
+        }
+    }
+
     // UI 동기화
     this.ui.updateDisplays(this.state);
 
@@ -1040,6 +1047,11 @@ class App {
         return;
     }
 
+    if (this.state.itemCooldowns[type] > 0) {
+        this.ui.addMiniNotification(`재사용 대기중! (${Math.ceil(this.state.itemCooldowns[type])}초)`, "failure");
+        return;
+    }
+
     // 궤도 폭격은 전장 전체 즉시 발동
     if (type === 'orbital_strike') {
         const targets = this.enemies.filter(en => !en.isBoss);
@@ -1049,6 +1061,7 @@ class App {
         });
         this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
         this.state.items[type]--;
+        this.state.itemCooldowns[type] = ITEM_DB[type].cooldown || 60;
         this.ui.updateDisplays(this.state);
         return;
     }
@@ -1116,6 +1129,7 @@ class App {
     this.ui.addMiniNotification(`${itemName} 투척!`, "info");
     
     this.state.items[type]--;
+    this.state.itemCooldowns[type] = item.cooldown || 10;
     this.isItemTargeting = false;
     this.pendingItemId = null;
     this.ui.updateDisplays(this.state);
