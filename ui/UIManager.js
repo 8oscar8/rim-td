@@ -536,8 +536,9 @@ export class UIManager {
       const upLv = (this.app.state.upgrades[typeKey]) || 0;
       
       const spd = tower.attackSpeed || 1;
+      const burst = tower.weaponData.burst || 1;
       
-      this.detailDps.textContent = (total * spd).toFixed(1);
+      this.detailDps.textContent = (total * burst * spd).toFixed(1);
       this.detailAtk.textContent = Math.floor(base);
       if (this.detailAtkBonus) this.detailAtkBonus.textContent = `(+${Math.floor(bonus)} 훈련)`;
       if (this.detailUpLv) this.detailUpLv.textContent = upLv;
