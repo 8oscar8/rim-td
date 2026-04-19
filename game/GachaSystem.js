@@ -145,7 +145,7 @@ export class GachaSystem {
 
   static drawAdvanced(artisanLevel = 0) {
     // 1. 희귀(Rare) 이상 등급만 필터링 및 확률 정규화
-    const advancedGrades = ['Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
+    const advancedGrades = ['Rare', 'Epic', 'Legendary', 'Mythic'];
     let totalAdvancedProb = 0;
     advancedGrades.forEach(g => totalAdvancedProb += GRADE_PROBABILITIES[g]);
 
@@ -225,7 +225,7 @@ export class GachaSystem {
   static getGradeProbabilitiesString() {
     const korGrades = {
       Common: '일', Uncommon: '우', Rare: '희', Epic: '에',
-      Special: '특', Legendary: '전', Mythic: '신', Hidden: '숨'
+      Legendary: '전', Mythic: '신'
     };
     return Object.entries(GRADE_PROBABILITIES)
       .map(([grade, prob]) => `${korGrades[grade] || grade}(${prob}%)`)
@@ -237,7 +237,7 @@ export class GachaSystem {
    */
   static drawForCombination(currentGrade, artisanLevel = 0) {
     try {
-        const grades = ['Common', 'Uncommon', 'Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
+        const grades = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'];
         // 대소문자 무시 정규화 (예: common -> Common)
         const g = currentGrade.charAt(0).toUpperCase() + currentGrade.slice(1).toLowerCase();
         const curIdx = grades.indexOf(g);

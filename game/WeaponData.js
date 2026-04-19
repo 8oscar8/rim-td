@@ -8,7 +8,7 @@ export const WEAPON_DB = {
   '철퇴': { type: 'blunt', tech: 'primitive', grade: 'Uncommon', dmg: 35, spd: 0.5, ap: 0, effect: null },
   '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'armor_break', shred: 8 },
   '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None' },
-  '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Special', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
+  '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Mythic', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
 
   // 날붙이
   '단검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 12, spd: 1.0, ap: 0, effect: null },
@@ -98,10 +98,8 @@ export const GRADE_PROBABILITIES = {
   Uncommon: 30.0,
   Rare: 13.0,
   Epic: 5.0,
-  Special: 0.1,
   Legendary: 0.8,
-  Mythic: 0.19,
-  Hidden: 0.01
+  Mythic: 0.3 // 스페셜(0.1)과 기존 신화(0.19), 히든(0.01)을 통합하여 0.3%
 };
 
 export const QUALITY_PROBABILITIES = {

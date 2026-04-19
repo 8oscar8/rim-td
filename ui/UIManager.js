@@ -473,7 +473,7 @@ export class UIManager {
       // 등급 확률 매핑
       const probs = {
         Common: '50.9%', Uncommon: '30.0%', Rare: '13.0%', Epic: '5.0%', 
-        Special: '0.1%', Legendary: '0.8%', Mythic: '0.19%', Hidden: '0.01%'
+        Legendary: '0.8%', Mythic: '0.3%'
       };
       
       // 도파민 모드: 제목에 등급, 내용에 무기 이름, 밑에 확률 표시
@@ -1187,12 +1187,11 @@ export class UIManager {
     // GRADE_PROBABILITIES 참조 (실제 데이터와 동기화)
     const probs = {
       Common: 50.9, Uncommon: 30.0, Rare: 13.0, Epic: 5.0, 
-      Special: 0.1, Legendary: 0.8, Mythic: 0.19, Hidden: 0.01
+      Legendary: 0.8, Mythic: 0.3
     };
     const gradeColors = {
       Common: '#ccc', Uncommon: '#4dff88', Rare: '#3498db', 
-      Epic: '#9b59b6', Special: '#e67e22', Legendary: '#f1c40f', 
-      Mythic: '#ff4d4d', Hidden: '#fff'
+      Epic: '#9b59b6', Legendary: '#f1c40f', Mythic: '#ff4d4d'
     };
 
     let title = type === 'random' ? "무작위 유닛 구매 확률" : "고급 무기 상자 확률 (Rare 이상)";
@@ -1207,7 +1206,7 @@ export class UIManager {
       });
     } else {
       // 고급 뽑기: Rare(13.0) 이상만 합산하여 상대 확률 계산
-      const advancedGrades = ['Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
+      const advancedGrades = ['Rare', 'Epic', 'Legendary', 'Mythic'];
       const totalProb = advancedGrades.reduce((acc, g) => acc + probs[g], 0);
       
       advancedGrades.forEach(grade => {
