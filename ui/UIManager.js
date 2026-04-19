@@ -1093,6 +1093,24 @@ export class UIManager {
         { name: '부품', req: 20, cur: s.component }
       ];
     }
+    
+    // [New] 기술 수준 요구사항 추가
+    const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
+    const koLevels = { primitive: '원시', industrial: '산업', advanced: '첨단', spacer: '우주', ultra: '초월' };
+    const currTechIdx = levels.indexOf(s.techLevel);
+    
+    const reqTechMap = { Rare: 1, Epic: 2, Legendary: 3, Mythic: 4 };
+    const reqTechIdx = reqTechMap[grade] || 0;
+    
+    if (reqTechIdx > 0) {
+        const isTechShort = currTechIdx < reqTechIdx;
+        requirements.unshift({
+            name: '기술 수준',
+            req: koLevels[levels[reqTechIdx]],
+            cur: koLevels[s.techLevel],
+            isShort: isTechShort
+        });
+    }
 
     this.renderTooltip(e, requirements, `${grade} 등급 제작 요구사항`);
   }
@@ -1171,7 +1189,7 @@ export class UIManager {
   renderTooltip(e, requirements, title) {
     let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
     requirements.forEach(r => {
-      const isShort = r.cur < r.req;
+      const isShort = (r.isShort !== undefined) ? r.isShort : (r.cur < r.req);
       const color = isShort ? '#ff4d4d' : '#4dff88';
       const status = isShort ? '▲' : '✓';
       html += `<div class="tooltip-row" style="color: ${color}">
