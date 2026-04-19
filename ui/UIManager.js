@@ -1619,22 +1619,34 @@ export class UIManager {
       this._lastMouseEvent = e;
     }
     if (this.tooltip) {
-      const marginX = 15;
-      const marginY = 15;
+      const marginX = 20;
+      const marginY = 20;
       const tooltipWidth = this.tooltip.offsetWidth;
       const tooltipHeight = this.tooltip.offsetHeight;
+      const winW = window.innerWidth;
+      const winH = window.innerHeight;
       
+      // 1. 기본 위치: 마우스 우측 상단 지향
       let x = e.clientX + marginX;
-      let y = e.clientY - tooltipHeight - marginY; // 기본적으로 마우스 위쪽에 배치
+      let y = e.clientY - tooltipHeight - marginY;
 
-      // 우측 경계 체크: 화면 밖으로 나가면 왼쪽으로 반전
-      if (x + tooltipWidth > window.innerWidth) {
+      // 2. 우측 경계 체크 (가로)
+      if (x + tooltipWidth > winW - 10) {
           x = e.clientX - tooltipWidth - marginX;
+          if (x < 10) x = 10; // 왼쪽으로도 못가면 왼쪽 끝에 고정
       }
       
-      // 상단 경계 체크: 화면 위쪽 밖으로 나가면 아래쪽으로 반전
-      if (y < 0) {
-          y = e.clientY + marginY;
+      // 3. 상단/하단 경계 체크 (세로)
+      if (y < 10) {
+          // 위로 갈 공간 없으면 아래로 보냄
+          y = e.clientY + marginY + 10; 
+      }
+      
+      // 4. 그럼에도 하단으로 나간다면 위로 강제 끌어올림
+      if (y + tooltipHeight > winH - 10) {
+          y = winH - tooltipHeight - 10;
+          // 만약 툴팁이 너무 커서 화면 전체를 넘는다면 상단 고정
+          if (y < 10) y = 10;
       }
 
       this.tooltip.style.left = x + 'px';
