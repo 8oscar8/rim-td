@@ -412,16 +412,24 @@ export class UIManager {
         const costs = {
             '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
             '펄스 수류탄': { silver: 500, steel: 250, component: 10 },
-            '화염병': { silver: 350, steel: 100, component: 5 },
+            '화염병': { silver: 350, wood: 100, component: 5 },
             '연막 발사기': { silver: 400, steel: 180, component: 5 },
             '독소 수류탄': { silver: 1000, steel: 400, component: 15 }
         };
 
         const cost = costs[weaponName];
-        if (s.silver >= cost.silver && s.steel >= cost.steel && s.component >= cost.component) {
-            s.silver -= cost.silver;
-            s.steel -= cost.steel;
-            s.component -= cost.component;
+        let canAfford = true;
+        for (const [res, amt] of Object.entries(cost)) {
+            if (s[res] < amt) {
+                canAfford = false;
+                break;
+            }
+        }
+
+        if (canAfford) {
+            for (const [res, amt] of Object.entries(cost)) {
+                s[res] -= amt;
+            }
             
             // [Bug Fix] 타워 배치 대신 아이템 인벤토리에 추가
             const itemKeyMap = {
