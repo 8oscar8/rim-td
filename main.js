@@ -256,10 +256,11 @@ class App {
         this.ui.addMiniNotification(`[무드 보너스] ${evt.msg}`, 'jackpot');
     }
 
-    // [New] 약초 발견 로직 (5% 고정 확률)
+    // [New] 약초 발견 로직 (5% 고정 확률, 1~3개 랜덤)
     if ((type === 'logging' || type === 'farming') && Math.random() < 0.05) {
-        s.herbalMedicine += 1;
-        this.ui.addMiniNotification("귀중한 야생 약초를 발견했습니다! (약초 +1)", "info");
+        const amount = Math.floor(Math.random() * 3) + 1; 
+        s.herbalMedicine += amount;
+        this.ui.addMiniNotification(`귀중한 야생 약초를 발견했습니다! (약초 +${amount})`, "info");
     }
   }
 
