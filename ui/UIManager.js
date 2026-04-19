@@ -1436,6 +1436,7 @@ export class UIManager {
     this.currentTooltipSource = { method: 'showResourceTooltip', args: [type] };
     const s = this.app.state;
     const resData = {
+        population: { name: '인구 (Population)', desc: '정착지에 거주하는 현재 총 인원입니다. 인구가 많아질수록 <span style="color:#4ade80">대기 중인 정착민(Idle)</span>이 늘어나며, 이들을 각 작업에 파견하여 자원 생산 및 연구 효율을 극대화할 수 있습니다.' },
         food: { name: '식량 (Food)', desc: `생존을 위한 필수 자원입니다. 식량 게이지가 <span style="color:var(--accent-gold)">100%</span> (현재 목표: ${s.foodToNextPop})에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.` },
         silver: { name: '은화 (Silver)', desc: '기본적인 화폐입니다. 유닛 구매, 업그레이드, 거래 등에 광범위하게 사용됩니다.' },
         steel: { name: '강철 (Steel)', desc: '건설과 제작에 쓰이는 기본 자원입니다. 둔기 무기 강화와 각종 기계 부품 제작에 필요합니다.' },
