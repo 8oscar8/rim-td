@@ -1165,6 +1165,39 @@ export class UIManager {
     this.renderTooltip(e, requirements, `${displayGrade} 등급 제작 요구사항`);
   }
 
+  /**
+   * [New] 활성 이벤트 전용 프리미엄 툴팁 렌더링
+   */
+  showEventTooltip(e, eventId) {
+    const event = this.app.encounterManager.activeEvents.find(ev => ev.id === eventId);
+    if (!event) return;
+    
+    const typeLabel = event.type === 'positive' ? '긍정적 이벤트' : '부정적 이벤트';
+    const typeColor = event.type === 'positive' ? '#a855f7' : '#ef4444'; // 보라색(긍정), 빨간색(부정)
+
+    // 특정 이벤트는 테마 색상 적용
+    let themeColor = typeColor;
+    if (event.id === 'psychic_soothe') themeColor = "#22d3ee";
+    else if (event.id === 'work_inspiration') themeColor = "#facc15";
+    else if (event.id === 'luciferium') themeColor = "#991b1b";
+    else if (event.id === 'solar_flare') themeColor = "#ea580c";
+
+    this.tooltip.innerHTML = `
+      <div class="tooltip-title" style="color: ${themeColor}">${event.name}</div>
+      <div class="tooltip-type" style="color: ${themeColor}; font-size: 11px; margin-bottom: 8px; font-weight: bold; opacity: 0.8;">${typeLabel}</div>
+      <div class="tooltip-desc" style="font-size: 13px; line-height: 1.5; color: #e0e0e0; margin-bottom: 12px; white-space: pre-wrap; font-family: 'Inter', sans-serif;">
+          ${event.desc}
+      </div>
+      <div class="tooltip-footer" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: #888; font-size: 11px;">남은 지속 시간</span> 
+          <span style="color: ${themeColor}; font-weight: 800; font-family: 'Courier New', monospace; font-size: 14px;">${Math.max(0, Math.ceil(event.duration))}s</span>
+      </div>
+    `;
+    
+    this.tooltip.classList.remove('hidden');
+    this.moveTooltip(e);
+  }
+
   showSpecialCraftTooltip(e, btn) {
     const weaponName = btn.getAttribute('data-weapon');
     const s = this.app.state;

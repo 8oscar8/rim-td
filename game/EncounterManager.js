@@ -159,8 +159,15 @@ export class EncounterManager {
       }
 
       uiHtml += `
-        <div class="event-tag" style="border-left-color: ${borderColor}; background: ${bgColor}" title="${event.desc || ''}">
-            <span>${event.name}</span>
+        <div class="event-tag" 
+             style="border-left-color: ${borderColor}; background: ${bgColor}"
+             onmouseenter="window.app.ui.showEventTooltip(event, '${event.id}')"
+             onmousemove="window.app.ui.moveTooltip(event)"
+             onmouseleave="window.app.ui.hideTooltip()">
+            <div>
+                <span class="event-pulse" style="color: ${borderColor}">●</span>
+                <span class="name">${event.name}</span>
+            </div>
             <span class="time" style="color: ${borderColor}">${Math.max(0, Math.ceil(event.duration))}s</span>
         </div>
       `;
