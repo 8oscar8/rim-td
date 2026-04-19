@@ -23,7 +23,7 @@
             <div class="status-section">
                 <h3 class="section-title">정착지 상태</h3>
                 
-                <div class="status-card">
+                <div class="status-card" onmouseenter="window.app.ui.showResourceTooltip(event, 'wave')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
                     <span class="label">웨이브</span>
                     <span class="value"><span id="wave-val">1</span> / 100</span>
                 </div>
@@ -35,7 +35,7 @@
                     <span class="label">인구</span>
                     <span class="value" id="pop-val">3</span>
                 </div>
-                <div class="status-card">
+                <div class="status-card" onmouseenter="window.app.ui.showResourceTooltip(event, 'enemyCount')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
                     <span class="label">적 수</span>
                     <span class="value" id="enemy-val">0 / 100</span>
                 </div>
