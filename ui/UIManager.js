@@ -492,7 +492,8 @@ export class UIManager {
       // 등급 명칭 매핑 (사용자 위계: 전설 > 신화)
       const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
       const displayGrade = gradeMap[grade] || grade;
-      const gradeStr = displayGrade.toUpperCase();
+      let gradeStr = displayGrade.toUpperCase();
+      if (displayGrade === 'Mythic') gradeStr = 'JACKPOT';
       
       // 가차 또는 도박 결과일 때만 확률 표시/강조 연출
       const isGacha = title.includes("배치") || title.includes("GACHA") || title.includes("정제") || title.includes("거래");
