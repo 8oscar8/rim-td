@@ -1345,6 +1345,17 @@ class App {
     } catch (e) {
         console.error("[App] Reward Trigger Error:", e);
     }
+  /**
+   * [Debug] 모든 특수 아이템 10개씩 획득
+   */
+  cheatItems() {
+    const s = this.state;
+    Object.keys(s.items).forEach(k => {
+        s.items[k] += 10;
+    });
+    this.ui.updateDisplays(s);
+    this.ui.addMiniNotification("치트: 모든 특수 무기 +10 획득");
+    return "All items +10";
   }
 }
 
