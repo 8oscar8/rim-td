@@ -324,6 +324,12 @@ export class EncounterManager {
   }
 
   executeEvent(event) {
+    // [New] 긍정적 인카운터 시 무드 보너스 (+15)
+    if (event.type === 'positive') {
+        this.app.state.mood = Math.min(100, (this.app.state.mood || 0) + 15);
+        this.app.ui.addMiniNotification(`기쁜 소식: ${event.name}! (무드 +15%)`, "jackpot");
+    }
+
     switch (event.id) {
       case 'trade_ship':
         this.handleTradeShip();
