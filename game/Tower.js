@@ -140,6 +140,9 @@ export class Tower {
     // 과열 처리
     if (this.isOverheated) {
       this.overheatTimer -= dt;
+      // 과열 게이지가 4초에 걸쳐 시각적으로 줄어들도록 동기화
+      this.heat = (this.overheatTimer / this.overheatDuration) * this.maxHeat;
+      
       if (this.overheatTimer <= 0) {
         this.isOverheated = false;
         this.heat = 0;
@@ -458,21 +461,21 @@ export class Tower {
     }
 
     if (this.heat > 0 || this.isOverheated) {
-      // 위치를 머리 위로 조정하여 가시성 확보
-      const by = this.y - 45; 
+      // 위치를 다시 타워 아래로 조정
+      const by = this.y + 25; 
       
-      // 배경 박스
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      // 배경 박스 (더 어둡게)
+      ctx.fillStyle = 'rgba(0,0,0,0.8)';
       ctx.fillRect(bx - 1, by - 1, barW + 2, barH + 2);
       
       const heatRatio = Math.min(1.0, this.heat / this.maxHeat);
       
-      // 과열 시 강렬한 붉은색 깜빡임, 아닐 시 오렌지->레드 그라데이션
+      // 과열 시 강렬한 붉은색, 아닐 시에도 붉은색 계열 유지
       if (this.isOverheated) {
-          const flash = Math.sin(Date.now() * 0.02) > 0;
-          ctx.fillStyle = flash ? '#ff0000' : '#880000';
+          ctx.fillStyle = '#ff3333'; // 과열 중인 밝은 빨강
       } else {
-          ctx.fillStyle = `rgb(255, ${200 - heatRatio * 200}, 0)`;
+          // 열이 오를수록 더 진한 빨간색으로 변화
+          ctx.fillStyle = `rgb(${150 + heatRatio * 105}, 0, 0)`;
       }
       
       ctx.fillRect(bx, by, barW * heatRatio, barH);
@@ -483,13 +486,13 @@ export class Tower {
       ctx.strokeRect(bx, by, barW, barH);
 
       if (this.isOverheated) {
-        const bounce = Math.sin(Date.now() * 0.01) * 3;
+        const bounce = Math.sin(Date.now() * 0.01) * 2;
         ctx.fillStyle = '#ff4444';
-        ctx.font = 'bold 13px Inter';
+        ctx.font = 'bold 12px Inter';
         ctx.textAlign = 'center';
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 8;
         ctx.shadowColor = '#ff0000';
-        ctx.fillText('OVERHEATED!', this.x, by - 12 + bounce);
+        ctx.fillText('OVERHEAT COOLING...', this.x, by + 18 + bounce);
         ctx.shadowBlur = 0;
       }
     }
