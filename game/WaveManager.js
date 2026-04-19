@@ -100,13 +100,8 @@ export class WaveManager {
             this.spawnBossEnemy(enemiesList);
           }
         } 
-        // [New Fix] 필드 전멸이 아닌, '이번 웨이브의 모든 적 처치' 시 클리어 판정
         else if (this.enemiesKilledInWave >= this.totalEnemiesInWave && !this.isWaveCompleted) {
           this.isWaveCompleted = true;
-          // 필드가 완전히 비었을 때만 타이머 단축 (기존 로직 유지)
-          if (enemiesList.length === 0 && this.nextWaveTimer > 10) {
-              this.nextWaveTimer = 10;
-          }
           if (this.onWaveComplete) this.onWaveComplete();
         }
       }
@@ -114,8 +109,13 @@ export class WaveManager {
       console.error("WaveManager Update Error:", e);
     }
 
-    // 다음 라운드 카운트다운
+    // 다음 라운드 카운트다운 및 타이머 단축 체크
     if (this.isWaveActive) {
+      // [New Fix] 웨이브 적을 다 잡았고 필드가 깨끗하다면 언제든지 타이머를 10초로 단축
+      if (this.isWaveCompleted && enemiesList.length === 0 && this.nextWaveTimer > 10) {
+          this.nextWaveTimer = 10;
+      }
+
       this.nextWaveTimer -= dt;
       if (this.nextWaveTimer <= 0) this.startNextWave();
     }
