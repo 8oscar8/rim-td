@@ -714,6 +714,7 @@ export class UIManager {
 
   updateDisplays(state) {
     if (!state) return;
+    const canInteract = !state.isPaused;
 
     // 일시정지 상태 반영
     if (this.pauseBtn) {
@@ -910,7 +911,6 @@ export class UIManager {
     if (this.rangedDpmVal) this.rangedDpmVal.textContent = this.formatNumber(rangedDpm);
 
     // 5. 버튼 활성화/비활성화 및 비용 업데이트
-    const canInteract = !state.isPaused;
     const canBuyRandom = state.silver >= 50 && canInteract;
     if (this.buyRandomBtn) {
       this.buyRandomBtn.disabled = !canBuyRandom;
