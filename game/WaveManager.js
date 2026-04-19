@@ -18,7 +18,7 @@ export class WaveManager {
     this.spawnTimer = 0;
     this.spawnInterval = 1.0; 
     
-    this.nextWaveTimer = 120; // 라운드 사이 대기 시간 (2분)
+    this.nextWaveTimer = 110; // 라운드 사이 대기 시간 (1분 50초)
     this.isWaveActive = false;
     this.isWaveCompleted = false;
     this.gameFinished = false;
@@ -39,7 +39,7 @@ export class WaveManager {
     this.enemiesToSpawn = 0;
     this.totalEnemiesInWave = 0;
     this.enemiesKilledInWave = 0;
-    this.nextWaveTimer = 120;
+    this.nextWaveTimer = 110;
   }
 
   /**
@@ -65,7 +65,7 @@ export class WaveManager {
     this.totalEnemiesInWave = this.enemiesToSpawn + this.bossToSpawn;
     
     this.spawnTimer = 0;
-    this.nextWaveTimer = 120; 
+    this.nextWaveTimer = 110; 
     this.isWaveActive = true;
     this.isWaveCompleted = false;
     this.enemiesKilledInWave = 0; // 새 웨이브 시작 시 처치 수 초기화
