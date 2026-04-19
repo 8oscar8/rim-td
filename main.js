@@ -1145,6 +1145,7 @@ class App {
                 break;
             case 'pulse_grenade':
                 en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
+                en.shield = 0; // [New] 보호막 즉시 제거
                 break;
             case 'psychic_lance':
                 // 보스일 경우 15초 스턴, 일반 적일 경우 5초 스턴

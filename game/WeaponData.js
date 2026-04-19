@@ -56,7 +56,7 @@ export const ITEM_DB = {
   },
   'pulse_grenade': { 
     name: '펄스 수류탄', type: 'item', grade: 'Uncommon', dmg: 50, ap: 0.5, effect: 'emp', shred: 0, radius: 120, cooldown: 12,
-    desc: '강력한 전자기 파동(EMP)을 방출합니다. 기계류 적에게 6초간 강력한 마비 효과를 부여합니다.'
+    desc: '강력한 전자기 파동(EMP)을 방출합니다. 보호막을 즉시 제거하며 기계류 적에게 6초간 강력한 마비 효과를 부여합니다.'
   },
   'molotov': { 
     name: '화염병', type: 'item', grade: 'Rare', dmg: 20, ap: 0.1, effect: 'burn_fear', radius: 80, cooldown: 15,
