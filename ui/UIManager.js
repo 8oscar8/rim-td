@@ -734,8 +734,21 @@ export class UIManager {
       }
     }
     if (this.techLevelVal) {
-      const names = { primitive: '원시 (Primitive)', advanced: '산업 (Advanced)', spacer: '우주 (Spacer)', ultra: '초월 (Ultra)' };
+      const names = { 
+        primitive: '원시 (Primitive)', 
+        industrial: '산업 (Industrial)', 
+        advanced: '첨단 (Advanced)', 
+        spacer: '우주 (Spacer)', 
+        ultra: '초월 (Ultra)' 
+      };
       this.techLevelVal.textContent = names[state.techLevel] || state.techLevel;
+      
+      const box = this.techLevelVal.closest('.tech-level-box');
+      if (box) {
+          const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
+          box.classList.remove(...levels);
+          box.classList.add(state.techLevel);
+      }
     }
 
     // 선택된 유닛 또는 몬스터 정보 실시간 갱신
