@@ -14,8 +14,8 @@ export class GachaSystem {
       }
     }
 
-    // 2. 해당 등급에 맞는 무기들 추출 (수류탄/투여류 등 특수 효과 무기 제외)
-    const excludeEffects = ['aoe_dmg', 'emp', 'smoke', 'burn_fear', 'toxin'];
+    // 2. 해당 등급에 맞는 무기들 추출 (수류탄/투약류 등 특수 효과 무기 제외)
+    const excludeEffects = ['emp', 'smoke', 'burn_fear', 'toxin'];
     const availableWeapons = Object.entries(WEAPON_DB)
       .filter(([name, data]) => data.grade === selectedGrade && !excludeEffects.includes(data.effect))
       .map(([name, data]) => ({ name, ...data }));
@@ -78,8 +78,8 @@ export class GachaSystem {
     // 1. 등급 이름 정규화
     const targetGrade = inputGrade.charAt(0).toUpperCase() + inputGrade.slice(1).toLowerCase();
     
-    // 2. 무기 선택
-    const excludeEffects = ['aoe_dmg', 'emp', 'smoke', 'burn_fear', 'toxin'];
+    // 2. 무기 선택 (산탄총 배제 해제)
+    const excludeEffects = ['emp', 'smoke', 'burn_fear', 'toxin'];
     const availableWeapons = Object.entries(WEAPON_DB)
       .filter(([name, data]) => data.grade === targetGrade && !excludeEffects.includes(data.effect))
       .map(([name, data]) => ({ name, ...data }));
@@ -165,8 +165,8 @@ export class GachaSystem {
       }
     }
 
-    // 2. 해당 등급 무기 추출
-    const excludeEffects = ['aoe_dmg', 'emp', 'smoke', 'burn_fear', 'toxin'];
+    // 2. 해당 등급 무기 추출 (산탄총 배제 해제)
+    const excludeEffects = ['emp', 'smoke', 'burn_fear', 'toxin'];
     const availableWeapons = Object.entries(WEAPON_DB)
       .filter(([name, data]) => data.grade === selectedGrade && !excludeEffects.includes(data.effect))
       .map(([name, data]) => ({ name, ...data }));

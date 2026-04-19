@@ -150,6 +150,16 @@ export class Projectile {
         ctx.stroke();
         ctx.restore();
       }
+    } else if (this.effect === 'aoe_dmg') {
+      // 산탄총 투사체 (사각형/슬러그 모양)
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      if (this.target && this.target.active) {
+        const angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
+        ctx.rotate(angle);
+      }
+      ctx.fillRect(-this.radius, -this.radius/2, this.radius*2, this.radius);
+      ctx.restore();
     } else {
       ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
     }
