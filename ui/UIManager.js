@@ -136,6 +136,7 @@ export class UIManager {
         if (this.app.state.idlePopulation > 0) {
           this.app.state.workers[type]++;
           this.app.state.idlePopulation--;
+          this.updateDisplays(this.app.state); // 즉시 갱신
         }
       };
     });
@@ -146,6 +147,7 @@ export class UIManager {
         if (this.app.state.workers[type] > 0) {
           this.app.state.workers[type]--;
           this.app.state.idlePopulation++;
+          this.updateDisplays(this.app.state); // 즉시 갱신
         }
       };
     });

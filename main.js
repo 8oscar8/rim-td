@@ -624,10 +624,17 @@ class App {
    * 게임 상태 업데이트
    */
   update(dt) {
-    // 일시정지 상태면 모든 업데이트 스킵
-    if (this.state.isPaused) return;
-
     const scaledDt = dt * this.state.timeScale;
+
+    // 일시정지 중에도 수행해야 할 최소한의 업데이트 (UI 갱신 등)
+    if (this.state.isPaused) {
+        this.ui.updateDisplays(this.state);
+        // 히든 인카운터 등 일부 시스템은 일시정지 중에도 시각적 요소를 유지해야 할 수 있음
+        if (this.hiddenEventManager && this.hiddenEventManager.isWarningActive) {
+            // 경고 중이면 타이머는 멈추되 시각 효과는 유지
+        }
+        return;
+    }
 
     // 0. 기본 자금 수입 (2초당 1은)
     this.passiveSilverTimer += scaledDt;
