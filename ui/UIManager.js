@@ -495,7 +495,12 @@ export class UIManager {
       const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
       const displayGrade = gradeMap[grade] || grade;
       let gradeStr = displayGrade.toUpperCase();
-      if (displayGrade === 'Mythic') gradeStr = 'JACKPOT';
+      
+      // [Fix] 자원 도박(정제/거래/잭팟) 결과일 때만 'JACKPOT'으로 표시하고, 타워 배치는 등급명 유지
+      const isGambleResult = title.includes("정제") || title.includes("거래") || title.includes("잭팟");
+      if (displayGrade === 'Mythic' && isGambleResult) {
+          gradeStr = 'JACKPOT';
+      }
       
       // 가차 또는 도박 결과일 때만 확률 표시/강조 연출
       const isGacha = title.includes("배치") || title.includes("GACHA") || title.includes("정제") || title.includes("거래");
