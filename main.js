@@ -581,8 +581,8 @@ class App {
         }
     }
 
-    // 4. 무드 회복 (처치당 0.5)
-    s.mood = Math.min(100, (s.mood || 0) + 0.5);
+    // 4. 무드 회복 (처치당 1.0)
+    s.mood = Math.min(100, (s.mood || 0) + 1.0);
     
     // 보스 전용 보상
     if (isBoss) {
