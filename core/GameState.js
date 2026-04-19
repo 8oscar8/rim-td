@@ -16,7 +16,7 @@ export class GameState {
     this.foodToNextPop = 100; // 다음 인구 증가를 위한 필요 식량
     this.researchPoints = 0; // 연구 수치 (Tech Points)
 
-    this.techLevel = 'primitive'; // primitive -> advanced -> spacer -> ultra
+    this.techLevel = 'primitive'; // primitive -> industrial -> advanced -> spacer -> ultra
 
     // 2. 인구 및 유닛 관리
     this.population = 3; 

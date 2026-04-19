@@ -184,14 +184,15 @@ export class UIManager {
     // 4. 기술 업그레이드 (v2: 은화 + 연구 수치)
     if (this.techUpBtn) {
       this.techUpBtn.onclick = () => {
-        const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
+        const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
         const currIdx = levels.indexOf(this.app.state.techLevel);
         if (currIdx >= levels.length - 1) return;
 
-        // 비용 결정 (산업: 200/100, 우주: 500/300, 초월: 1000/1000)
+        // 비용 결정 (산업: 200/100, 첨단: 500/300, 우주: 1200/800, 초월: 2500/2000)
         let sCost = 200, rCost = 100;
         if (currIdx === 1) { sCost = 500; rCost = 300; }
-        else if (currIdx === 2) { sCost = 1000; rCost = 1000; }
+        else if (currIdx === 2) { sCost = 1200; rCost = 800; }
+        else if (currIdx === 3) { sCost = 2500; rCost = 2000; }
 
         if (this.app.state.silver >= sCost && this.app.state.researchPoints >= rCost) {
           this.app.state.silver -= sCost;
@@ -898,7 +899,7 @@ export class UIManager {
 
     // 기술 업그레이드 버튼 및 비용 업데이트
     if (this.techUpBtn) {
-        const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
+        const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
         const currIdx = levels.indexOf(state.techLevel);
         const isMax = currIdx >= levels.length - 1;
         
@@ -907,9 +908,11 @@ export class UIManager {
             this.techUpBtn.textContent = "최고 기술 도달";
             this.techUpBtn.style.opacity = "0.4";
         } else {
+            // 비용 결정 (산업: 200/100, 첨단: 500/300, 우주: 1200/800, 초월: 2500/2000)
             let sCost = 200, rCost = 100;
             if (currIdx === 1) { sCost = 500; rCost = 300; }
-            else if (currIdx === 2) { sCost = 1000; rCost = 1000; }
+            else if (currIdx === 2) { sCost = 1200; rCost = 800; }
+            else if (currIdx === 3) { sCost = 2500; rCost = 2000; }
             
             const costS = document.getElementById('tech-cost-silver');
             const costR = document.getElementById('tech-cost-research');
@@ -925,13 +928,13 @@ export class UIManager {
     if (this.craftBtns) {
       this.craftBtns.forEach(btn => {
         const grade = btn.getAttribute('data-grade');
-        const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
+        const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
         const techIdx = levels.indexOf(state.techLevel);
         let techMet = canInteract;
         if (grade === 'Rare' && techIdx < 1) techMet = false;
         else if (grade === 'Epic' && techIdx < 2) techMet = false;
         else if (grade === 'Legendary' && techIdx < 3) techMet = false;
-        else if (grade === 'Mythic' && techIdx < 3) techMet = false;
+        else if (grade === 'Mythic' && techIdx < 4) techMet = false;
 
         let resMet = false;
         if (grade === 'Rare') resMet = state.wood >= 30 && state.steel >= 30 && state.component >= 1;
@@ -1104,17 +1107,19 @@ export class UIManager {
 
   showTechTooltip(e) {
     const s = this.app.state;
-    const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
+    const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
     const currIdx = levels.indexOf(s.techLevel);
     
     if (currIdx >= levels.length - 1) {
-        this.renderTooltip([], "기술 수준 최대 (Ultra)");
+        this.renderTooltip(e, [], "기술 수준 최대 (Ultra)");
         return;
     }
 
+    // 비용 결정 (산업: 200/100, 첨단: 500/300, 우주: 1200/800, 초월: 2500/2000)
     let sCost = 200, rCost = 100;
     if (currIdx === 1) { sCost = 500; rCost = 300; }
-    else if (currIdx === 2) { sCost = 1000; rCost = 1000; }
+    else if (currIdx === 2) { sCost = 1200; rCost = 800; }
+    else if (currIdx === 3) { sCost = 2500; rCost = 2000; }
 
     const requirements = [
         { name: '은화', req: sCost, cur: s.silver },
@@ -1122,7 +1127,7 @@ export class UIManager {
     ];
 
     const nextLevel = levels[currIdx + 1];
-    const koLevels = { advanced: '첨단', spacer: '우주', ultra: '초월' };
+    const koLevels = { industrial: '산업', advanced: '첨단', spacer: '우주', ultra: '초월' };
     this.renderTooltip(e, requirements, `기술 업그레이드 (${koLevels[nextLevel]}) 요구사항`);
   }
 
