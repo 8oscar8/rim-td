@@ -697,6 +697,31 @@ class App {
     const s = this.state;
     const results = [];
 
+    if (reason === "거절") {
+        // [거절] 가벼운 제물 패널티: 은화와 강철 일부 소실
+        const silverLoss = Math.floor(s.silver * 0.2); // 현재 자산의 20%
+        const steelLoss = Math.floor(s.steel * 0.2);
+        
+        s.silver = Math.max(0, s.silver - silverLoss);
+        s.steel = Math.max(0, s.steel - steelLoss);
+        
+        if (silverLoss > 0) results.push(`• 은화: -${silverLoss}`);
+        if (steelLoss > 0) results.push(`• 강철: -${steelLoss}`);
+        
+        const report = `당신은 공허의 부름을 거부하고 제물을 바쳐 그들을 달랬습니다. \n정착민들은 무사히 넘겼지만 자산의 일부를 소실했습니다. \n\n[소실 내역]\n${results.length > 0 ? results.join('\n') : "소실된 자산 없음"}`;
+        
+        if (this.encounterManager) {
+            this.encounterManager.showEventModal({
+                name: "🌑 공허의 공물",
+                desc: report,
+                type: 'info'
+            });
+        }
+        this.ui.updateDisplays(s);
+        return;
+    }
+
+    // [처치 실패] 기존의 가혹한 기술 퇴행 패널티
     // 1. 파견/생산 기술 일괄 하락 (-1)
     const prodTypes = ['logging', 'mining', 'farming', 'trade', 'education', 'artisan'];
     const koProd = {
@@ -714,7 +739,7 @@ class App {
     // 2. 전투 기술 무작위 소량 하락 (2~3단계)
     const combatTypes = ['sharp', 'blunt', 'ranged'];
     const koCombat = { sharp: '날붙이', blunt: '둔기', ranged: '원거리' };
-    const lossCount = 2 + Math.floor(Math.random() * 2); // 2~3단계 하락
+    const lossCount = 2 + Math.floor(Math.random() * 2);
     
     const lostCombat = {};
     for (let i = 0; i < lossCount; i++) {
