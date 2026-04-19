@@ -1104,8 +1104,8 @@ class App {
             type: 'toxin', x: x, y: y, radius: radius, duration: 6.0,
             render: (ctx) => {
                 ctx.save();
-                ctx.fillStyle = 'rgba(155, 89, 182, 0.3)';
-                ctx.shadowBlur = 15; ctx.shadowColor = '#9b59b6';
+                ctx.fillStyle = 'rgba(46, 204, 113, 0.3)';
+                ctx.shadowBlur = 15; ctx.shadowColor = '#2ecc71';
                 ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
                 ctx.restore();
             }
