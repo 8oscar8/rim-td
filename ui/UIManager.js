@@ -1205,18 +1205,21 @@ export class UIManager {
         </div>`;
       });
     } else {
-      // 고급 뽑기: Rare(13.0) 이상만 합산하여 상대 확률 계산
-      const advancedGrades = ['Rare', 'Epic', 'Legendary', 'Mythic'];
-      const totalProb = advancedGrades.reduce((acc, g) => acc + probs[g], 0);
+      // 고급 뽑기: 상향된 고정 확률 테이블 적용
+      const advancedWeights = {
+        Rare: 50.0,
+        Epic: 35.0,
+        Legendary: 10.0,
+        Mythic: 5.0
+      };
       
-      advancedGrades.forEach(grade => {
-        const relativeProb = ((probs[grade] / totalProb) * 100).toFixed(2);
+      Object.entries(advancedWeights).forEach(([grade, prob]) => {
         html += `<div class="tooltip-row" style="color: ${gradeColors[grade]}">
           <span class="res-name">${grade}:</span>
-          <span class="res-val">${relativeProb}%</span>
+          <span class="res-val">${prob.toFixed(1)}%</span>
         </div>`;
       });
-      html += `<div style="margin-top: 8px; font-size: 0.75rem; color: #888; border-top: 1px solid #444; padding-top: 4px;">* 하위 등급 제외 및 품질 보너스 적용</div>`;
+      html += `<div style="margin-top: 8px; font-size: 0.75rem; color: #888; border-top: 1px solid #444; padding-top: 4px;">* 하위 등급(일반/우수) 제외 및 품질 보너스 대폭 적용</div>`;
     }
 
     html += `</div>`;

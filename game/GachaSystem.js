@@ -144,23 +144,28 @@ export class GachaSystem {
 
 
   static drawAdvanced(artisanLevel = 0) {
-    // 1. 희귀(Rare) 이상 등급만 필터링 및 확률 정규화
-    const advancedGrades = ['Rare', 'Epic', 'Legendary', 'Mythic'];
-    let totalAdvancedProb = 0;
-    advancedGrades.forEach(g => totalAdvancedProb += GRADE_PROBABILITIES[g]);
+    // 1. 고급 상자 전용 상향된 확률 (기본 확률의 상대적 계산이 아닌 고정값으로 상향)
+    const advancedWeights = {
+      Rare: 50.0,
+      Epic: 35.0,
+      Legendary: 10.0,
+      Mythic: 5.0
+    };
 
-    const gradeRand = Math.random() * totalAdvancedProb;
+    const totalWeight = Object.values(advancedWeights).reduce((a, b) => a + b, 0);
+    const gradeRand = Math.random() * totalWeight;
     let selectedGrade = 'Rare';
     let cumulative = 0;
-    for (const grade of advancedGrades) {
-      cumulative += GRADE_PROBABILITIES[grade];
+
+    for (const [grade, weight] of Object.entries(advancedWeights)) {
+      cumulative += weight;
       if (gradeRand <= cumulative) {
         selectedGrade = grade;
         break;
       }
     }
 
-    // 2. 해당 등급 무기 추출 (뽑기 전용 로직 재사용)
+    // 2. 해당 등급 무기 추출
     const excludeEffects = ['aoe_dmg', 'emp', 'smoke', 'burn_fear', 'toxin'];
     const availableWeapons = Object.entries(WEAPON_DB)
       .filter(([name, data]) => data.grade === selectedGrade && !excludeEffects.includes(data.effect))
