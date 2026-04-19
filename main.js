@@ -1085,7 +1085,7 @@ class App {
         targets.forEach(en => {
             en.flashTimer = 0.5;
             // 즉사 로직 (보상 처리 포함)
-            const died = en.takeDamage(999999, 1.0, 'instakill', 'Hidden');
+            const died = en.takeDamage(99999999, 1.0, 'instakill', 'Hidden');
             if (died) this.handleEnemyDeath(en);
         });
         this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
