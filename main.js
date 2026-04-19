@@ -1107,7 +1107,7 @@ class App {
   gamble(type) {
     if (this.state.isPaused) return;
     const s = this.state;
-    const costs = { wood: 100, steel: 200, silver: 1000 };
+    const costs = { wood: 200, steel: 200, silver: 300 };
     const cost = costs[type];
 
     if (s[type] < cost) {

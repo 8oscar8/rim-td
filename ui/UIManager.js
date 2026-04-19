@@ -68,6 +68,7 @@ export class UIManager {
     this.detailAp = document.getElementById('detail-ap');
     this.techLevelVal = document.getElementById('tech-level-val');
     this.idleAlert = document.getElementById('idle-alert');
+    this.gambleBtns = document.querySelectorAll('.gamble-btn');
     
     // 7. DPM 표시 요소
     this.bluntDpmVal = document.getElementById('blunt-dpm');
@@ -1015,6 +1016,19 @@ export class UIManager {
       });
     }
 
+    // [New] 자원 도박 버튼 상태 업데이트
+    if (this.gambleBtns) {
+        const gambleCosts = { wood: 200, steel: 200, silver: 300 };
+        this.gambleBtns.forEach(btn => {
+            const type = btn.classList.contains('wood') ? 'wood' : (btn.classList.contains('steel') ? 'steel' : 'silver');
+            const cost = gambleCosts[type];
+            const canAfford = state[type] >= cost && canInteract;
+            btn.disabled = !canAfford;
+            btn.style.opacity = canAfford ? "1" : "0.3";
+            btn.style.cursor = canAfford ? "pointer" : "not-allowed";
+        });
+    }
+
     // 훈련 및 비용 업데이트
     const updateUpgradeStatus = (btn, type) => {
         if (!btn) return;
@@ -1477,7 +1491,7 @@ export class UIManager {
     this.currentTooltipSource = { method: 'showGambleTooltip', args: [type] };
     const gambleData = {
         wood: { 
-            name: '목재 기초 정제', cost: '목재 100', color: '#8b4513',
+            name: '목재 기초 정제', cost: '목재 200', color: '#8b4513',
             desc: '나무를 정제하여 유용한 광물을 추출하거나 암시장에 비밀리에 처분합니다. <br>• 주요 보상: <span style="color:#ccc">강철</span>, <span style="color:var(--accent-blue)">플라스틸</span>, <span style="color:var(--accent-gold)">부품</span> 등' 
         },
         steel: { 
@@ -1485,7 +1499,7 @@ export class UIManager {
             desc: '복잡한 기계 잔해와 강철 더미를 정밀 분해합니다. <br>• 주요 보상: <span style="color:var(--accent-gold)">부품</span>, <span style="color:var(--accent-blue)">플라스틸</span>, <span style="color:#2ecc71">비취</span> 등' 
         },
         silver: { 
-            name: '은화 암시장 거래', cost: '은화 1000', color: 'var(--accent-gold)',
+            name: '은화 암시장 거래', cost: '은화 300', color: 'var(--accent-gold)',
             desc: '대규모 상단이나 암시장 큰손과 대범한 거래를 진행합니다. <br>• 주요 보상: <span style="color:var(--accent-gold)">잭팟(은화 5000)</span>, <span style="color:#2ecc71">비취</span>, 대량의 고급 자원' 
         }
     };
