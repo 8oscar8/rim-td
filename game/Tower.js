@@ -67,7 +67,7 @@ export class Tower {
     this.maxHeat = 100;
     this.isOverheated = false;
     this.overheatTimer = 0;
-    this.overheatDuration = 4.0; 
+    this.overheatDuration = 6.0; 
     
     // 특수 버프 상태
     this.isLuciferiumActive = false;
