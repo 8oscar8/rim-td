@@ -95,11 +95,11 @@ export const SPECIAL_CRAFT_DB = {
     '고주스': { food: 500, herbalMedicine: 50, uranium: 20, component: 10 },
     '인공자아핵': { 
         silver: 5000, 
-        wood: 1000, 
+        wood: 3000, 
         steel: 2000, 
         plasteel: 500, 
         uranium: 200, 
-        jade: 100, 
+        jade: 50, 
         component: 50, 
         researchPoints: 2000 
     }

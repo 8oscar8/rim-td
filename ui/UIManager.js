@@ -1422,7 +1422,12 @@ export class UIManager {
         }
     }
 
-    this.renderTooltip(e, requirements, `${weaponName} 제작 요구사항`);
+    let effect = "";
+    if (weaponName === '인공자아핵') {
+        effect = "주변 아군 타워의 공격력과 공격 속도를 <span style='color:#00f2ff'>1.5배</span> 강화합니다.";
+    }
+
+    this.renderTooltip(e, requirements, `${weaponName} 제작 요구사항`, effect);
   }
 
   showTechTooltip(e) {
