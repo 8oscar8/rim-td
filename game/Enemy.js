@@ -237,7 +237,9 @@ export class Enemy {
     } else if (effect === 'stun_long') {
       this.stunTimer = 5.0;
     } else if (effect === 'emp' && this.type === 'mech') {
-      this.stunTimer = 3.0;
+      this.stunTimer = 3.0; // 기계류 전용 기절
+    } else if (effect === 'frag_stun' && this.type === 'organic') {
+      this.stunTimer = 2.0; // 유기체 전용 기절
     } else if (effect === 'smoke') {
       this.slowTimer = Math.max(this.slowTimer, 3.0);
     } else if (effect === 'burn_fear' && this.type === 'organic') {

@@ -1012,10 +1012,10 @@ class App {
             break;
 
         case 'frag_grenade':
-            // 전원 고위력 데미지 + 강력한 방깎
+            // 전원 고위력 데미지 + 강력한 방깎 + 유기체 기절
             this.enemies.forEach(en => {
                 en.flashTimer = 0.3;
-                en.takeDamage(250, 0.2, 'aoe_dmg', 'Common', 30);
+                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 30);
             });
             this.ui.addMiniNotification("파쇄 수류탄 투척!", "Common");
             success = true;
