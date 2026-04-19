@@ -821,6 +821,15 @@ export class UIManager {
         if (el1) el1.textContent = next;
         if (el2) el2.textContent = next;
 
+        // [New] 강화 효율 텍스트 동적 업데이트
+        const effectEl = btn.querySelector('.up-effect');
+        if (effectEl) {
+            let rate = 10;
+            if (lv >= 100) rate = 30;     // 101강 이상 (현재 100이면 다음이 101이므로 30%로 보임)
+            else if (lv >= 50) rate = 20; // 51강 이상
+            effectEl.textContent = `+${rate}%`;
+        }
+
         let hasRes = false;
         if (type === 'blunt') hasRes = state.silver >= next && state.steel >= next;
         else if (type === 'sharp') hasRes = state.wood >= next && state.silver >= next;
