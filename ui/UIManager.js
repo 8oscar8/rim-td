@@ -1419,7 +1419,7 @@ export class UIManager {
             } else if (type === 'farming' || type === 'logging') {
                 const curHerb = 5 + (curLv * 2);
                 const nextHerb = 5 + ((curLv + 1) * 2);
-                effect = `생산량: +${curBonus}% -> +${nextBonus}%<br>무드 보너스: +${curLv*2}% -> +${(curLv+1)*2}%<br>약초 확률: <span style="color:#4ade80">${curHerb}% -> ${nextHerb}%</span>`;
+                effect = `생산량: +${curBonus}% -> +${nextBonus}%<br>무드 보너스: +${curLv*2}% -> +${(curLv+1)*2}%<br>약초 확률: ${curHerb}% -> ${nextHerb}%`;
             } else {
                 effect = `생산량: +${curBonus}% -> +${nextBonus}%`;
             }
