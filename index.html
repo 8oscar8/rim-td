@@ -220,11 +220,13 @@
                 <!-- 상점 탭 -->
                 <div id="tab-shop" class="tab-pane active">
                     <div class="button-list">
-                        <button id="btn-buy-random" class="shop-btn">
+                        <button id="btn-buy-random" class="shop-btn"
+                            onmouseenter="window.app.ui.showGachaTooltip(event, 'random')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
                             <img src="assets/silver.png" class="res-mini-icon">
                             <span class="text">무작위 유닛 구매 (50)</span>
                         </button>
-                        <button id="btn-buy-advanced" class="shop-btn gold">
+                        <button id="btn-buy-advanced" class="shop-btn gold"
+                            onmouseenter="window.app.ui.showGachaTooltip(event, 'advanced')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
                             <img src="assets/silver.png" class="res-mini-icon">
                             <span class="text">고급 무기 상자 (1,000)</span>
                         </button>

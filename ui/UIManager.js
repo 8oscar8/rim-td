@@ -1182,6 +1182,53 @@ export class UIManager {
     }
   }
 
+  showGachaTooltip(e, type) {
+    const s = this.app.state;
+    // GRADE_PROBABILITIES 참조 (실제 데이터와 동기화)
+    const probs = {
+      Common: 50.9, Uncommon: 30.0, Rare: 13.0, Epic: 5.0, 
+      Special: 0.1, Legendary: 0.8, Mythic: 0.19, Hidden: 0.01
+    };
+    const gradeColors = {
+      Common: '#ccc', Uncommon: '#4dff88', Rare: '#3498db', 
+      Epic: '#9b59b6', Special: '#e67e22', Legendary: '#f1c40f', 
+      Mythic: '#ff4d4d', Hidden: '#fff'
+    };
+
+    let title = type === 'random' ? "무작위 유닛 구매 확률" : "고급 무기 상자 확률 (Rare 이상)";
+    let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
+
+    if (type === 'random') {
+      Object.entries(probs).forEach(([grade, prob]) => {
+        html += `<div class="tooltip-row" style="color: ${gradeColors[grade]}">
+          <span class="res-name">${grade}:</span>
+          <span class="res-val">${prob}%</span>
+        </div>`;
+      });
+    } else {
+      // 고급 뽑기: Rare(13.0) 이상만 합산하여 상대 확률 계산
+      const advancedGrades = ['Rare', 'Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
+      const totalProb = advancedGrades.reduce((acc, g) => acc + probs[g], 0);
+      
+      advancedGrades.forEach(grade => {
+        const relativeProb = ((probs[grade] / totalProb) * 100).toFixed(2);
+        html += `<div class="tooltip-row" style="color: ${gradeColors[grade]}">
+          <span class="res-name">${grade}:</span>
+          <span class="res-val">${relativeProb}%</span>
+        </div>`;
+      });
+      html += `<div style="margin-top: 8px; font-size: 0.75rem; color: #888; border-top: 1px solid #444; padding-top: 4px;">* 하위 등급 제외 및 품질 보너스 적용</div>`;
+    }
+
+    html += `</div>`;
+    
+    if (this.tooltip) {
+      this.tooltip.innerHTML = html;
+      this.tooltip.classList.remove('hidden');
+      this.moveTooltip(e);
+    }
+  }
+
   moveTooltip(e) {
     if (this.tooltip) {
       const margin = 20;
