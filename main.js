@@ -1563,20 +1563,20 @@ class App {
         return;
     }
 
-    if (s.herbalMedicine >= 50) {
+    if (s.herbalMedicine >= 30) {
         if (s.mood >= 100) {
             this.ui.addMiniNotification("무드가 이미 최상태입니다!", "info");
             return;
         }
 
-        s.herbalMedicine -= 50;
+        s.herbalMedicine -= 30;
         s.mood = Math.min(100, s.mood + 25);
         
         // 쿨타임 설정 (15초)
         s.itemCooldowns.herbal_care = 15;
 
         SoundManager.playSFX('assets/audio/buy.mp3'); 
-        this.ui.addMiniNotification("약초 50개를 사용하여 무드를 25 회복했습니다!", "jackpot");
+        this.ui.addMiniNotification("약초 30개를 사용하여 무드를 25 회복했습니다!", "jackpot");
         this.ui.updateDisplays(s);
         
         console.log(`[Use] Herbs used. Remaining: ${s.herbalMedicine}, Current Mood: ${s.mood}`);

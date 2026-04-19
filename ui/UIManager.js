@@ -769,7 +769,7 @@ export class UIManager {
     const herbalCard = document.getElementById('btn-use-herbal');
     if (herbalCard) {
         const cd = state.itemCooldowns.herbal_care || 0;
-        const canUse = state.herbalMedicine >= 50 && !state.isPaused && cd <= 0;
+        const canUse = state.herbalMedicine >= 30 && !state.isPaused && cd <= 0;
         herbalCard.classList.toggle('disabled', !canUse);
         
         if (cd > 0) {
@@ -1552,7 +1552,7 @@ export class UIManager {
             name: '야생 약초 (Herbal Medicine)',
             desc: `자연에서 채집한 귀중한 약용 식물입니다.<br><br>
                    • <span style="color:#fbbf24">획득 경로</span>: 벌목(Logging)이나 농사(Farming) 작업 완료 시 <span style="color:#fff">${maxProb}%</span> 확률로 발견합니다. (강화 시 증가)<br>
-                   • <span style="color:#4ade80">사용 (클릭)</span>: 약초 <span style="color:#fff">50개</span>를 사용하여 무드를 <span style="color:#fff">25</span> 회복합니다. (클릭하여 사용)`
+                   • <span style="color:#4ade80">사용 (클릭)</span>: 약초 <span style="color:#fff">30개</span>를 사용하여 무드를 <span style="color:#fff">25</span> 회복합니다. (클릭하여 사용)`
         },
         financialTherapy: {
             name: '금융치료 (Silver Therapy)',
