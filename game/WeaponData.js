@@ -18,7 +18,7 @@ export const WEAPON_DB = {
   '장검': { type: 'sharp', tech: 'primitive', grade: 'Rare', dmg: 40, spd: 0.7, ap: 0, effect: null },
   '파괴용 도끼': { type: 'sharp', tech: 'advanced', grade: 'Rare', dmg: 85, spd: 0.45, ap: 0.5, effect: 'armor_break', shred: 12 },
   '트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Epic', dmg: 110, spd: 0.6, ap: 0.3, effect: 'knockback', fixedMaterial: 'None' },
-  '플라즈마검': { type: 'sharp', tech: 'advanced', grade: 'Legendary', dmg: 95, spd: 0.7, ap: 0.3, effect: 'burn_percent', fixedMaterial: 'None' },
+  '플라즈마검': { type: 'sharp', tech: 'advanced', grade: 'Legendary', dmg: 95, spd: 0.7, ap: 0.3, effect: 'burn_percent', shred: 10, fixedMaterial: 'None' },
   '단분자검': { type: 'sharp', tech: 'advanced', grade: 'Mythic', dmg: 135, spd: 0.9, ap: 0.95, effect: null, fixedMaterial: 'None' },
   '알파 트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Hidden', dmg: 250, spd: 1.1, ap: 0.5, effect: 'instakill', fixedMaterial: 'None' },
   '결속 단분자검': { type: 'sharp', tech: 'advanced', grade: 'Hidden', dmg: 300, spd: 1.3, ap: 1.0, effect: 'max_hp_percent', fixedMaterial: 'None' },
@@ -49,7 +49,7 @@ export const WEAPON_DB = {
   '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'multi_bullet', range: 9999 },
 
   // 투척류 및 특수 무기
-  '파쇄 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 50, spd: 0.2, ap: 0.2, effect: 'aoe_dmg', range: 150 },
+  '파쇄 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 50, spd: 0.2, ap: 0.2, effect: 'aoe_dmg', shred: 15, range: 150 },
   '펄스 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 5, spd: 0.15, ap: 0.5, effect: 'armor_break', shred: 20, range: 150 },
   '연막 발사기': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 0, spd: 0.1, ap: 0, effect: 'smoke', range: 250 },
   '화염병': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 10, spd: 0.2, ap: 0.1, effect: 'burn_fear', range: 150 },
