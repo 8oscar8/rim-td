@@ -1110,6 +1110,30 @@ export class UIManager {
     this.renderTooltip(requirements, `${weaponName} 제작 요구사항`);
   }
 
+  showTechTooltip(e) {
+    const s = this.app.state;
+    const levels = ['primitive', 'advanced', 'spacer', 'ultra'];
+    const currIdx = levels.indexOf(s.techLevel);
+    
+    if (currIdx >= levels.length - 1) {
+        this.renderTooltip([], "기술 수준 최대 (Ultra)");
+        return;
+    }
+
+    let sCost = 200, rCost = 100;
+    if (currIdx === 1) { sCost = 500; rCost = 300; }
+    else if (currIdx === 2) { sCost = 1000; rCost = 1000; }
+
+    const requirements = [
+        { name: '은화', req: sCost, cur: s.silver },
+        { name: '연구', req: rCost, cur: s.researchPoints }
+    ];
+
+    const nextLevel = levels[currIdx + 1];
+    const koLevels = { advanced: '첨단', spacer: '우주', ultra: '초월' };
+    this.renderTooltip(requirements, `기술 업그레이드 (${koLevels[nextLevel]}) 요구사항`);
+  }
+
   showUpgradeTooltip(e, btn) {
     const type = btn.getAttribute('data-type');
     const s = this.app.state;
