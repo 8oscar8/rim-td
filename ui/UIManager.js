@@ -1085,7 +1085,7 @@ export class UIManager {
       ];
     }
 
-    this.renderTooltip(requirements, `${grade} 등급 제작 요구사항`);
+    this.renderTooltip(e, requirements, `${grade} 등급 제작 요구사항`);
   }
 
   showSpecialCraftTooltip(e, btn) {
@@ -1107,7 +1107,7 @@ export class UIManager {
         requirements.push({ name: nameMap[res] || res, req: amt, cur: s[res] || 0 });
     }
 
-    this.renderTooltip(requirements, `${weaponName} 제작 요구사항`);
+    this.renderTooltip(e, requirements, `${weaponName} 제작 요구사항`);
   }
 
   showTechTooltip(e) {
@@ -1131,7 +1131,7 @@ export class UIManager {
 
     const nextLevel = levels[currIdx + 1];
     const koLevels = { advanced: '첨단', spacer: '우주', ultra: '초월' };
-    this.renderTooltip(requirements, `기술 업그레이드 (${koLevels[nextLevel]}) 요구사항`);
+    this.renderTooltip(e, requirements, `기술 업그레이드 (${koLevels[nextLevel]}) 요구사항`);
   }
 
   showUpgradeTooltip(e, btn) {
@@ -1155,9 +1155,9 @@ export class UIManager {
     }));
 
     const typeName = type === 'blunt' ? '둔기' : (type === 'sharp' ? '날붙이' : '원거리');
-    this.renderTooltip(requirements, `${typeName} 강화 Lv.${nextLv} 요구사항`);
+    this.renderTooltip(e, requirements, `${typeName} 강화 Lv.${nextLv} 요구사항`);
   }
-  renderTooltip(requirements, title) {
+  renderTooltip(e, requirements, title) {
     let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
     requirements.forEach(r => {
       const isShort = r.cur < r.req;
@@ -1172,6 +1172,7 @@ export class UIManager {
     if (this.tooltip) {
       this.tooltip.innerHTML = html;
       this.tooltip.classList.remove('hidden');
+      this.moveTooltip(e);
     }
   }
 
