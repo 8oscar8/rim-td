@@ -1420,7 +1420,7 @@ export class UIManager {
     const koLevels = { primitive: '원시', industrial: '산업', advanced: '첨단', spacer: '우주', ultra: '초월' };
     
     if (weaponName === '인공자아핵') {
-        const curTech = state.techLevel || 'primitive';
+        const curTech = s.techLevel || 'primitive';
         requirements.push({ 
             name: '기술 수준', 
             req: koLevels['ultra'], 
