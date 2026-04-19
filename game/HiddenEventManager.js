@@ -127,9 +127,15 @@ export class HiddenEventManager {
               this.app.waveManager.spawnCaravanRaid();
           },
           () => {
-              // [거절]
-              this.app.ui.addMiniNotification("상단은 감사의 뜻으로 소량의 식량을 보냈습니다.", "info");
-              this.app.state.addResource('food', 50);
+              // [거절] 시 무작위 보상 지급 (평화적 해결 보상)
+              const silver = 100 + Math.floor(Math.random() * 200);
+              const food = 50 + Math.floor(Math.random() * 100);
+              
+              this.app.state.addResource('silver', silver);
+              this.app.state.addResource('food', food);
+              
+              this.app.ui.addMiniNotification(`상단은 안전한 통행에 감사를 표하며 물자를 보냈습니다! (은화+${silver}, 식량+${food})`, "info");
+              this.app.ui.updateDisplays(this.app.state);
           }
       );
   }
