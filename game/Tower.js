@@ -148,8 +148,7 @@ export class Tower {
         this.heat = 0;
       }
       return;
-    } else {
-      if (this.heat > 0) this.heat = Math.max(0, this.heat - 10 * dt);
+      return;
     }
 
     if (this.auraBuffTimer > 0) this.auraBuffTimer -= dt;
