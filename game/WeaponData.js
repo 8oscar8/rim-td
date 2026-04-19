@@ -6,7 +6,7 @@ export const WEAPON_DB = {
   '맨손/목재': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 10, spd: 0.5, ap: 0, effect: null },
   '곤봉': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.5, ap: 0, effect: null },
   '철퇴': { type: 'blunt', tech: 'primitive', grade: 'Uncommon', dmg: 35, spd: 0.5, ap: 0, effect: null },
-  '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'melee_aoe' },
+  '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'melee_aoe', range: 70 },
   '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None' },
   '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Mythic', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
 
@@ -15,7 +15,7 @@ export const WEAPON_DB = {
   '단창': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 18, spd: 0.8, ap: 0.2, effect: null },
   '검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 16, spd: 0.8, ap: 0, effect: null },
   '창': { type: 'sharp', tech: 'primitive', grade: 'Uncommon', dmg: 23, spd: 0.6, ap: 0.3, effect: null },
-  '장검': { type: 'sharp', tech: 'primitive', grade: 'Rare', dmg: 40, spd: 0.7, ap: 0, effect: 'melee_aoe' },
+  '장검': { type: 'sharp', tech: 'primitive', grade: 'Rare', dmg: 40, spd: 0.7, ap: 0, effect: 'melee_aoe', range: 80 },
   '파괴용 도끼': { type: 'sharp', tech: 'advanced', grade: 'Rare', dmg: 85, spd: 0.45, ap: 0.5, effect: 'armor_break', shred: 6 },
   '트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Epic', dmg: 110, spd: 0.6, ap: 0.3, effect: 'knockback', fixedMaterial: 'None' },
   '플라즈마검': { type: 'sharp', tech: 'advanced', grade: 'Legendary', dmg: 95, spd: 0.7, ap: 0.3, effect: null, shred: 15, fixedMaterial: 'None' },
@@ -37,7 +37,7 @@ export const WEAPON_DB = {
 
   '기관단총(SMG)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 20, burst: 3, spd: 0.45, ap: 0.15, range: 240 },
   '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310 },
-  '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 180, spd: 0.4, ap: 0.3, effect: 'aoe_knockback', range: 140 },
+  '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 180, spd: 0.4, ap: 0.3, effect: 'aoe_knockback', range: 115 },
 
   '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: 'armor_break', shred: 20, range: 480 },
   '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 75, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280 },
