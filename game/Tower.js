@@ -442,34 +442,39 @@ export class Tower {
       ctx.restore();
     }
 
-    // [New] 결속 단분자검: 붉은 공허 오오라 연출
-    if (this.weaponName === '결속 단분자검') {
-      const time = Date.now() * 0.003;
-      const pulse = Math.sin(time) * 4;
-      
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      
-      // 1. 배후의 붉은 글로우
-      const grad = ctx.createRadialGradient(0, 0, 5, 0, 0, 30 + pulse);
-      grad.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
-      grad.addColorStop(1, 'rgba(239, 68, 68, 0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath(); ctx.arc(0, 0, 30 + pulse, 0, Math.PI * 2); ctx.fill();
-      
-      // 2. 소용돌이치는 붉은 파티클 효과 (점선)
-      ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([10, 8]);
-      ctx.lineDashOffset = -time * 30;
-      ctx.beginPath(); ctx.arc(0, 0, 22 + pulse, 0, Math.PI * 2); ctx.stroke();
-      
-      // 3. 내부의 고박동 핵
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(0, 0, 15 - pulse/2, 0, Math.PI * 2); ctx.stroke();
+    // [New] 범용 버프 이펙트 (무드 보너스, 고주스 등)
+    const state = this.gameCore.state;
+    const isMoodBuff = state.mood >= 85;
+    const isGoJuiceBuff = this.goJuiceTimer > 0;
+    const isLuciBuff = this.isLuciferiumActive;
 
-      ctx.restore();
+    if (isMoodBuff || isGoJuiceBuff || isLuciBuff) {
+        ctx.save();
+        
+        const time = Date.now() * 0.005;
+        const pulse = Math.sin(time) * 3;
+        
+        // 1. 후광 효과 (Glow)
+        let color = "rgba(255, 215, 0, 0.25)"; // 무드 보너함: 금색
+        if (isGoJuiceBuff) color = "rgba(100, 255, 100, 0.3)"; // 고주스: 연두색
+        if (isLuciBuff) color = "rgba(255, 50, 50, 0.3)"; // 루시페륨: 빨간색
+        
+        ctx.shadowBlur = 10 + pulse;
+        ctx.shadowColor = color;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, 20 + pulse, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 2. 부동 아이콘 효과
+        if (isMoodBuff && !this.isBlueprint) {
+           ctx.fillStyle = "#fbbf24";
+           ctx.font = "12px Inter";
+           ctx.textAlign = "center";
+           ctx.fillText("✨", this.x + 18, this.y - 18 + Math.sin(time*0.5)*2);
+        }
+        
+        ctx.restore();
     }
   }
 

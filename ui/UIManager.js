@@ -596,22 +596,37 @@ export class UIManager {
       
       this.detailDps.textContent = (total * burst * spd).toFixed(1);
       this.detailAtk.textContent = Math.floor(base);
-      if (this.detailAtkBonus) this.detailAtkBonus.textContent = `(+${Math.floor(bonus)} 훈련)`;
+      // 공격력 보너스 텍스트 생성 (버프 상세 내역 포함)
+      let bonusHtml = `(+${Math.floor(bonus)} 훈련)`;
+      const activeBuffs = [];
+      const state = this.app.state;
+      if (state.mood >= 85) activeBuffs.push("무드+10%");
+      if (tower.goJuiceTimer > 0) activeBuffs.push("고주스+50%");
+      if (tower.isLuciferiumActive) activeBuffs.push("루시페륨+50%");
+      
+      if (activeBuffs.length > 0) {
+          bonusHtml += `<br><span style="color:var(--accent-gold); font-size:10px; font-weight:bold; letter-spacing: -0.5px;">[${activeBuffs.join(', ')}]</span>`;
+      }
+      
+      if (this.detailAtkBonus) this.detailAtkBonus.innerHTML = bonusHtml;
       if (this.detailUpLv) this.detailUpLv.textContent = upLv;
       
       this.detailRange.textContent = tower.range || 0;
       this.detailSpd.textContent = `${spd.toFixed(2)}/s`;
 
-      // 버프 시각화 (하늘색 강조)
-      const isBuffed = (spd > tower.baseAttackSpeed) || (total > base);
+      // 버프 시각화 (금색/하늘색 강조)
+      const isBuffed = (spd > tower.baseAttackSpeed) || (total > base) || (activeBuffs.length > 0);
       if (isBuffed) {
+        const buffColor = (activeBuffs.length > 0) ? "var(--accent-gold)" : "#00f2ff";
+        this.detailSpd.style.color = buffColor;
+        this.detailDps.style.color = buffColor;
+        this.detailAtk.style.color = buffColor;
         this.detailSpd.classList.add('buff-text');
-        this.detailDps.classList.add('buff-text');
-        this.detailAtk.classList.add('buff-text');
       } else {
+        this.detailSpd.style.color = "";
+        this.detailDps.style.color = "";
+        this.detailAtk.style.color = "";
         this.detailSpd.classList.remove('buff-text');
-        this.detailDps.classList.remove('buff-text');
-        this.detailAtk.classList.remove('buff-text');
       }
       
       // 방관 정보
