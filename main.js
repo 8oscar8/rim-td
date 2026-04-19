@@ -314,18 +314,28 @@ class App {
 
     // 2. 유닛 선택 로직 (몬스터가 선택되지 않았을 때)
     if (!selectedAny) {
-        for (const u of this.units) {
-          const dist = Math.hypot(u.x - clickX, u.y - clickY);
-          if (dist < 35) {
+        const unitsUnderClick = this.units.filter(u => Math.hypot(u.x - clickX, u.y - clickY) < 35);
+        
+        if (unitsUnderClick.length > 0) {
+            // 현재 선택된 유닛이 있는지 확인
+            const currentIdx = unitsUnderClick.findIndex(u => u.selected);
+            let nextUnit;
+            
+            if (currentIdx !== -1 && unitsUnderClick.length > 1) {
+                // 다음 유닛으로 순환 선택
+                nextUnit = unitsUnderClick[(currentIdx + 1) % unitsUnderClick.length];
+            } else {
+                // 첫 번째 유닛 선택
+                nextUnit = unitsUnderClick[0];
+            }
+            
             this.units.forEach(u2 => u2.selected = false);
             this.enemies.forEach(e2 => e2.selected = false);
             
-            u.selected = true;
-            this.ui.showUnitDetail(u);
+            nextUnit.selected = true;
+            this.ui.showUnitDetail(nextUnit);
             selectedAny = true;
-            console.log(`[Click] Tower selected: ${u.weaponName}`);
-            break; 
-          }
+            console.log(`[Click] Tower selected: ${nextUnit.weaponName} (Cycle)`);
         }
     }
 
