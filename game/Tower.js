@@ -82,7 +82,7 @@ export class Tower {
     if (typeKey === 'melee') typeKey = 'sharp'; // 매핑 동기화
     
     const lv = this.gameCore.state.upgrades[typeKey] || 0;
-    const upgradeMul = 1 + (lv * 0.1);
+    const upgradeMul = this.gameCore.state.getUpgradeMultiplier(typeKey);
     const encounterManager = this.gameCore.encounterManager;
     const luciMul = encounterManager ? encounterManager.getGlobalLuciferiumMultiplier() : 1.0;
     

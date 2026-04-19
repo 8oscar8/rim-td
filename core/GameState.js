@@ -82,10 +82,16 @@ export class GameState {
     }
   }
 
-  // 업그레이드 시 공격력 배율 반환
+  // 업그레이드 시 공격력 배율 반환 (티어별 소급 적용 로직)
   getUpgradeMultiplier(type) {
     const level = this.upgrades[type] || 0;
-    return 1 + (level * 0.1); // 레벨당 10% 증가
+    let rate = 0.1; // 기본 10%
+
+    // 구간별 효율 점프 (소급 적용)
+    if (level >= 101) rate = 0.3;      // 101강 이상: 30%
+    else if (level >= 51) rate = 0.2;  // 51~100강: 20%
+
+    return 1 + (level * rate); 
   }
 
   // 인구수에 따른 다음 식량 요구량 동적 업데이트
