@@ -33,7 +33,15 @@ export class HiddenEventManager {
     if (!this.isWarningActive && this.nextEventTimer <= 10) {
         // 발생 조건 체크 (최소 20분 경과 및 30웨이브 이상)
         if (s.gameTime >= 1200 && s.waveNumber >= 30) {
-            this.startWarning();
+            // [Fix] 예고 발생 전 미리 확률 체크 (기본 35% + 피티 보너스)
+            const chance = 0.35 + this.pityBonus;
+            if (Math.random() < chance || s.gameTime > 2700) {
+                this.startWarning();
+            } else {
+                // 실패 시 다음 기회 노림 (보정치 증가 및 타이머 재설정)
+                this.pityBonus += 0.15;
+                this.nextEventTimer = 240 + Math.random() * 240; // 4~8분 뒤 재시도
+            }
         } else {
             // 조건 미충족 시 타이머 재설정 (조금 짧은 주기로 재시도)
             this.nextEventTimer = 60 + Math.random() * 60;
@@ -64,19 +72,11 @@ export class HiddenEventManager {
     this.isWarningActive = false;
     document.body.classList.remove('screen-noise');
 
-    // 확률 체크 (기본 30% + 피티 보너스)
-    const chance = 0.3 + this.pityBonus;
-    if (Math.random() < chance || this.app.state.gameTime > 2700) { // 45분 넘으면 확정
-        this.executeRandomHiddenEvent();
-        this.app.state.hiddenEventCount++;
-        this.nextEventTimer = this.getRandomInterval();
-        this.pityBonus = 0;
-    } else {
-        // 실패 시 다음 기회 노림 (보정치 증가)
-        this.pityBonus += 0.2;
-        this.nextEventTimer = 300 + Math.random() * 300; // 5~10분 뒤 재시도
-        this.app.ui.addMiniNotification("불길한 기운이 잠시 가라앉았습니다.", "info");
-    }
+    // [Fix] 예고가 끝났다면 이제 확정적으로 이벤트를 실행함 (이미 예고 전 확률 체크 통과함)
+    this.executeRandomHiddenEvent();
+    this.app.state.hiddenEventCount++;
+    this.nextEventTimer = this.getRandomInterval();
+    this.pityBonus = 0;
   }
 
   executeRandomHiddenEvent() {
