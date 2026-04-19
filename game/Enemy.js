@@ -20,6 +20,7 @@ export class Enemy {
     this.maxHp = hp;
     this.hp = hp;
     this.armor = armor; 
+    this.initialArmor = armor; // 방어력 깎기 하한선 계산용
     this.reward = reward;
     this.speed = isBoss ? 60 : 80; 
     this.radius = isBoss ? 20 : 8;
@@ -158,7 +159,7 @@ export class Enemy {
   /**
    * 데미지 피격 처리
    */
-  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common') {
+  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common', shred = 10) {
     if (!this.active) return false;
     this.flashTimer = 0.1; // 번쩍임 효과 활성화
 
@@ -208,7 +209,7 @@ export class Enemy {
     }
 
     // 상태 이상 적용
-    this.handleStatusEffect(effect);
+    this.handleStatusEffect(effect, shred);
 
     if (this.hp <= 0) {
       this.active = false;
@@ -220,7 +221,7 @@ export class Enemy {
   /**
    * 투사체 효과에 따른 상태 이상 분기 처리
    */
-  handleStatusEffect(effect) {
+  handleStatusEffect(effect, shred = 10) {
     if (effect === 'stun') {
       this.stunTimer = 0.5;
     } else if (effect === 'stun_long') {
@@ -240,7 +241,8 @@ export class Enemy {
       this.hp -= this.hp * 0.03;
       if (Math.random() < 0.8) this.activeDots.push({ damagePerSec: 15, duration: 2.0 });
     } else if (effect === 'armor_break') {
-      this.armor = Math.max(0, Math.floor(this.armor * 0.5));
+      const minArmor = Math.floor(this.initialArmor * 0.5);
+      this.armor = Math.max(minArmor, this.armor - shred);
     } else if (effect && effect.includes('knockback')) {
       this.distanceTraveled = Math.max(0, this.distanceTraveled - 15);
       this.stunTimer = 0.2;

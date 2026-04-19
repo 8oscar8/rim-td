@@ -6,7 +6,7 @@ export const WEAPON_DB = {
   '맨손/목재': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 10, spd: 0.5, ap: 0, effect: null },
   '곤봉': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.5, ap: 0, effect: null },
   '철퇴': { type: 'blunt', tech: 'primitive', grade: 'Uncommon', dmg: 35, spd: 0.5, ap: 0, effect: null },
-  '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'splash' },
+  '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'armor_break', shred: 15 },
   '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None' },
   '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Special', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
 
@@ -16,7 +16,7 @@ export const WEAPON_DB = {
   '검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 16, spd: 0.8, ap: 0, effect: null },
   '창': { type: 'sharp', tech: 'primitive', grade: 'Uncommon', dmg: 23, spd: 0.6, ap: 0.3, effect: null },
   '장검': { type: 'sharp', tech: 'primitive', grade: 'Rare', dmg: 40, spd: 0.7, ap: 0, effect: null },
-  '파괴용 도끼': { type: 'sharp', tech: 'advanced', grade: 'Rare', dmg: 85, spd: 0.45, ap: 0.5, effect: 'splash' },
+  '파괴용 도끼': { type: 'sharp', tech: 'advanced', grade: 'Rare', dmg: 85, spd: 0.45, ap: 0.5, effect: 'armor_break', shred: 12 },
   '트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Epic', dmg: 110, spd: 0.6, ap: 0.3, effect: 'knockback', fixedMaterial: 'None' },
   '플라즈마검': { type: 'sharp', tech: 'advanced', grade: 'Legendary', dmg: 95, spd: 0.7, ap: 0.3, effect: 'burn_percent', fixedMaterial: 'None' },
   '단분자검': { type: 'sharp', tech: 'advanced', grade: 'Mythic', dmg: 135, spd: 0.9, ap: 0.95, effect: null, fixedMaterial: 'None' },
@@ -39,9 +39,9 @@ export const WEAPON_DB = {
   '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310 },
   '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 60, burst: 3, spd: 0.4, ap: 0.3, effect: 'aoe_dmg', range: 140 },
 
-  '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: null, range: 480 },
+  '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: 'armor_break', shred: 30, range: 480 },
   '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 75, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280 },
-  '차지 랜스': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 280, spd: 0.2, ap: 0.9, effect: 'armor_break', range: 340 },
+  '차지 랜스': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 280, spd: 0.2, ap: 0.9, effect: 'armor_break', shred: 25, range: 340 },
 
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.25, ap: 0.3, effect: null, range: 310 },
   '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 30, spd: 0.25, ap: 0.6, effect: 'multi_bullet', range: 9999 },
@@ -50,7 +50,7 @@ export const WEAPON_DB = {
 
   // 투척류 및 특수 무기
   '파쇄 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 50, spd: 0.2, ap: 0.2, effect: 'aoe_dmg', range: 150 },
-  '펄스 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 5, spd: 0.15, ap: 0.5, effect: 'emp', range: 150 },
+  '펄스 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 5, spd: 0.15, ap: 0.5, effect: 'armor_break', shred: 20, range: 150 },
   '연막 발사기': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 0, spd: 0.1, ap: 0, effect: 'smoke', range: 250 },
   '화염병': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 10, spd: 0.2, ap: 0.1, effect: 'burn_fear', range: 150 },
   '독소 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 5, spd: 0.1, ap: 0.8, effect: 'toxin', range: 180 }
