@@ -516,31 +516,31 @@ class App {
             lootMsg = `식량 +${amount}`;
         }
     } else if (type === 'mech') {
-        // 은화 35%, 강철 40%(평균 2.5 -> 기대값 1.0), 플라스틸 20%(평균 2.5 -> 기대값 0.5)
+        // 은화 35%, 강철 40%, 플라스틸 20%
         if (rand < 0.35) {
             const amount = 2 + Math.floor(Math.random() * 5);
             const finalSilver = Math.floor(amount * silMul);
             s.silver += finalSilver;
             lootMsg = `은화 +${finalSilver}`;
-        } else if (rand < 0.75) { // 35% ~ 75% (40%)
-            const amount = 2 + Math.floor(Math.random() * 2); // 2, 3 (평균 2.5)
+        } else if (rand < 0.75) {
+            const amount = 2 + Math.floor(Math.random() * 2);
             s.addResource('steel', amount);
             lootMsg = `강철 +${amount}`;
-        } else if (rand < 0.95) { // 75% ~ 95% (20%)
-            const amount = 2 + Math.floor(Math.random() * 2); // 2, 3 (평균 2.5)
+        } else if (rand < 0.95) {
+            const amount = 2 + Math.floor(Math.random() * 2);
             s.addResource('plasteel', amount);
             lootMsg = `플라스틸 +${amount}`;
         }
-    }
 
-    // 4. 현대 교육 기반 부품(Component) 추가 획득 로직
-    const eduLv = s.upgrades.education || 0;
-    const compProb = 0.01 + (eduLv * 0.02); // 기본 1% + 레벨당 2% (최대 11%)
-    if (Math.random() < compProb) {
-        const amount = (eduLv >= 3) ? (1 + Math.floor(Math.random() * 2)) : 1; // 3렙 이상이면 1~2개
-        s.addResource('component', amount);
-        const compTxt = `부품 +${amount}`;
-        lootMsg = lootMsg ? `${lootMsg}, ${compTxt}` : compTxt;
+        // [New/Fix] 현대 교육 기반 부품(Component) 추가 획득 로직 (기계 처치 시에만 발동)
+        const eduLv = s.upgrades.education || 0;
+        const compProb = 0.01 + (eduLv * 0.02); // 기본 1% + 레벨당 2% (최대 11%)
+        if (Math.random() < compProb) {
+            const amount = (eduLv >= 3) ? (1 + Math.floor(Math.random() * 2)) : 1; 
+            s.addResource('component', amount);
+            const compTxt = `부품 +${amount}`;
+            lootMsg = lootMsg ? `${lootMsg}, ${compTxt}` : compTxt;
+        }
     }
 
     // 보스 전용 보상
