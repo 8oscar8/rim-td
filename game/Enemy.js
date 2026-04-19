@@ -260,18 +260,17 @@ export class Enemy {
 
   applyEffect(effect, duration = 1.0) {
     if (!this.active) return;
-    if (effect === 'stun') this.stunTimer = Math.max(this.stunTimer, duration);
-    else if (effect === 'smoke') this.slowTimer = Math.max(this.slowTimer, duration);
-    else if ((effect === 'fear' || effect === 'burn_fear') && this.type === 'organic') {
+    if (effect === 'stun') {
+      this.stunTimer = Math.max(this.stunTimer, duration);
+    } else if (effect === 'smoke') {
+      this.slowTimer = Math.max(this.slowTimer, 0.5); // 장판 안에 있는 동안 지속 갱신
+    } else if (effect === 'toxin') {
+      // 독성 장판: 매 프레임 방어력 고정 부식 + 미세 도트뎀
+      const minArmor = Math.floor(this.initialArmor * 0.3);
+      if (this.armor > minArmor) this.armor -= 0.15; // 초당 약 9 정도의 방깎
+      this.hp -= 0.1; // 아주 미세한 체력 감소
+    } else if ((effect === 'fear' || effect === 'burn_fear') && this.type === 'organic') {
       this.fearTimer = Math.max(this.fearTimer, duration);
-    }
-    else if (effect === 'toxin' && this.type !== 'mech') {
-      const existingToxin = this.activeDots.find(d => d.isFieldToxin);
-      if (existingToxin) {
-        existingToxin.duration = 0.5;
-      } else {
-        this.activeDots.push({ damagePerSec: 8, duration: 0.5, isFieldToxin: true });
-      }
     }
   }
 

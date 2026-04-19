@@ -1070,6 +1070,7 @@ class App {
     const radius = item.radius || 100;
     const targets = this.enemies.filter(en => Math.hypot(en.x - x, en.y - y) <= radius);
     
+    // 1. 즉발형 효과 처리 (대상에게 개별 적용)
     targets.forEach(en => {
         en.flashTimer = 0.3;
         switch (type) {
@@ -1083,15 +1084,33 @@ class App {
                 en.handleStatusEffect('burn_fear');
                 en.takeDamage(20, 0.1, 'burn_fear', 'Rare', 0);
                 break;
-            case 'smoke_launcher':
-                en.handleStatusEffect('smoke');
-                break;
-            case 'toxin_grenade':
-                en.handleStatusEffect('toxin');
-                en.takeDamage(10, 0.8, 'toxin', 'Epic', 50);
-                break;
         }
     });
+
+    // 2. 장판형 효과 생성 (지점에 1회 생성)
+    if (type === 'smoke_launcher') {
+        this.fieldEffects.push({
+            type: 'smoke', x: x, y: y, radius: radius, duration: 8.0,
+            render: (ctx) => {
+                ctx.save();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+                ctx.shadowBlur = 10; ctx.shadowColor = '#fff';
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+        });
+    } else if (type === 'toxin_grenade') {
+        this.fieldEffects.push({
+            type: 'toxin', x: x, y: y, radius: radius, duration: 6.0,
+            render: (ctx) => {
+                ctx.save();
+                ctx.fillStyle = 'rgba(155, 89, 182, 0.3)';
+                ctx.shadowBlur = 15; ctx.shadowColor = '#9b59b6';
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+        });
+    }
 
     const itemName = item.name || type;
     this.ui.addMiniNotification(`${itemName} 투척!`, "info");
