@@ -81,6 +81,7 @@ export class UIManager {
     // 8. 추가 상세 정보 요소
     this.detailUpLv = document.getElementById('detail-up-lv');
     this.detailAtkBonus = document.getElementById('detail-atk-bonus');
+    this.detailSpdBonus = document.getElementById('detail-spd-bonus');
 
     // 9. 정보창 레이블 및 행 제어
     this.lblDps = document.getElementById('lbl-dps');
@@ -627,6 +628,18 @@ export class UIManager {
       
       this.detailRange.textContent = tower.range || 0;
       this.detailSpd.textContent = `${spd.toFixed(2)}/s`;
+      
+      // 공속 보너스 계산 및 표시
+      const baseAttackSpd = tower.baseAttackSpeed || 1;
+      const spdBonusPct = Math.round((spd / baseAttackSpd - 1) * 100);
+      if (this.detailSpdBonus) {
+        if (spdBonusPct > 0) {
+          this.detailSpdBonus.textContent = `(+${spdBonusPct}%)`;
+          this.detailSpdBonus.style.color = "var(--accent-cyan)";
+        } else {
+          this.detailSpdBonus.textContent = "";
+        }
+      }
 
       // 버프 시각화 (금색/하늘색 강조)
       const isBuffed = (spd > tower.baseAttackSpeed) || (total > base) || (activeBuffs.length > 0);
