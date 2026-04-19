@@ -1490,7 +1490,7 @@ export class UIManager {
             desc: `정착민들의 현재 심리 상태입니다. 무드에 따라 다양한 보너스나 페널티가 발생합니다.<br><br>
                    • <span style="color:#3b82f6">매우 높음 (85%+)</span>: 작업 속도 및 유닛 공격력 +10%<br>
                    • <span style="color:#22c55e">좋음 (60%~85%)</span>: 정상적인 상태<br>
-                   • <span style="color:#ef4444">정신 이상 (25% 미만)</span>: 유닛 공격력 -20%, 생산 효율 -30%<br><br>
+                   • <span style="color:#ef4444">정신 이상 임계치 (25% 미만)</span>: 정신 이상(방화광, 파업, 방황 등)이 발생할 위험이 매우 높습니다! 극복 시 큰 보너스를 얻습니다.<br><br>
                    <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
                    • <span style="color:#fbbf24">무드 회복 수단</span>:<br>
                    - 적 처치 시 <span style="color:#fff">+0.75%</span> (알림 미표시)<br>

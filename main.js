@@ -45,6 +45,7 @@ class App {
     this.mousePos = { x: 0, y: 0 };
     this.passiveSilverTimer = 0; // 2초당 1은 지급을 위한 타이머
     this.moodDecayTimer = 0; // 3초당 무드 감소 타이머
+    this.mentalBreakCheckTimer = 0; // 정신 이상 체크 타이머
 
     // 5. 인카운터(이벤트) 매니저
     this.encounterManager = new EncounterManager(this);
@@ -631,6 +632,20 @@ class App {
     if (this.moodDecayTimer >= 4.0) {
         this.state.mood = Math.max(0, this.state.mood - 1);
         this.moodDecayTimer -= 4.0;
+    }
+
+    // [New] 정신 이상(Mental Break) 상시 감시
+    if (this.state.mood < 25 && !this.state.isPaused) {
+        this.mentalBreakCheckTimer += scaledDt;
+        if (this.mentalBreakCheckTimer >= 10.0) { // 10초마다 체크
+            this.mentalBreakCheckTimer = 0;
+            // 15% 확률로 정신 이상 발생
+            if (Math.random() < 0.15) {
+                this.encounterManager.triggerMentalBreak();
+            }
+        }
+    } else {
+        this.mentalBreakCheckTimer = 0; // 무드 회복 시 타이머 초기화
     }
 
     // [New] 작업 파견 진행 (v2)

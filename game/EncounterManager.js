@@ -75,6 +75,9 @@ export class EncounterManager {
   // 글로벌 루시페륨 효과 배율 계산 (공속/데미지)
   getGlobalLuciferiumMultiplier() {
     let multiplier = 1.0;
+    if (this.activeEvents.some(e => e.id === 'confused_wander')) {
+        multiplier *= 0.9; // 정신 방황: 10% 감소
+    }
     if (this.activeEvents.some(e => e.id === 'luciferium')) {
         multiplier *= 1.5; // 데미지 1.5배, 공속은 Tower.js에서 별도 처리
     }
@@ -84,6 +87,9 @@ export class EncounterManager {
   // 글로벌 공격 속도 배율 계산 (정신적 안정파 등 반영)
   getGlobalAttackSpeedMultiplier() {
     let multiplier = 1.0;
+    if (this.activeEvents.some(e => e.id === 'confused_wander')) {
+        multiplier *= 0.9; // 정신 방황: 10% 감소
+    }
     if (this.activeEvents.some(e => e.id === 'psychic_soothe')) {
         multiplier *= 1.5; // 정신적 안정파: 50% 공속 보너스
     }
@@ -107,6 +113,11 @@ export class EncounterManager {
     finishedEvents.forEach(ev => {
       this.app.ui.addMiniNotification(`이벤트 종료: ${ev.name}`, 'info');
       if (ev.id === 'luciferium') this.app.destroyRandomTower();
+      
+      // [New] 정신 이상 극복 시 카타르시스 보상 지급
+      if (ev.isMentalBreak) {
+          this.applyCatharsis();
+      }
     });
 
     this.activeEvents = this.activeEvents.filter(e => e.duration > 0);
@@ -160,6 +171,38 @@ export class EncounterManager {
       `;
     });
     this.activeEventsContainer.innerHTML = uiHtml;
+  }
+
+  // [New] 카타르시스 보상 지급 (정신 이상 극복 시)
+  applyCatharsis() {
+    this.app.state.mood = Math.min(100, (this.app.state.mood || 0) + 60);
+    this.app.ui.addMiniNotification("정신을 차렸습니다! 카타르시스 효과로 무드가 대폭 상승합니다. (+60%)", "jackpot");
+    SoundManager.playSFX('assets/audio/encounter_success.mp3', 0.8);
+  }
+
+  // [New] 정신 이상 이벤트 강제 발생 로직 (무드 25% 이하 시 체크)
+  triggerMentalBreak() {
+    // 25% 확률로 정신적 한계를 극복함 (이겨냄)
+    if (Math.random() < 0.25) {
+        this.app.ui.addMiniNotification("정신적 한계에 다다랐으나, 불굴의 의지로 이겨냈습니다!", "jackpot");
+        this.applyCatharsis();
+        return;
+    }
+
+    const breakEvents = [
+      { id: 'pyromaniac', name: '정신 이상: 방화광', desc: '정착민이 정신적 한계에 도달하여 방화 광기에 빠졌습니다! 창고의 자원 일부를 불태웁니다.' },
+      { id: 'labor_strike', name: '정신 이상: 파업', desc: '심각한 우울증으로 인해 모든 활동을 거부하고 파업에 돌입했습니다! 60초간 상점과 배치가 금지됩니다.' },
+      { id: 'confused_wander', name: '정신 이상: 정신 방황', desc: '정신적인 충격으로 인해 멍한 상태에 빠졌습니다! 60초간 타워들의 모든 화력이 10% 감소합니다.' }
+    ];
+    
+    const selected = breakEvents[Math.floor(Math.random() * breakEvents.length)];
+    
+    // 효과음 및 모달 표시
+    SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.8);
+    setTimeout(() => {
+        this.showEventModal({ name: selected.name, desc: selected.desc, type: 'negative' });
+        this.executeEvent({ id: selected.id, desc: selected.desc, isMentalBreak: true });
+    }, 500);
   }
 
   triggerRandomEvent() {
@@ -235,6 +278,11 @@ export class EncounterManager {
       {
         name: '궤도 폭격기 보급', weight: 5, type: 'positive', id: 'orbital_supply',
         desc: "행성 궤도에 대기 중이던 우주군으로부터 궤도 폭격 목표 지시기가 도착했습니다! 위기의 순간 전장을 청소할 수 있습니다."
+      },
+      // [New] 정신 이상 전용 이벤트들 (isMentalBreak: true 마킹 필요)
+      {
+        name: '정신 방황', weight: 0, type: 'negative', id: 'confused_wander', isMentalBreak: true,
+        desc: "무드 저하로 인해 정착민들이 정신적인 방황을 겪고 있습니다! 60초 동안 모든 유닛의 공격력과 공격 속도가 10% 감소합니다."
       }
     ];
 
@@ -387,6 +435,9 @@ export class EncounterManager {
         break;
       case 'orbital_supply':
         this.handleOrbitalSupply();
+        break;
+      case 'confused_wander':
+        this.handleConfusedWander(event);
         break;
     }
   }
@@ -565,6 +616,9 @@ export class EncounterManager {
         event.desc = `방화광이 창고에 불을 질러 [${target.name}] 자원 ${lossAmount}개를 태워버렸습니다! \n\n보유 중인 자원이 크게 소실되었습니다.`;
         if (this.modalText) this.modalText.innerText = event.desc;
         this.app.ui.addMiniNotification(`자원 소실: ${target.name} -${lossAmount}`, 'failure');
+        
+        // [New] 방화광은 즉시 사건이므로 바로 카타르시스(정신차림) 지급
+        setTimeout(() => this.applyCatharsis(), 1000);
     } else {
         event.desc = `방화광이 불을 지르려 했으나, 다행히도 대상 자원 창고가 비어있거나 양이 너무 적어 피해가 미미했습니다.`;
         if (this.modalText) this.modalText.innerText = event.desc;
@@ -599,7 +653,20 @@ export class EncounterManager {
         name: '노동 파업',
         desc: event.desc,
         type: 'negative',
-        duration: 60
+        duration: 60,
+        isMentalBreak: true // [New] 종료 시 무드 보너스 대상
+    });
+  }
+
+  // [New] 14.5 정신 방황 (60초간 공속/데미지 패널티)
+  handleConfusedWander(event) {
+    this.activeEvents.push({
+        id: 'confused_wander',
+        name: '정신 방황',
+        desc: event.desc,
+        type: 'negative',
+        duration: 60,
+        isMentalBreak: true
     });
   }
 
@@ -642,8 +709,6 @@ export class EncounterManager {
     const mood = this.app.state.mood || 0;
     if (mood >= 85) {
         efficiency *= 1.1; // 매우 높음: +10% 보너스
-    } else if (mood < 25) {
-        efficiency *= 0.7; // 매우 낮음: -30% 페널티
     }
 
     // 독성 낙진: 파견 효율 0% (완전 중단)

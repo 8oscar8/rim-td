@@ -90,7 +90,6 @@ export class Tower {
     let moodMul = 1.0;
     const mood = this.gameCore.state.mood || 0;
     if (mood >= 85) moodMul = 1.1; // 매우 높음: +10%
-    else if (mood < 25) moodMul = 0.8; // 매우 낮음: -20%
 
     return Math.floor(this.baseDamage * upgradeMul * luciMul * moodMul);
   }
