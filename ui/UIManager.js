@@ -330,9 +330,24 @@ export class UIManager {
       this.updateDisplays(s);
     };
 
-    if (this.upgradeBluntBtn) this.upgradeBluntBtn.onclick = () => handleUpgrade('blunt');
-    if (this.upgradeMeleeBtn) this.upgradeMeleeBtn.onclick = () => handleUpgrade('sharp');
-    if (this.upgradeRangedBtn) this.upgradeRangedBtn.onclick = () => handleUpgrade('ranged');
+    if (this.upgradeBluntBtn) {
+      this.upgradeBluntBtn.onclick = () => handleUpgrade('blunt');
+      this.upgradeBluntBtn.onmouseenter = (e) => this.showUpgradeTooltip(e, this.upgradeBluntBtn);
+      this.upgradeBluntBtn.onmousemove = (e) => this.moveTooltip(e);
+      this.upgradeBluntBtn.onmouseleave = () => this.hideTooltip();
+    }
+    if (this.upgradeMeleeBtn) {
+      this.upgradeMeleeBtn.onclick = () => handleUpgrade('sharp');
+      this.upgradeMeleeBtn.onmouseenter = (e) => this.showUpgradeTooltip(e, this.upgradeMeleeBtn);
+      this.upgradeMeleeBtn.onmousemove = (e) => this.moveTooltip(e);
+      this.upgradeMeleeBtn.onmouseleave = () => this.hideTooltip();
+    }
+    if (this.upgradeRangedBtn) {
+      this.upgradeRangedBtn.onclick = () => handleUpgrade('ranged');
+      this.upgradeRangedBtn.onmouseenter = (e) => this.showUpgradeTooltip(e, this.upgradeRangedBtn);
+      this.upgradeRangedBtn.onmousemove = (e) => this.moveTooltip(e);
+      this.upgradeRangedBtn.onmouseleave = () => this.hideTooltip();
+    }
 
     // 5.5 생산 업그레이드 이벤트
     this.prodUpBtns = document.querySelectorAll('.prod-up');
