@@ -1,5 +1,6 @@
 import { GachaSystem } from '../game/GachaSystem.js';
 import { SoundManager } from '../engine/SoundManager.js';
+import { ITEM_DB } from '../game/WeaponData.js';
 
 /**
  * UIManager.js
@@ -781,9 +782,16 @@ export class UIManager {
                 if (count > 0) cardEl.classList.remove('empty');
                 else cardEl.classList.add('empty');
                 
-                // 쿨타임 체크 (수량이 있을 때만 쿨타임 표시)
-                if (cooldown > 0 && count > 0) cardEl.classList.add('on-cooldown');
-                else cardEl.classList.remove('on-cooldown');
+                // 쿨타임 체크 및 시각화용 변수 설정
+                if (cooldown > 0 && count > 0) {
+                    cardEl.classList.add('on-cooldown');
+                    const maxCD = ITEM_DB[key] ? ITEM_DB[key].cooldown : 10;
+                    const percent = (cooldown / maxCD) * 100;
+                    cardEl.style.setProperty('--cd-percent', `${percent}%`);
+                } else {
+                    cardEl.classList.remove('on-cooldown');
+                    cardEl.style.setProperty('--cd-percent', '0%');
+                }
             }
         }
     }
