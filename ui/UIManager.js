@@ -905,9 +905,9 @@ export class UIManager {
         else if (u.weaponType === 'ranged') rangedDpm += dpm;
     });
 
-    if (this.bluntDpmVal) this.bluntDpmVal.textContent = Math.floor(bluntDpm);
-    if (this.sharpDpmVal) this.sharpDpmVal.textContent = Math.floor(sharpDpm);
-    if (this.rangedDpmVal) this.rangedDpmVal.textContent = Math.floor(rangedDpm);
+    if (this.bluntDpmVal) this.bluntDpmVal.textContent = this.formatNumber(bluntDpm);
+    if (this.sharpDpmVal) this.sharpDpmVal.textContent = this.formatNumber(sharpDpm);
+    if (this.rangedDpmVal) this.rangedDpmVal.textContent = this.formatNumber(rangedDpm);
 
     // 5. 버튼 활성화/비활성화 및 비용 업데이트
     const canInteract = !state.isPaused;
@@ -1466,6 +1466,12 @@ export class UIManager {
       this.tooltip.style.left = x + 'px';
       this.tooltip.style.top = y + 'px';
     }
+  }
+
+  formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 10000) return (num / 1000).toFixed(1) + 'K';
+    return Math.floor(num).toLocaleString();
   }
 
   hideTooltip() {
