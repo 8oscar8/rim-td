@@ -89,6 +89,7 @@ export class UIManager {
     this.rowSpd = document.getElementById('row-spd');
     this.rowShred = document.getElementById('row-shred');
     this.detailShred = document.getElementById('detail-shred');
+    this.tooltip = document.getElementById('custom-tooltip');
   }
 
   initEvents() {
