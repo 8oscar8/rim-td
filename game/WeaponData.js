@@ -94,12 +94,12 @@ export const QUALITY_COEFFS = {
 };
 
 export const GRADE_PROBABILITIES = {
-  Common: 50.9,
-  Uncommon: 30.0,
+  Common: 53.45,
+  Uncommon: 31.0,
   Rare: 13.0,
-  Epic: 5.0,
-  Legendary: 0.8,
-  Mythic: 0.3 // 스페셜(0.1)과 기존 신화(0.19), 히든(0.01)을 통합하여 0.3%
+  Epic: 2.3,
+  Legendary: 0.2,
+  Mythic: 0.05 // 일반 뽑기에서 고등급 기대값을 낮춰 고급 상자의 메리트 강화
 };
 
 export const QUALITY_PROBABILITIES = {

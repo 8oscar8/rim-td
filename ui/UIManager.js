@@ -472,8 +472,8 @@ export class UIManager {
     if (banner && t && x) {
       // 등급 확률 매핑
       const probs = {
-        Common: '50.9%', Uncommon: '30.0%', Rare: '13.0%', Epic: '5.0%', 
-        Legendary: '0.8%', Mythic: '0.3%'
+        Common: '53.45%', Uncommon: '31.0%', Rare: '13.0%', Epic: '2.3%', 
+        Legendary: '0.2%', Mythic: '0.05%'
       };
       
       // 도파민 모드: 제목에 등급, 내용에 무기 이름, 밑에 확률 표시
@@ -1186,8 +1186,8 @@ export class UIManager {
     const s = this.app.state;
     // GRADE_PROBABILITIES 참조 (실제 데이터와 동기화)
     const probs = {
-      Common: 50.9, Uncommon: 30.0, Rare: 13.0, Epic: 5.0, 
-      Legendary: 0.8, Mythic: 0.3
+      Common: 53.45, Uncommon: 31.0, Rare: 13.0, Epic: 2.3, 
+      Legendary: 0.2, Mythic: 0.05
     };
     const gradeColors = {
       Common: '#ccc', Uncommon: '#4dff88', Rare: '#3498db', 
