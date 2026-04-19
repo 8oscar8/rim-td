@@ -50,12 +50,30 @@ export const WEAPON_DB = {
 
 // 소모성 아이템 DB (타워로 건설 불가, 인벤토리에서 사용)
 export const ITEM_DB = {
-  'frag_grenade': { name: '파쇄 수류탄', type: 'item', grade: 'Common', dmg: 250, ap: 0.2, effect: 'frag_stun', shred: 0, radius: 100, cooldown: 10 },
-  'pulse_grenade': { name: '펄스 수류탄', type: 'item', grade: 'Uncommon', dmg: 50, ap: 0.5, effect: 'emp', shred: 0, radius: 120, cooldown: 12 },
-  'molotov': { name: '화염병', type: 'item', grade: 'Rare', dmg: 20, ap: 0.1, effect: 'burn_fear', radius: 80, cooldown: 15 },
-  'smoke_launcher': { name: '연막 발사기', type: 'item', grade: 'Rare', dmg: 0, ap: 0, effect: 'smoke', radius: 150, cooldown: 20 },
-  'toxin_grenade': { name: '독소 수류탄', type: 'item', grade: 'Epic', dmg: 10, ap: 0.8, effect: 'toxin', shred: 50, radius: 120, cooldown: 25 },
-  'orbital_strike': { name: '궤도 폭격', type: 'item', grade: 'Legendary', dmg: 9999, ap: 1.0, effect: 'orbital', radius: 0, cooldown: 60 }
+  'frag_grenade': { 
+    name: '파쇄 수류탄', type: 'item', grade: 'Common', dmg: 250, ap: 0.2, effect: 'frag_stun', shred: 0, radius: 100, cooldown: 10,
+    desc: '강력한 폭발로 넓은 범위에 피해를 줍니다. 유기체 적에게 4초간 기절 효과를 부여합니다.'
+  },
+  'pulse_grenade': { 
+    name: '펄스 수류탄', type: 'item', grade: 'Uncommon', dmg: 50, ap: 0.5, effect: 'emp', shred: 0, radius: 120, cooldown: 12,
+    desc: '강력한 전자기 파동(EMP)을 방출합니다. 기계류 적에게 6초간 강력한 마비 효과를 부여합니다.'
+  },
+  'molotov': { 
+    name: '화염병', type: 'item', grade: 'Rare', dmg: 20, ap: 0.1, effect: 'burn_fear', radius: 80, cooldown: 15,
+    desc: '지면에 7초간 유지되는 화염을 생성합니다. 범위 내 유기체는 도트뎀과 함께 패닉(공포) 상태에 빠집니다.'
+  },
+  'smoke_launcher': { 
+    name: '연막 발사기', type: 'item', grade: 'Rare', dmg: 0, ap: 0, effect: 'smoke', radius: 150, cooldown: 20,
+    desc: '지면에 8초간 하얀 연막 영역을 생성합니다. 영역 내 모든 적은 이동 속도가 대폭 감소합니다.'
+  },
+  'toxin_grenade': { 
+    name: '독소 수류탄', type: 'item', grade: 'Epic', dmg: 10, ap: 0.8, effect: 'toxin', shred: 50, radius: 120, cooldown: 25,
+    desc: '지면에 6초간 독가스 구름을 형성합니다. 영역 내 적들은 방어력이 지속적으로 부식(최대 30%)됩니다.'
+  },
+  'orbital_strike': { 
+    name: '궤도 폭격', type: 'item', grade: 'Legendary', dmg: 9999, ap: 1.0, effect: 'orbital', radius: 0, cooldown: 60,
+    desc: '위성에서 발사되는 파괴적인 광선입니다. 보스를 제외한 전장의 모든 적을 즉시 소멸시킵니다.'
+  }
 };
 
 export const MATERIAL_DB = {

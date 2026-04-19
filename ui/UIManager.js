@@ -1132,7 +1132,6 @@ export class UIManager {
     const typeName = type === 'blunt' ? '둔기' : (type === 'sharp' ? '날붙이' : '원거리');
     this.renderTooltip(requirements, `${typeName} 강화 Lv.${nextLv} 요구사항`);
   }
-
   renderTooltip(requirements, title) {
     let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
     requirements.forEach(r => {
@@ -1148,6 +1147,37 @@ export class UIManager {
     if (this.tooltip) {
       this.tooltip.innerHTML = html;
       this.tooltip.classList.remove('hidden');
+    }
+  }
+
+  showItemTooltip(e, key) {
+    const item = ITEM_DB[key];
+    if (!item) return;
+    
+    // 등급별 색상 매핑
+    const gradeColors = {
+      Common: '#ccc',
+      Uncommon: '#4dff88',
+      Rare: '#3498db',
+      Epic: '#9b59b6',
+      Legendary: '#f1c40f'
+    };
+    const color = gradeColors[item.grade] || '#fff';
+
+    let html = `<div class="tooltip-title" style="color: ${color}">${item.name} [${item.grade}]</div>`;
+    html += `<div class="tooltip-body" style="font-size: 0.85rem; line-height: 1.5; color: #eee; margin: 10px 0;">${item.desc}</div>`;
+    
+    // 스탯 요약 (필요시)
+    html += `<div class="tooltip-footer" style="padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem;">`;
+    if (item.dmg > 0) html += `<div>폭발 피해: <span style="color: #ff4d4d">${item.dmg}</span></div>`;
+    if (item.radius > 0) html += `<div>효과 범위: ${item.radius}px</div>`;
+    html += `<div style="color: var(--accent-gold); font-weight: bold; margin-top: 5px;">재사용 대기: ${item.cooldown}초</div>`;
+    html += `</div>`;
+    
+    if (this.tooltip) {
+      this.tooltip.innerHTML = html;
+      this.tooltip.classList.remove('hidden');
+      this.moveTooltip(e);
     }
   }
 
