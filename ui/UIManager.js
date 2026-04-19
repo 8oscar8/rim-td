@@ -1434,8 +1434,9 @@ export class UIManager {
    */
   showResourceTooltip(e, type) {
     this.currentTooltipSource = { method: 'showResourceTooltip', args: [type] };
+    const s = this.app.state;
     const resData = {
-        food: { name: '식량 (Food)', desc: '생존을 위한 필수 자원입니다. 식량이 <span style="color:var(--accent-gold)">100</span>에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.' },
+        food: { name: '식량 (Food)', desc: `생존을 위한 필수 자원입니다. 식량 게이지가 <span style="color:var(--accent-gold)">100%</span> (현재 목표: ${s.foodToNextPop})에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.` },
         silver: { name: '은화 (Silver)', desc: '기본적인 화폐입니다. 유닛 구매, 업그레이드, 거래 등에 광범위하게 사용됩니다.' },
         steel: { name: '강철 (Steel)', desc: '건설과 제작에 쓰이는 기본 자원입니다. 둔기 무기 강화와 각종 기계 부품 제작에 필요합니다.' },
         wood: { name: '목재 (Wood)', desc: '날붙이(Sharp) 계열 무기 강화와 화염병 제작 등에 사용되는 초기 자원입니다.' },
