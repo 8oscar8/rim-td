@@ -533,6 +533,16 @@ class App {
         }
     }
 
+    // 4. 현대 교육 기반 부품(Component) 추가 획득 로직
+    const eduLv = s.upgrades.education || 0;
+    const compProb = 0.01 + (eduLv * 0.02); // 기본 1% + 레벨당 2% (최대 11%)
+    if (Math.random() < compProb) {
+        const amount = (eduLv >= 3) ? (1 + Math.floor(Math.random() * 2)) : 1; // 3렙 이상이면 1~2개
+        s.addResource('component', amount);
+        const compTxt = `부품 +${amount}`;
+        lootMsg = lootMsg ? `${lootMsg}, ${compTxt}` : compTxt;
+    }
+
     // 보스 전용 보상
     if (isBoss) {
       s.addResource('steel', 10);
