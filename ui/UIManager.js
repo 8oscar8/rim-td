@@ -884,19 +884,25 @@ export class UIManager {
     const canInteract = !state.isPaused;
     const canBuyRandom = state.silver >= 50 && canInteract;
     if (this.buyRandomBtn) {
+      this.buyRandomBtn.disabled = !canBuyRandom;
       this.buyRandomBtn.style.opacity = canBuyRandom ? "1" : "0.4";
       this.buyRandomBtn.style.filter = canBuyRandom ? "none" : "grayscale(0.5)";
+      this.buyRandomBtn.style.cursor = canBuyRandom ? "pointer" : "not-allowed";
     }
 
     const canBuyAdvanced = state.silver >= 1000 && canInteract;
     if (this.buyAdvancedBtn) {
+        this.buyAdvancedBtn.disabled = !canBuyAdvanced;
         this.buyAdvancedBtn.style.opacity = canBuyAdvanced ? "1" : "0.4";
         this.buyAdvancedBtn.style.filter = canBuyAdvanced ? "none" : "grayscale(0.5)";
+        this.buyAdvancedBtn.style.cursor = canBuyAdvanced ? "pointer" : "not-allowed";
     }
 
     const canExchangeJade = state.jade >= 1 && canInteract;
     if (this.exchangeJadeBtn) {
+        this.exchangeJadeBtn.disabled = !canExchangeJade;
         this.exchangeJadeBtn.style.opacity = canExchangeJade ? "1" : "0.4";
+        this.exchangeJadeBtn.style.cursor = canExchangeJade ? "pointer" : "not-allowed";
     }
 
     // 3.5 판매 버튼 동적 활성화 및 가격 표시
@@ -939,7 +945,9 @@ export class UIManager {
             if (costR) costR.textContent = rCost;
 
             const canUp = state.silver >= sCost && state.researchPoints >= rCost && canInteract;
+            this.techUpBtn.disabled = !canUp;
             this.techUpBtn.style.opacity = canUp ? "1" : "0.4";
+            this.techUpBtn.style.cursor = canUp ? "pointer" : "not-allowed";
         }
     }
 
@@ -962,9 +970,11 @@ export class UIManager {
         else if (grade === 'Mythic') resMet = state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20;
         
         const canCraft = techMet && resMet;
+        btn.disabled = !canCraft;
         btn.classList.toggle('unlocked', techMet); // 기술 수준 달성 시 색상 해금
         // disabled나 pointerEvents: none을 제거하여 툴팁 호버가 가능하도록 변경
         btn.style.opacity = canCraft ? "1" : "0.4";
+        btn.style.cursor = canCraft ? "pointer" : "not-allowed";
       });
     }
 
