@@ -1297,7 +1297,10 @@ export class UIManager {
   showEventTooltip(e, eventId) {
     this.currentTooltipSource = { method: 'showEventTooltip', args: [eventId] };
     const event = this.app.encounterManager.activeEvents.find(ev => ev.id === eventId);
-    if (!event) return;
+    if (!event) {
+        this.hideTooltip();
+        return;
+    }
     
     const typeLabel = event.type === 'positive' ? '긍정적 이벤트' : '부정적 이벤트';
     const typeColor = event.type === 'positive' ? '#a855f7' : '#ef4444'; // 보라색(긍정), 빨간색(부정)
