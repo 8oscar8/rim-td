@@ -73,6 +73,10 @@ export const ITEM_DB = {
   'orbital_strike': { 
     name: '궤도 폭격', type: 'item', grade: 'Legendary', dmg: 9999, ap: 1.0, effect: 'orbital', radius: 0, cooldown: 60,
     desc: '위성에서 발사되는 파괴적인 광선입니다. 보스를 제외한 전장의 모든 적을 즉시 소멸시킵니다.'
+  },
+  'psychic_lance': { 
+    name: '정신충격창', type: 'item', grade: 'Legendary', dmg: 0, ap: 0, effect: 'psychic_stun', radius: 40, cooldown: 45,
+    desc: '강력한 정신 파동을 집중 사격합니다. 대상이 보스일 경우 10초간 스턴시키며, 스턴 동안 보스 타이머가 멈춥니다.'
   }
 };
 

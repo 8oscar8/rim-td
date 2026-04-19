@@ -1117,6 +1117,24 @@ class App {
             }
         };
         this.fieldEffects.push(effect);
+    } else if (type === 'psychic_lance') {
+        const effectDuration = 0.6;
+        const effect = {
+            type: 'explosion_psychic', x: x, y: y, radius: radius, duration: effectDuration,
+            render: (ctx) => {
+                ctx.save();
+                const alpha = (effect.duration / effectDuration) * 0.8;
+                ctx.fillStyle = `rgba(255, 0, 255, ${alpha * 0.3})`; // 보라색 정신 파동
+                ctx.shadowBlur = 30; ctx.shadowColor = '#ff00ff';
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+                ctx.lineWidth = 4; ctx.stroke();
+                // 중심부에 작은 원 추가 (집중 사격 느낌)
+                ctx.beginPath(); ctx.arc(x, y, radius * 0.3, 0, Math.PI * 2); ctx.stroke();
+                ctx.restore();
+            }
+        };
+        this.fieldEffects.push(effect);
     }
 
     targets.forEach(en => {
@@ -1127,6 +1145,16 @@ class App {
                 break;
             case 'pulse_grenade':
                 en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
+                break;
+            case 'psychic_lance':
+                // 보스일 경우 10초 스턴, 일반 적일 경우 5초 스턴
+                // Enemy.js 로직상 stunTimer > 0 일 때 bossTimer(제한시간) 감소가 자동으로 중단됨
+                if (en.isBoss) {
+                    en.stunTimer = 10.0;
+                    this.ui.addMiniNotification("보스 무력화! (제한 시간 일시 정지)", "Legendary");
+                } else {
+                    en.stunTimer = 5.0;
+                }
                 break;
         }
     });

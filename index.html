@@ -140,6 +140,15 @@
                     </div>
                     <span class="item-count" id="count-toxin">0</span>
                 </div>
+
+                <div class="item-card clickable" id="btn-item-psychic" onclick="window.app.useItem('psychic_lance')"
+                     onmouseenter="window.app.ui.showItemTooltip(event, 'psychic_lance')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
+                    <div class="item-info">
+                        <img src="assets/정신충격창.webp" class="item-icon">
+                        <span class="label">정신충격창</span>
+                    </div>
+                    <span class="item-count" id="count-psychic">0</span>
+                </div>
             </div>
 
             <!-- [New] 활성 이벤트 표시기 -->
@@ -298,6 +307,10 @@
                         <button class="shop-btn special-craft" data-weapon="독소 수류탄"
                             onmouseenter="window.app.ui.showSpecialCraftTooltip(event, this)" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
                             <span class="text">독소 수류탄 (1000 <img src="assets/silver.png" class="inline-icon">, 400 <img src="assets/steel.png" class="inline-icon">, 5 <img src="assets/jade.png" class="inline-icon">, 15 <img src="assets/부품.webp" class="inline-icon">)</span>
+                        </button>
+                        <button class="shop-btn special-craft" data-weapon="정신충격창"
+                            onmouseenter="window.app.ui.showSpecialCraftTooltip(event, this)" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
+                            <span class="text">정신충격창 (1500 <img src="assets/silver.png" class="inline-icon">, 100 <img src="assets/uranium.png" class="inline-icon">, 50 <img src="assets/plasteel.png" class="inline-icon">, 20 <img src="assets/부품.webp" class="inline-icon">)</span>
                         </button>
                     </div>
                 </div>
