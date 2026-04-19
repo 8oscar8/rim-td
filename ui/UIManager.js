@@ -1144,7 +1144,11 @@ export class UIManager {
         });
     }
 
-    this.renderTooltip(e, requirements, `${grade} 등급 제작 요구사항`);
+    // [Fix] 표시 이름 매핑 (사용자 요청 위계: Legendary <-> Mythic 스왑)
+    const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
+    const displayGrade = gradeMap[grade] || grade;
+    
+    this.renderTooltip(e, requirements, `${displayGrade} 등급 제작 요구사항`);
   }
 
   showSpecialCraftTooltip(e, btn) {
