@@ -118,7 +118,7 @@ export class Projectile {
       for (let i = 1; i < this.history.length; i++) {
         ctx.lineTo(this.history[i].x, this.history[i].y);
       }
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.2; // 연하게 수정
       ctx.stroke();
       ctx.restore();
     }
@@ -127,7 +127,7 @@ export class Projectile {
     if (this.effect === 'multi_bullet') {
       ctx.save();
       ctx.translate(this.x, this.y);
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 3; // 번짐 효과 축소
       ctx.shadowColor = this.color;
       ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.fill();
       ctx.restore();

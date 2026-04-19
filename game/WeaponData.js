@@ -46,7 +46,7 @@ export const WEAPON_DB = {
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.25, ap: 0.3, effect: null, range: 310 },
   '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 30, spd: 0.25, ap: 0.6, effect: 'multi_bullet', isTrueDamage: true, range: 9999 },
 
-  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'multi_bullet', isTrueDamage: true, range: 9999 },
+  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'instant_multi', isTrueDamage: true, range: 9999 },
 
   // 투척류 및 특수 무기
   '파쇄 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 50, spd: 0.2, ap: 0.2, effect: 'aoe_dmg', shred: 10, range: 150 },

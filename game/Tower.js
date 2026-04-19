@@ -161,7 +161,8 @@ export class Tower {
 
     // 4. 공격 시전
     if (this.cooldown <= 0) {
-      if (this.weaponData.effect === 'multi_bullet') {
+      const multiTargetEffects = ['multi_bullet', 'instant_multi'];
+      if (multiTargetEffects.includes(this.weaponData.effect)) {
         const targets = enemies.filter(en => en.active && Math.hypot(en.x - this.x, en.y - this.y) <= (this.currentRange || this.range));
         if (targets.length > 0) {
           this.fire(targets, addProjectile); // 모든 대상에게 발사
@@ -222,9 +223,23 @@ export class Tower {
   fire(target, addProjectile) {
     const isRanged = this.weaponType && String(this.weaponType).toLowerCase().trim() === 'ranged';
     const burstCount = this.weaponData.burst || 1;
+    const effect = this.weaponData.effect;
 
     if (isRanged) {
       const targetList = Array.isArray(target) ? target : [target];
+      
+      // [New] 즉시 전유닛 타격 (빔 리피터용)
+      if (effect === 'instant_multi') {
+        targetList.forEach(t => {
+           t.takeDamage(
+             this.damage, this.ap, effect, 
+             this.weaponData.grade, this.weaponData.shred || 0,
+             !!this.weaponData.isTrueDamage
+           );
+        });
+        return; 
+      }
+
       targetList.forEach(t => {
         for (let i = 0; i < burstCount; i++) {
           setTimeout(() => {
