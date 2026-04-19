@@ -626,11 +626,11 @@ class App {
       this.passiveSilverTimer -= 2.0;
     }
 
-    // [New] 무드 자연 감소 (3초당 -1)
+    // [New] 무드 자연 감소 (4초당 -1)
     this.moodDecayTimer += scaledDt;
-    if (this.moodDecayTimer >= 3.0) {
+    if (this.moodDecayTimer >= 4.0) {
         this.state.mood = Math.max(0, this.state.mood - 1);
-        this.moodDecayTimer -= 3.0;
+        this.moodDecayTimer -= 4.0;
     }
 
     // [New] 작업 파견 진행 (v2)
