@@ -67,6 +67,7 @@ export class UIManager {
     this.detailSpd = document.getElementById('detail-spd');
     this.detailAp = document.getElementById('detail-ap');
     this.techLevelVal = document.getElementById('tech-level-val');
+    this.idleAlert = document.getElementById('idle-alert');
     
     // 7. DPM 표시 요소
     this.bluntDpmVal = document.getElementById('blunt-dpm');
@@ -775,6 +776,11 @@ export class UIManager {
     }
 
     if (this.popVal) this.popVal.textContent = state.population;
+    
+    // [New] 대기 정착민 알림
+    if (this.idleAlert) {
+        this.idleAlert.classList.toggle('hidden', state.idlePopulation <= 0);
+    }
     
     // 자원 업데이트
     if (this.resWood) this.resWood.textContent = Math.floor(state.wood || 0);

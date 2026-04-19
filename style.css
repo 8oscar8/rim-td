@@ -851,3 +851,51 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     border-top: 1px solid rgba(255,255,255,0.05);
     padding-top: 6px;
 }
+
+/* ==========================================
+   [New] 정착민 파견 대기 알림 (깜빡임 효과)
+   ========================================== */
+.idle-alert {
+    display: inline-flex;
+    align-items: center;
+    background: #ff4d4d;
+    color: white;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-left: 12px;
+    font-weight: 800;
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+    animation: alert-blink 0.6s infinite alternate;
+    vertical-align: middle;
+    letter-spacing: -0.5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.idle-alert::before {
+    content: '⬅';
+    margin-right: 6px;
+    font-size: 13px;
+    display: inline-block;
+    animation: arrow-move 0.4s infinite alternate;
+}
+
+@keyframes alert-blink {
+    from { 
+        background: #cc0000; 
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.4);
+    }
+    to { 
+        background: #ff3e3e; 
+        box-shadow: 0 0 20px rgba(255, 62, 62, 0.8);
+    }
+}
+
+@keyframes arrow-move {
+    from { transform: translateX(0); }
+    to { transform: translateX(-5px); }
+}
+
+.idle-alert.hidden {
+    display: none !important;
+}
