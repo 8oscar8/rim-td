@@ -1012,20 +1012,20 @@ class App {
             break;
 
         case 'frag_grenade':
-            // 전원 고위력 데미지 + 강력한 방깎 + 유기체 기절
+            // 전원 고위력 데미지 + 유기체 기절 (방깎 제거)
             this.enemies.forEach(en => {
                 en.flashTimer = 0.3;
-                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 30);
+                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 0);
             });
             this.ui.addMiniNotification("파쇄 수류탄 투척!", "Common");
             success = true;
             break;
 
         case 'pulse_grenade':
-            // 전원 EMP(기절) + 대량 방깎
+            // 전원 EMP(기절) (방깎 제거)
             this.enemies.forEach(en => {
                 en.flashTimer = 0.3;
-                en.takeDamage(50, 0.5, 'emp', 'Uncommon', 50);
+                en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
             });
             this.ui.addMiniNotification("펄스 수류탄 일제 폭발!", "Uncommon");
             success = true;
@@ -1049,12 +1049,12 @@ class App {
             break;
 
         case 'toxin_grenade':
-            // 전원 독성 중독
+            // 전원 독성 중독 + 강력한 방어력 부식 (Shred 50)
             this.enemies.forEach(en => {
                 en.handleStatusEffect('toxin');
-                en.takeDamage(10, 0.8, 'toxin', 'Epic', 0);
+                en.takeDamage(10, 0.8, 'toxin', 'Epic', 50);
             });
-            this.ui.addMiniNotification("독소 수류탄 살포!", "Epic");
+            this.ui.addMiniNotification("독소 수류탄 살포! (장갑 부식)", "Epic");
             success = true;
             break;
     }
