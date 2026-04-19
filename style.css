@@ -200,9 +200,12 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     overflow: hidden;
 }
 .shop-btn:hover { background: #2a2d31; }
-.shop-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent-blue); }
-.shop-btn.gold::before { background: var(--accent-gold); }
-.shop-btn.sell::before { background: #666; }
+.shop-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #333; transition: all 0.3s ease; }
+.shop-btn.unlocked::before { background: var(--accent-blue); }
+.shop-btn.rare.unlocked::before { background: #3498db; box-shadow: 0 0 10px rgba(52, 152, 219, 0.5); }
+.shop-btn.epic.unlocked::before { background: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.5); }
+.shop-btn.legendary.unlocked::before { background: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+.shop-btn.mythic.unlocked::before { background: #ff00ff; box-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
 .shop-btn.sell { opacity: 0.6; }
 
 .shop-desc { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 12px; padding: 0 10px; }

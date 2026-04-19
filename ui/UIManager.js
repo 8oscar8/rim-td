@@ -943,6 +943,7 @@ export class UIManager {
         else if (grade === 'Mythic') resMet = state.plasteel >= 50 && state.uranium >= 30 && state.researchPoints >= 300 && state.component >= 20;
         
         const canCraft = techMet && resMet;
+        btn.classList.toggle('unlocked', techMet); // 기술 수준 달성 시 색상 해금
         // disabled나 pointerEvents: none을 제거하여 툴팁 호버가 가능하도록 변경
         btn.style.opacity = canCraft ? "1" : "0.4";
       });
