@@ -1200,8 +1200,7 @@ export class UIManager {
     const s = this.app.state;
     const curLv = s.upgrades[type] || 0;
     
-    let requirements = [];
-    let title = "";
+    let effect = "";
 
     // 1. 전투 업그레이드 (blunt, sharp, ranged)
     if (['blunt', 'sharp', 'ranged'].includes(type)) {
@@ -1218,45 +1217,58 @@ export class UIManager {
             cur: s[r.key]
         }));
         const names = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
-        title = `${names[type] || type} 전투 훈련 요구사항 (Lv.${curLv} → ${nextLv})`;
+        title = `${names[type] || type} 전투 훈련 (Lv.${curLv} → ${nextLv})`;
+        effect = "해당 계열 무기 데미지 +10% (합연산)";
+        if (nextLv > 50) effect += " <br><span style='color:var(--accent-gold)'>* 51강 이상: 효율 20%로 상승</span>";
+        if (nextLv > 100) effect = "해당 계열 무기 데미지 +30% (소급 적용)";
     }
     // 2. 생산 업그레이드 (커브 적용)
     else {
         if (curLv >= 5) {
-            this.renderTooltip(e, [], "최대 레벨 도달");
+            this.renderTooltip(e, [], "최대 레벨 도달", "추가 강화가 불가능합니다.");
             return;
         }
         const silverCurve = [200, 500, 1200, 2800, 5500];
         const resCurve = [100, 250, 600, 1400, 2750];
         
         const costs = {
-            education: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '현대 교육' },
-            artisan: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '숙련 장인' },
-            farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: '고급 농경' },
-            mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '대규모 채굴' },
-            logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '기계식 벌목' },
-            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크' }
+            education: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '현대 교육', desc: '연구 생산량 +25% 및 부품 획득 확률 +5%' },
+            artisan: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '숙련 장인', desc: '무기 제작 시 상위 품질(완벽 이상) 확률 대폭 증가' },
+            farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: '고급 농경', desc: '식량 생산량 +25%' },
+            mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '대규모 채굴', desc: '강철 생산량 +25% 및 희귀 자원 발견 확률 +4%' },
+            logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '기계식 벌목', desc: '목재 생산량 +25%' },
+            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크', desc: '기본 수익 대폭 증가 및 플라스틸 거래 수량/확률 상승' }
         };
         
         const costData = costs[type];
         if (costData) {
             const nameMap = { silver: '은화', steel: '강철', wood: '나무', food: '식량', researchPoints: '연구 포인트' };
             Object.entries(costData).forEach(([k, v]) => {
-                if (k === 'name') return;
+                if (k === 'name' || k === 'desc') return;
                 requirements.push({
                     name: nameMap[k] || k,
                     req: v,
                     cur: s[k] || 0
                 });
             });
-            title = `${costData.name || type} 강화 요구사항 (Lv.${curLv} → ${curLv + 1})`;
+            title = `${costData.name || type} 강화 (Lv.${curLv} → ${curLv + 1})`;
+            effect = costData.desc || "";
         }
     }
 
-    this.renderTooltip(e, requirements, title);
+    this.renderTooltip(e, requirements, title, effect);
   }
-  renderTooltip(e, requirements, title) {
-    let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
+  renderTooltip(e, requirements, title, effect = "") {
+    let html = `<div class="tooltip-title">${title}</div>`;
+    
+    if (effect) {
+        html += `<div class="tooltip-effect" style="margin-bottom: 10px; padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; font-size: 0.85rem; color: #fff;">
+            <div style="color: #00f2ff; font-weight: bold; margin-bottom: 4px; font-size: 0.75rem;">강화 효과</div>
+            ${effect}
+        </div>`;
+    }
+
+    html += `<div class="tooltip-body">`;
     requirements.forEach(r => {
       const isShort = (r.isShort !== undefined) ? r.isShort : (r.cur < r.req);
       const color = isShort ? '#ff4d4d' : '#4dff88';
