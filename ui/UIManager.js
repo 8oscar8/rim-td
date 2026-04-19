@@ -1000,6 +1000,36 @@ export class UIManager {
     const totalAssigned = Object.values(state.workers).reduce((a, b) => a + b, 0);
     state.idlePopulation = state.population - totalAssigned;
     if (this.idlePopVal) this.idlePopVal.textContent = state.idlePopulation;
+
+    // 8. 특수 제작 버튼 상태 업데이트 (자원 부족 시 비활성화)
+    if (this.specialCraftBtns) {
+        const specialCosts = {
+            '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
+            '펄스 수류탄': { silver: 500, steel: 250, component: 10 },
+            '화염병': { silver: 350, wood: 100, component: 5 },
+            '연막 발사기': { silver: 400, steel: 180, component: 5 },
+            '독소 수류탄': { silver: 1000, steel: 400, component: 15 }
+        };
+
+        this.specialCraftBtns.forEach(btn => {
+            const weaponName = btn.getAttribute('data-weapon');
+            const cost = specialCosts[weaponName];
+            if (!cost) return;
+
+            let canAfford = canInteract;
+            for (const [res, amt] of Object.entries(cost)) {
+                if ((state[res] || 0) < amt) {
+                    canAfford = false;
+                    break;
+                }
+            }
+
+            btn.disabled = !canAfford;
+            btn.style.opacity = canAfford ? "1" : "0.4";
+            btn.style.filter = canAfford ? "none" : "grayscale(0.8)";
+            btn.style.cursor = canAfford ? "pointer" : "not-allowed";
+        });
+    }
   }
   // ==========================================
   // [New] 제작 툴팁 시스템 메서드들
@@ -1046,17 +1076,21 @@ export class UIManager {
     const weaponName = btn.getAttribute('data-weapon');
     const s = this.app.state;
     const costs = {
-        '파쇄 수류탄': { silver: 150, component: 5 },
-        '펄스 수류탄': { silver: 300, component: 10 },
-        '화염병': { silver: 200, component: 5 },
-        '연막 발사기': { silver: 250, component: 5 },
-        '독소 수류탄': { silver: 500, component: 15 }
+        '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
+        '펄스 수류탄': { silver: 500, steel: 250, component: 10 },
+        '화염병': { silver: 350, wood: 100, component: 5 },
+        '연막 발사기': { silver: 400, steel: 180, component: 5 },
+        '독소 수류탄': { silver: 1000, steel: 400, component: 15 }
     };
+
     const cost = costs[weaponName];
-    const requirements = [
-        { name: '은화', req: cost.silver, cur: s.silver },
-        { name: '부품', req: cost.component, cur: s.component }
-    ];
+    const requirements = [];
+    const nameMap = { silver: '은화', steel: '강철', wood: '나무', component: '부품' };
+    
+    for (const [res, amt] of Object.entries(cost)) {
+        requirements.push({ name: nameMap[res] || res, req: amt, cur: s[res] || 0 });
+    }
+
     this.renderTooltip(requirements, `${weaponName} 제작 요구사항`);
   }
 
