@@ -1085,7 +1085,40 @@ class App {
     const radius = item.radius || 100;
     const targets = this.enemies.filter(en => Math.hypot(en.x - x, en.y - y) <= radius);
     
-    // 1. 즉발형 효과 처리 (대상에게 개별 적용)
+    // 1. 즉발형 효과 처리 및 시각 효과 생성
+    if (type === 'frag_grenade') {
+        const effectDuration = 0.4;
+        const effect = {
+            type: 'explosion_frag', x: x, y: y, radius: radius, duration: effectDuration,
+            render: (ctx) => {
+                ctx.save();
+                const alpha = (effect.duration / effectDuration) * 0.5;
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = `rgba(255, 255, 255, ${alpha * 2})`;
+                ctx.lineWidth = 2; ctx.stroke();
+                ctx.restore();
+            }
+        };
+        this.fieldEffects.push(effect);
+    } else if (type === 'pulse_grenade') {
+        const effectDuration = 0.5;
+        const effect = {
+            type: 'explosion_pulse', x: x, y: y, radius: radius, duration: effectDuration,
+            render: (ctx) => {
+                ctx.save();
+                const alpha = (effect.duration / effectDuration) * 0.7;
+                ctx.fillStyle = `rgba(0, 242, 255, ${alpha * 0.4})`;
+                ctx.shadowBlur = 20; ctx.shadowColor = '#00f2ff';
+                ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = `rgba(0, 242, 255, ${alpha})`;
+                ctx.lineWidth = 3; ctx.stroke();
+                ctx.restore();
+            }
+        };
+        this.fieldEffects.push(effect);
+    }
+
     targets.forEach(en => {
         en.flashTimer = 0.3;
         switch (type) {
@@ -1345,17 +1378,6 @@ class App {
     } catch (e) {
         console.error("[App] Reward Trigger Error:", e);
     }
-  /**
-   * [Debug] 모든 특수 아이템 10개씩 획득
-   */
-  cheatItems() {
-    const s = this.state;
-    Object.keys(s.items).forEach(k => {
-        s.items[k] += 10;
-    });
-    this.ui.updateDisplays(s);
-    this.ui.addMiniNotification("치트: 모든 특수 무기 +10 획득");
-    return "All items +10";
   }
 }
 
