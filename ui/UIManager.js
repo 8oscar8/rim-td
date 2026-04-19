@@ -90,6 +90,8 @@ export class UIManager {
     this.rowShred = document.getElementById('row-shred');
     this.detailShred = document.getElementById('detail-shred');
     this.tooltip = document.getElementById('custom-tooltip');
+    this.currentTooltipSource = null; // 실시간 갱신을 위한 현재 툴팁 정보 저장
+    this._isRefreshingTooltip = false; // 무한 루프 방지 플래그
   }
 
   initEvents() {
@@ -1101,12 +1103,16 @@ export class UIManager {
             btn.classList.toggle('unlocked', canAfford);
         });
     }
+
+    // [New] 실시간 툴팁 갱신 호출
+    this.refreshTooltip();
   }
   // ==========================================
   // [New] 제작 툴팁 시스템 메서드들
   // ==========================================
 
   showCraftTooltip(e, btn) {
+    this.currentTooltipSource = { method: 'showCraftTooltip', args: [btn] };
     const grade = btn.getAttribute('data-grade');
     const s = this.app.state;
     let requirements = [];
@@ -1169,6 +1175,7 @@ export class UIManager {
    * [New] 활성 이벤트 전용 프리미엄 툴팁 렌더링
    */
   showEventTooltip(e, eventId) {
+    this.currentTooltipSource = { method: 'showEventTooltip', args: [eventId] };
     const event = this.app.encounterManager.activeEvents.find(ev => ev.id === eventId);
     if (!event) return;
     
@@ -1199,6 +1206,7 @@ export class UIManager {
   }
 
   showSpecialCraftTooltip(e, btn) {
+    this.currentTooltipSource = { method: 'showSpecialCraftTooltip', args: [btn] };
     const weaponName = btn.getAttribute('data-weapon');
     const s = this.app.state;
     const cost = SPECIAL_CRAFT_DB[weaponName];
@@ -1219,6 +1227,7 @@ export class UIManager {
   }
 
   showTechTooltip(e) {
+    this.currentTooltipSource = { method: 'showTechTooltip', args: [] };
     const s = this.app.state;
     const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
     const currIdx = levels.indexOf(s.techLevel);
@@ -1245,6 +1254,7 @@ export class UIManager {
   }
 
   showUpgradeTooltip(e, btn) {
+    this.currentTooltipSource = { method: 'showUpgradeTooltip', args: [btn] };
     const type = btn.getAttribute('data-type');
     const s = this.app.state;
     const curLv = s.upgrades[type] || 0;
@@ -1361,6 +1371,7 @@ export class UIManager {
   }
 
   showItemTooltip(e, key) {
+    this.currentTooltipSource = { method: 'showItemTooltip', args: [key] };
     const item = ITEM_DB[key];
     if (!item) return;
     
@@ -1392,6 +1403,7 @@ export class UIManager {
   }
 
   showGachaTooltip(e, type) {
+    this.currentTooltipSource = { method: 'showGachaTooltip', args: [type] };
     const s = this.app.state;
     // GRADE_PROBABILITIES 참조 (실제 데이터와 동기화)
     const probs = {
@@ -1445,6 +1457,9 @@ export class UIManager {
   }
 
   moveTooltip(e) {
+    if (!this._isRefreshingTooltip) {
+      this._lastMouseEvent = e;
+    }
     if (this.tooltip) {
       const margin = 20;
       const tooltipWidth = this.tooltip.offsetWidth;
@@ -1475,8 +1490,27 @@ export class UIManager {
   }
 
   hideTooltip() {
+    this.currentTooltipSource = null;
     if (this.tooltip) {
         this.tooltip.classList.add('hidden');
     }
+  }
+
+  /**
+   * [New] 실시간 툴팁 갱신 로직
+   */
+  refreshTooltip() {
+    if (!this.currentTooltipSource || this._isRefreshingTooltip || !this._lastMouseEvent) return;
+    
+    const { method, args } = this.currentTooltipSource;
+    this._isRefreshingTooltip = true;
+    try {
+        if (typeof this[method] === 'function') {
+            this[method](this._lastMouseEvent, ...args);
+        }
+    } catch (e) {
+        console.error("[UI] Tooltip Refresh Error:", e);
+    }
+    this._isRefreshingTooltip = false;
   }
 }
