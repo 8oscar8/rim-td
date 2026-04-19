@@ -478,13 +478,14 @@ export class Tower {
         ctx.shadowBlur = 0;
       }
     }
+  }
+
   /**
-   * 외부 효과(고주스 등)를 타워에 적용
+   * [New] 타워 전용 효과 적용 메서드 (고주스 등)
    */
   applyEffect(type, duration) {
     if (type === 'go_juice') {
-      // 0.5초씩 계속 갱신되므로 기존 타이머와 비교하여 최대값 유지
-      this.goJuiceTimer = Math.max(this.goJuiceTimer, duration);
+        this.goJuiceTimer = Math.max(this.goJuiceTimer, duration);
     }
   }
 }

@@ -1176,7 +1176,8 @@ class App {
     // 그 외 투척류 아이템은 지점 타겟팅 모드로 진입
     this.isItemTargeting = true;
     this.pendingItemId = type;
-    this.ui.addMiniNotification(`[${type}] 타격 위치를 선택하세요. (우클릭 취소)`, "info");
+    const actionName = type === 'go_juice' ? '투약' : '타격';
+    this.ui.addMiniNotification(`[${type}] ${actionName} 위치를 선택하세요. (우클릭 취소)`, "info");
   }
 
   /**
@@ -1356,18 +1357,18 @@ class App {
             type: 'go_juice', x: x, y: y, radius: radius, duration: 20.0,
             render: (ctx) => {
                 ctx.save();
-                ctx.fillStyle = 'rgba(100, 255, 100, 0.15)'; // 연한 연두색 자극제 영역
-                ctx.strokeStyle = 'rgba(100, 255, 100, 0.4)';
-                ctx.lineWidth = 2;
+                ctx.fillStyle = 'rgba(100, 255, 100, 0.08)'; // 더 연한 연두색 자극제 영역
+                ctx.strokeStyle = 'rgba(100, 255, 100, 0.2)';
+                ctx.lineWidth = 1.5;
                 ctx.setLineDash([5, 5]);
-                ctx.shadowBlur = 15; ctx.shadowColor = '#64ff64';
+                ctx.shadowBlur = 8; ctx.shadowColor = '#64ff64';
                 ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
                 ctx.stroke();
                 
-                // 자극적인 파동 연출 (내부 원 소실 애니메이션 느낌)
-                const pulse = (Date.now() % 1000) / 1000;
+                // 자극적인 파동 연출 (내부 원 소실 애니메이션 느낌) - 더 연하게
+                const pulse = (Date.now() % 1500) / 1500;
                 ctx.beginPath(); ctx.arc(x, y, radius * pulse, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(100, 255, 100, ${0.4 * (1 - pulse)})`;
+                ctx.strokeStyle = `rgba(100, 255, 100, ${0.15 * (1 - pulse)})`;
                 ctx.stroke();
                 
                 ctx.restore();
@@ -1376,7 +1377,8 @@ class App {
     }
 
     const itemName = item.name || type;
-    this.ui.addMiniNotification(`${itemName} 투척!`, "info");
+    const suffix = type === 'go_juice' ? '투약' : '투척';
+    this.ui.addMiniNotification(`${itemName} ${suffix}!`, "info");
     
     this.state.items[type]--;
     this.state.itemCooldowns[type] = item.cooldown || 10;
