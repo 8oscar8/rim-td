@@ -1219,6 +1219,11 @@ export class UIManager {
         });
     }
 
+    // [New] 선택된 유닛 정보 실시간 갱신 (훈련 업그레이드, 버프 상태 등 반영)
+    if (this.selectedUnit) {
+        this.showUnitDetail(this.selectedUnit);
+    }
+
     // [New] 실시간 툴팁 갱신 호출
     this.refreshTooltip();
   }
