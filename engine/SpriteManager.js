@@ -22,7 +22,7 @@ export class SpriteManager {
       '플라즈마검': 'assets/rimworld/플라즈마검.webp',
       '투창 다발': 'assets/rimworld/투창다발.webp',
       '곡궁': 'assets/rimworld/곡궁.webp',
-      '파쇄 수류탄': 'assets/fraggrenades.png', 
+      '파쇄 수류탄': 'assets/파쇄수류탄.webp', 
       '화염병': 'assets/molotov.png', 
       '리볼버': 'assets/rimworld/리볼버.webp',
       '자동권총': 'assets/rimworld/자동권총.webp',
