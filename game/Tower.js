@@ -176,14 +176,18 @@ export class Tower {
         const targets = enemies.filter(en => en.active && Math.hypot(en.x - this.x, en.y - this.y) <= (this.currentRange || this.range));
         if (targets.length > 0) {
           this.fire(targets, addProjectile); // 모든 대상에게 발사
-          this.cooldown = 1.0 / this.attackSpeed;
+          if (!this.isOverheated) {
+            this.cooldown = 1.0 / this.attackSpeed;
+          }
         }
       } else {
         const target = this.findTarget(enemies);
         if (target) {
           this.target = target;
           this.fire(target, addProjectile);
-          this.cooldown = 1.0 / this.attackSpeed;
+          if (!this.isOverheated) {
+            this.cooldown = 1.0 / this.attackSpeed;
+          }
         }
       }
     }
