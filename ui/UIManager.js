@@ -1490,8 +1490,13 @@ export class UIManager {
             desc: `정착민들의 현재 심리 상태입니다. 무드에 따라 다양한 보너스나 페널티가 발생합니다.<br><br>
                    • <span style="color:#3b82f6">매우 높음 (85%+)</span>: 작업 속도 및 유닛 공격력 +10%<br>
                    • <span style="color:#22c55e">좋음 (60%~85%)</span>: 정상적인 상태<br>
-                   • <span style="color:#f97316">나쁨 (25%~40%)</span>: 작업 효율 -10%<br>
-                   • <span style="color:#ef4444">정신 이상 (25% 미만)</span>: 작업을 거부하거나 유닛이 일시적으로 통제 불능이 될 위험이 있습니다.` 
+                   • <span style="color:#ef4444">정신 이상 (25% 미만)</span>: 유닛 공격력 -20%, 생산 효율 -30%<br><br>
+                   <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
+                   • <span style="color:#fbbf24">무드 회복 수단</span>:<br>
+                   - 적 처치 시 <span style="color:#fff">+0.75%</span> (알림 미표시)<br>
+                   - 웨이브 클리어 시 <span style="color:#fff">+10.0%</span><br>
+                   - 벌목/농사 작업 중 낮은 확률로 힐링 발생<br>
+                   - 긍정적인 랜덤 인카운터 조우 시 상승` 
         },
         food: { name: '식량 (Food)', desc: `생존을 위한 필수 자원입니다. 식량 게이지가 <span style="color:var(--accent-gold)">100%</span> (현재 목표: ${s.foodToNextPop})에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.` },
         silver: { name: '은화 (Silver)', desc: '기본적인 화폐입니다. 유닛 구매, 업그레이드, 거래 등에 광범위하게 사용됩니다.' },
