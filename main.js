@@ -590,6 +590,7 @@ class App {
       s.addResource('component', 1);
       s.mood = Math.min(100, s.mood + 5); // 보스 처치 시 대폭 상승
       this.ui.addMiniNotification(`[처치] 보스 제거! 강철+10, 부품+1, 무드+5%`, "info");
+      SoundManager.playSFX('assets/audio/encounter_success.mp3'); // 보스 처치 쾌감 부여
     } else if (lootMsg) {
       // 모든 전리품 획득 시 [전리품] 태그와 함께 알림
       this.ui.addMiniNotification(`[전리품] ${lootMsg}`);
@@ -598,6 +599,9 @@ class App {
 
   handleWaveComplete() {
     console.log(`[Wave] ${this.state.waveNumber} 완료!`);
+    // [New] 웨이브 클리어 시 무드 보너스 +10
+    this.state.mood = Math.min(100, this.state.mood + 10);
+    this.ui.addMiniNotification(`웨이브 ${this.state.waveNumber} 클리어! 정착민 무드 +10%`, "info");
   }
 
   handleWaveStart(num) {
