@@ -75,6 +75,17 @@ export class UIManager {
     // 8. 추가 상세 정보 요소
     this.detailUpLv = document.getElementById('detail-up-lv');
     this.detailAtkBonus = document.getElementById('detail-atk-bonus');
+
+    // 9. 정보창 레이블 및 행 제어
+    this.lblDps = document.getElementById('lbl-dps');
+    this.lblAtk = document.getElementById('lbl-atk');
+    this.lblRange = document.getElementById('lbl-range');
+    this.lblSpd = document.getElementById('lbl-spd');
+    this.lblAp = document.getElementById('lbl-ap');
+    
+    this.rowAp = document.getElementById('row-ap');
+    this.rowRange = document.getElementById('row-range');
+    this.rowSpd = document.getElementById('row-spd');
   }
 
   initEvents() {
@@ -501,6 +512,13 @@ export class UIManager {
       } else {
         this.detailName.textContent = `${qualText} ${tower.material} ${tower.weaponName}`;
       }
+
+      // 레이블 복구
+      if (this.lblDps) this.lblDps.textContent = "DPS";
+      if (this.lblAtk) this.lblAtk.textContent = "공격력";
+      if (this.lblSpd) this.lblSpd.textContent = "공속";
+      if (this.rowAp) this.rowAp.classList.remove('hidden');
+      if (this.rowRange) this.rowRange.classList.remove('hidden');
       
       this.detailGrade.textContent = `[${tower.weaponData.grade || 'Common'}]`;
       this.detailGrade.style.color = ""; // 색상 초기화
@@ -572,8 +590,6 @@ export class UIManager {
     this.selectedEnemy = null;
     const detailArea = document.getElementById('unit-detail-area');
     if (detailArea) {
-        // 실제로는 패널을 숨기지 않고 텍스트를 초기화하거나 스타일만 조정 가능
-        // 여기서는 간단히 조합 버튼만 숨깁니다.
         if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
     }
   }
@@ -594,6 +610,15 @@ export class UIManager {
       const typeNames = { organic: '생체', mech: '기계' };
       this.detailType.textContent = typeNames[enemy.type] || enemy.type;
       
+      // 레이블 변경
+      if (this.lblDps) this.lblDps.textContent = "체력";
+      if (this.lblAtk) this.lblAtk.textContent = "방어력";
+      if (this.lblSpd) this.lblSpd.textContent = "속도";
+      
+      // 불필요한 행 숨기기 (사거리, 방관)
+      if (this.rowAp) this.rowAp.classList.add('hidden');
+      if (this.rowRange) this.rowRange.classList.add('hidden');
+
       // HP 정보 (DPS 위치에 표시)
       const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
       this.detailDps.textContent = hpText;
@@ -601,7 +626,7 @@ export class UIManager {
       
       // 방어력 정보 (공격력 위치에 표시)
       this.detailAtk.textContent = Math.floor(enemy.armor);
-      if (this.detailAtkBonus) this.detailAtkBonus.textContent = " (방어력)";
+      if (this.detailAtkBonus) this.detailAtkBonus.textContent = ""; 
       if (this.detailUpLv) this.detailUpLv.textContent = "-";
       
       // 기타 정보
@@ -611,13 +636,25 @@ export class UIManager {
       // 조합 버튼 숨기기
       if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
       
-      // 방관 정보 레이블 변경 (임시)
-      const apEl = document.getElementById('detail-ap');
-      if (apEl) apEl.textContent = "-";
-
-      // 몬스터 클릭 시 강조 효과 등을 위해 App에 상태 전달 가능
     } catch (e) {
       console.error("UI Enemy Detail Update Error:", e);
+    }
+  }
+
+  /**
+   * 몬스터 정보 실시간 갱신 (주로 HP)
+   */
+  updateEnemyDetail(enemy) {
+    if (!enemy || !enemy.active) {
+      this.hideUnitDetail();
+      return;
+    }
+    const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
+    if (this.detailDps) this.detailDps.textContent = hpText;
+    
+    // 보호막이 있다면 추가 표시 가능
+    if (enemy.shield > 0) {
+       this.detailDps.textContent += ` (+${Math.floor(enemy.shield)} SHIELD)`;
     }
   }
 
