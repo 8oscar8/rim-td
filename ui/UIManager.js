@@ -663,12 +663,12 @@ export class UIManager {
         'knockback': '넉백',
         'armor_break': '방어 파쇄',
         'aoe_dmg': '범위 공격',
+        'melee_aoe': '근접 광역 공격',
         'aoe_knockback': '광역 넉백',
-        'melee_aoe': '광역 공격',
-        'aura_cd': '오오라(재사용)',
-        'instakill': '즉사',
-        'max_hp_percent': '비율 데미지',
-        'stun_long': '강력 기절'
+        'aura_cd': '주위 공속 증가',
+        'instakill': '즉사 확률',
+        'max_hp_percent': '체력 비례 피해',
+        'stun_long': '장기 기절'
       };
       
       if (effectId && effectNames[effectId] && this.rowEffect) {
