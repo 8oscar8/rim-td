@@ -1168,7 +1168,7 @@ export class UIManager {
             '연막 발사기': { silver: 400, steel: 180, component: 5 },
             '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 },
             '정신충격창': { silver: 1500, uranium: 100, plasteel: 50, jade: 10, component: 20 },
-            '고주스': { food: 500, herbalMedicine: 50 }
+            '고주스': { food: 500, herbalMedicine: 50, uranium: 20, component: 10 }
         };
 
         this.specialCraftBtns.forEach(btn => {
