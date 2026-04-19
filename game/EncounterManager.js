@@ -42,9 +42,9 @@ export class EncounterManager {
     // 게임이 일시정지 상태면 타이머 진행 안 함 (모달 열려있을 때 등)
     if (this.app.state.isPaused) return;
 
-    // 1. 이벤트 주기 타이머 갱신
+    // 1. 이벤트 주기 타이머 갱신 (100라운드 미만일 때만 새 이벤트 발생)
     this.nextEventTimer -= dt;
-    if (this.nextEventTimer <= 0) {
+    if (this.nextEventTimer <= 0 && this.app.state.waveNumber < 100) {
       this.triggerRandomEvent();
       this.nextEventTimer = this.getRandomInterval();
     }

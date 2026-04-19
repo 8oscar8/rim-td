@@ -23,8 +23,8 @@ export class HiddenEventManager {
     // 게임 시간 누적
     s.gameTime += dt;
 
-    // 세션당 최대 3회 제한
-    if (s.hiddenEventCount >= 3) return;
+    // 세션당 최대 3회 제한 및 100라운드 이후 발생 차단
+    if (s.hiddenEventCount >= 3 || s.waveNumber >= 100) return;
 
     // 1. 이벤트 주기 타이머 갱신
     this.nextEventTimer -= dt;
