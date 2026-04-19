@@ -1059,6 +1059,7 @@ export class UIManager {
             btn.style.opacity = canAfford ? "1" : "0.4";
             btn.style.filter = canAfford ? "none" : "grayscale(0.8)";
             btn.style.cursor = canAfford ? "pointer" : "not-allowed";
+            btn.classList.toggle('unlocked', canAfford);
         });
     }
   }
