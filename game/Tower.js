@@ -67,7 +67,7 @@ export class Tower {
     this.maxHeat = 100;
     this.isOverheated = false;
     this.overheatTimer = 0;
-    this.overheatDuration = 3.5; 
+    this.overheatDuration = 4.0; 
     
     // 특수 버프 상태
     this.isLuciferiumActive = false;
@@ -445,8 +445,8 @@ export class Tower {
 
   // 체력 및 과열 게이지 렌더링
   drawGauges(ctx) {
-    const barW = 40;
-    const barH = 4;
+    const barW = 60; // 너비 확장
+    const barH = 6;  // 두께 확장
     const bx = this.x - barW / 2;
 
     if (this.isBlueprint) {
@@ -458,23 +458,38 @@ export class Tower {
     }
 
     if (this.heat > 0 || this.isOverheated) {
-      const by = this.isBlueprint ? this.y + 35 : this.y + 25;
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.fillRect(bx, by, barW, barH);
+      // 위치를 머리 위로 조정하여 가시성 확보
+      const by = this.y - 45; 
+      
+      // 배경 박스
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(bx - 1, by - 1, barW + 2, barH + 2);
+      
       const heatRatio = Math.min(1.0, this.heat / this.maxHeat);
       
-      // 과열 시 강렬한 붉은색, 아닐 시 오렌지->레드 그라데이션
-      ctx.fillStyle = this.isOverheated ? '#ff0000' : `rgb(255, ${200 - heatRatio * 200}, 0)`;
+      // 과열 시 강렬한 붉은색 깜빡임, 아닐 시 오렌지->레드 그라데이션
+      if (this.isOverheated) {
+          const flash = Math.sin(Date.now() * 0.02) > 0;
+          ctx.fillStyle = flash ? '#ff0000' : '#880000';
+      } else {
+          ctx.fillStyle = `rgb(255, ${200 - heatRatio * 200}, 0)`;
+      }
+      
       ctx.fillRect(bx, by, barW * heatRatio, barH);
+
+      // 테두리 추가
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(bx, by, barW, barH);
 
       if (this.isOverheated) {
         const bounce = Math.sin(Date.now() * 0.01) * 3;
         ctx.fillStyle = '#ff4444';
-        ctx.font = 'bold 12px Inter';
+        ctx.font = 'bold 13px Inter';
         ctx.textAlign = 'center';
         ctx.shadowBlur = 10;
         ctx.shadowColor = '#ff0000';
-        ctx.fillText('OVERHEATED!', this.x, by + 18 + bounce);
+        ctx.fillText('OVERHEATED!', this.x, by - 12 + bounce);
         ctx.shadowBlur = 0;
       }
     }
