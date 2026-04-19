@@ -633,32 +633,37 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 /* Active Events (On Map Bottom Left) */
 .map-event-container {
     position: absolute;
-    bottom: 25px;
-    left: 25px;
-    z-index: 1000;
+    bottom: 130px; /* 약간 위로 올려서 다른 UI와 겹치지 않게 함 */
+    left: 20px;
+    z-index: 999;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     pointer-events: none;
 }
 
 .event-tag {
-    background: rgba(10, 11, 12, 0.85); /* 림월드 스타일 어두운 패널 */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-left: 4px solid #ef4444;
-    padding: 10px 16px;
-    border-radius: 4px;
+    background: rgba(15, 16, 18, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-left: 5px solid #ef4444;
+    padding: 12px 18px;
+    border-radius: 6px;
     font-size: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 15px;
-    backdrop-filter: blur(8px);
+    gap: 20px;
+    backdrop-filter: blur(12px);
     pointer-events: auto;
     cursor: help;
-    min-width: 180px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    animation: event-slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 200px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    transition: background 0.2s;
+}
+
+.event-tag:hover {
+    background: rgba(25, 26, 28, 1);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 @keyframes event-slide-in {

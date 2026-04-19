@@ -96,86 +96,70 @@ export class EncounterManager {
   updateActiveEvents(dt) {
     // 1. 지속 시간 갱신 및 종료 이벤트 처리
     const finishedEvents = [];
-    this.activeEvents.forEach(event => {
-      event.duration -= dt;
-      if (event.duration <= 0) {
-        finishedEvents.push(event);
+    this.activeEvents.forEach(ev => {
+      ev.duration -= dt;
+      if (ev.duration <= 0) {
+        finishedEvents.push(ev);
       }
     });
 
-    // 2. 종료된 이벤트 처리 (알림 및 특수 효과)
-    finishedEvents.forEach(event => {
-      this.app.ui.addMiniNotification(`이벤트 종료: ${event.name}`, 'info');
-      
-      // 루시페륨 종료 시 페널티 적용
-      if (event.id === 'luciferium') {
-        this.app.destroyRandomTower();
-      }
+    // 2. 종료된 이벤트 처리
+    finishedEvents.forEach(ev => {
+      this.app.ui.addMiniNotification(`이벤트 종료: ${ev.name}`, 'info');
+      if (ev.id === 'luciferium') this.app.destroyRandomTower();
     });
 
-    // 3. 활성 이벤트 리스트에서 제거 (리스트 필터링)
     this.activeEvents = this.activeEvents.filter(e => e.duration > 0);
 
-    // 4. UI 업데이트 (정제된 리스트 기반)
-    let uiHtml = "";
-    this.activeEvents.forEach(event => {
-      let borderColor = (event.type === 'positive') ? "#a855f7" : "#ef4444";
-      let bgColor = (event.type === 'positive') ? "rgba(168, 85, 247, 0.1)" : "rgba(239, 68, 68, 0.1)";
+    // 3. UI 업데이트 (이벤트 목록 자체가 변했을 때만 전체 갱신)
+    const currentEventIds = this.activeEvents.map(e => e.id).join(',');
+    if (this._lastEventIds !== currentEventIds) {
+        this._lastEventIds = currentEventIds;
+        this.renderActiveEventsUI();
+    }
 
-      // 특정 이벤트 색상 커스텀
-      if (event.id === 'psychic_soothe') {
-          borderColor = "#22d3ee"; // Cyan
-          bgColor = "rgba(34, 211, 238, 0.1)";
-      } else if (event.id === 'work_inspiration') {
-          borderColor = "#facc15"; // Gold
-          bgColor = "rgba(250, 204, 21, 0.1)";
-      } else if (event.id === 'luciferium') {
-          borderColor = "#991b1b"; // Deep Red
-          bgColor = "rgba(153, 27, 27, 0.1)";
-      } else if (event.id === 'solar_flare') {
-          borderColor = "#ea580c"; // Orange
-          bgColor = "rgba(234, 88, 12, 0.1)";
-      } else if (event.id === 'food_poisoning') {
-          borderColor = "#84cc16"; // Lime
-          bgColor = "rgba(132, 204, 22, 0.1)";
-      } else if (event.id === 'psychic_drone') {
-          borderColor = "#a21caf"; // Purple
-          bgColor = "rgba(162, 28, 175, 0.1)";
-      } else if (event.id === 'pyromaniac') {
-          borderColor = "#ea580c";
-          bgColor = "rgba(234, 88, 12, 0.1)";
-      } else if (event.id === 'food_rot') {
-          borderColor = "#78350f";
-          bgColor = "rgba(120, 53, 15, 0.1)";
-      } else if (event.id === 'labor_strike') {
-          borderColor = "#475569";
-          bgColor = "rgba(71, 85, 105, 0.1)";
-      } else if (event.id === 'manhunter_pack') {
-          borderColor = "#b91c1c";
-          bgColor = "rgba(185, 28, 28, 0.1)";
-      } else if (event.id === 'infestation') {
-          borderColor = "#44403c";
-          bgColor = "rgba(68, 64, 60, 0.1)";
+    // 4. 시간만 업데이트 (innerHTML 교체 없이 텍스트만 갱신하여 흔들림 방지)
+    this.updateEventTimers();
+  }
+
+  updateEventTimers() {
+    if (!this.activeEventsContainer) return;
+    this.activeEvents.forEach(ev => {
+      const timerSpan = document.getElementById(`timer-${ev.id}`);
+      if (timerSpan) {
+        timerSpan.textContent = `${Math.max(0, Math.ceil(ev.duration))}s`;
       }
+    });
+  }
+
+  renderActiveEventsUI() {
+    if (!this.activeEventsContainer) return;
+    
+    let uiHtml = "";
+    this.activeEvents.forEach(ev => {
+      let borderColor = (ev.type === 'positive') ? "#a855f7" : "#ef4444";
+      let bgColor = (ev.type === 'positive') ? "rgba(168, 85, 247, 0.2)" : "rgba(239, 68, 68, 0.2)";
+
+      if (ev.id === 'psychic_soothe') { borderColor = "#22d3ee"; bgColor = "rgba(34, 211, 238, 0.2)"; }
+      else if (ev.id === 'work_inspiration') { borderColor = "#facc15"; bgColor = "rgba(250, 204, 21, 0.2)"; }
+      else if (ev.id === 'luciferium') { borderColor = "#991b1b"; bgColor = "rgba(153, 27, 27, 0.2)"; }
+      else if (ev.id === 'solar_flare') { borderColor = "#ea580c"; bgColor = "rgba(234, 88, 12, 0.2)"; }
 
       uiHtml += `
         <div class="event-tag" 
-             style="border-left-color: ${borderColor}; background: ${bgColor}"
-             onmouseenter="window.app.ui.showEventTooltip(event, '${event.id}')"
+             style="border-left-color: ${borderColor}; background: ${bgColor};"
+             onmouseenter="window.app.ui.showEventTooltip(event, '${ev.id}')"
              onmousemove="window.app.ui.moveTooltip(event)"
              onmouseleave="window.app.ui.hideTooltip()">
-            <div>
+            <div style="pointer-events: none;">
                 <span class="event-pulse" style="color: ${borderColor}">●</span>
-                <span class="name">${event.name}</span>
+                <span class="name">${ev.name}</span>
             </div>
-            <span class="time" style="color: ${borderColor}">${Math.max(0, Math.ceil(event.duration))}s</span>
+            <span id="timer-${ev.id}" class="time" style="color: ${borderColor}; pointer-events: none;">${Math.max(0, Math.ceil(ev.duration))}s</span>
         </div>
       `;
     });
-
-    if (this.activeEventsContainer) {
-        this.activeEventsContainer.innerHTML = uiHtml;
-    }
+    this.activeEventsContainer.innerHTML = uiHtml;
   }
 
   triggerRandomEvent() {
