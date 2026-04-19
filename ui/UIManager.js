@@ -1378,6 +1378,8 @@ export class UIManager {
                 effect = `강철 생산: +${curBonus}% -> +${nextBonus}%<br>희귀 확률: +${curLv*4}% -> +${(curLv+1)*4}%`;
             } else if (type === 'trade') {
                 effect = `기본 수익: +${curLv*100}% -> +${(curLv+1)*100}%<br>비취/플라스틸: +${curLv*8}% -> +${(curLv+1)*8}%`;
+            } else if (type === 'farming' || type === 'logging') {
+                effect = `생산량: +${curBonus}% -> +${nextBonus}%<br>무드 보너스 확률: +${curLv*2}% -> +${(curLv+1)*2}%`;
             } else {
                 effect = `생산량: +${curBonus}% -> +${nextBonus}%`;
             }
