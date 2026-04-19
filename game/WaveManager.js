@@ -117,7 +117,14 @@ export class WaveManager {
       }
 
       this.nextWaveTimer -= dt;
-      if (this.nextWaveTimer <= 0) this.startNextWave();
+      if (this.nextWaveTimer <= 0) {
+          // [New] 타임아웃 패널티: 제한 시간 내 섬멸 실패 시 무드 -10
+          if (!this.isWaveCompleted && window.gameCore) {
+              window.gameCore.state.mood = Math.max(0, window.gameCore.state.mood - 10);
+              window.gameCore.ui.addMiniNotification("제한 시간 내 적을 섬멸하지 못했습니다! 정착민 무드 -10%", "failure");
+          }
+          this.startNextWave();
+      }
     }
   }
 
