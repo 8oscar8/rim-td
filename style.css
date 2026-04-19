@@ -853,6 +853,55 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 }
 
 /* ==========================================
+   [New] 자원 도박 스타일
+   ========================================== */
+.gamble-group {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.gamble-title {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.gamble-btn {
+    background: rgba(40, 40, 40, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+.gamble-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(60, 60, 60, 0.8) !important;
+}
+
+.gamble-btn.wood { border-color: rgba(139, 69, 19, 0.5) !important; }
+.gamble-btn.steel { border-color: rgba(169, 169, 169, 0.5) !important; }
+.gamble-btn.silver { border-color: rgba(255, 215, 0, 0.4) !important; }
+
+.gamble-btn:active {
+    animation: gamble-shake 0.1s infinite;
+}
+
+@keyframes gamble-shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* ==========================================
    [New] 정착민 파견 대기 알림 (깜빡임 효과)
    ========================================== */
 .idle-alert {

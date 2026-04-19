@@ -247,7 +247,30 @@
                             <span class="text">선택 유닛 판매 (5)</span>
                         </button>
                     </div>
-                    <p class="shop-desc">무작위 유닛을 획득하거나 진귀한 비취옥을 은으로 환전합니다.</p>
+
+                    <!-- 자원 도박 섹션 -->
+                    <div class="gamble-group">
+                        <div class="gamble-title">─ 자원 암거래 및 정제 ─</div>
+                        <div class="button-list">
+                            <button class="shop-btn gamble-btn wood" onclick="window.app.gamble('wood')"
+                                onmouseenter="window.app.ui.showGambleTooltip(event, 'wood')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
+                                <img src="assets/wood.png" class="res-mini-icon">
+                                <span class="text">목재 정제 (100)</span>
+                            </button>
+                            <button class="shop-btn gamble-btn steel" onclick="window.app.gamble('steel')"
+                                onmouseenter="window.app.ui.showGambleTooltip(event, 'steel')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
+                                <img src="assets/steel.png" class="res-mini-icon">
+                                <span class="text">강철 분해 (200)</span>
+                            </button>
+                            <button class="shop-btn gamble-btn silver" onclick="window.app.gamble('silver')"
+                                onmouseenter="window.app.ui.showGambleTooltip(event, 'silver')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
+                                <img src="assets/silver.png" class="res-mini-icon">
+                                <span class="text">암시장 거래 (1,000)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="shop-desc">유닛 구매, 환전 및 자원 암거래를 행합니다.</p>
                 </div>
 
                 <!-- 제작 탭 -->

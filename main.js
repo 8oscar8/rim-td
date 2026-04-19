@@ -1102,6 +1102,52 @@ class App {
   }
 
   /**
+   * [New] 자원 도박(정제/분해/거래) 로직
+   */
+  gamble(type) {
+    if (this.state.isPaused) return;
+    const s = this.state;
+    const costs = { wood: 100, steel: 200, silver: 1000 };
+    const cost = costs[type];
+
+    if (s[type] < cost) {
+        this.ui.addMiniNotification("자원이 부족합니다!", "failure");
+        return;
+    }
+
+    s[type] -= cost;
+    const rand = Math.random();
+    let result = { msg: "정제 실패: 쓸모없는 찌꺼기만 남았습니다.", grade: "info" };
+
+    if (type === 'wood') {
+        // 목재 도박 (기초)
+        if (rand < 0.02) { s.silver += 1000; result = { msg: "[대박] 나무를 골동품이라고 속여 팔았습니다! (+1000 은)", grade: "Mythic" }; }
+        else if (rand < 0.05) { s.component += 1; result = { msg: "나무 속에서 부품 하나를 찾아냈습니다! (+1 부품)", grade: "Legendary" }; }
+        else if (rand < 0.15) { s.uranium += 3; result = { msg: "우라늄 조각을 발견했습니다! (+3 우라늄)", grade: "Rare" }; }
+        else if (rand < 0.35) { s.plasteel += 5; result = { msg: "플라스틸 정제 성공! (+5 플라스틸)", grade: "Uncommon" }; }
+        else if (rand < 0.60) { s.steel += 30; result = { msg: "나무 밑에서 강철 더미를 찾았습니다. (+30 강철)", grade: "Common" }; }
+    } else if (type === 'steel') {
+        // 강철 도박 (중급)
+        if (rand < 0.03) { s.silver += 2000; result = { msg: "[대박] 정밀 기계 부품을 발견했습니다! (+2000 은)", grade: "Mythic" }; }
+        else if (rand < 0.08) { s.jade += 3; result = { msg: "강철 속에 박힌 비취를 캤습니다! (+3 비취)", grade: "Legendary" }; }
+        else if (rand < 0.20) { s.component += 3; result = { msg: "기계 부품 뭉치를 회수했습니다! (+3 부품)", grade: "Epic" }; }
+        else if (rand < 0.45) { s.plasteel += 15; result = { msg: "강철을 분해해 플라스틸을 얻었습니다. (+15 플라스틸)", grade: "Rare" }; }
+        else if (rand < 0.70) { s.uranium += 8; result = { msg: "강철 더미에서 우라늄을 추출했습니다. (+8 우라늄)", grade: "Uncommon" }; }
+    } else if (type === 'silver') {
+        // 은화 도박 (고급/암시장)
+        if (rand < 0.05) { s.silver += 5000; result = { msg: "[잭팟] 암시장에서 큰 이득을 봤습니다!! (+5000 은)", grade: "Mythic" }; }
+        else if (rand < 0.15) { s.component += 10; result = { msg: "고급 부품 상자를 입수했습니다! (+10 부품)", grade: "Legendary" }; }
+        else if (rand < 0.35) { s.jade += 5; result = { msg: "희귀한 비취들을 수입했습니다! (+5 비취)", grade: "Epic" }; }
+        else if (rand < 0.60) { s.uranium += 30; result = { msg: "우라늄 연료봉을 대량 구매했습니다. (+30 우라늄)", grade: "Rare" }; }
+        else if (rand < 0.85) { s.plasteel += 40; result = { msg: "벌크 플라스틸 거래 성공! (+40 플라스틸)", grade: "Epic" }; }
+    }
+
+    this.ui.addMiniNotification(result.msg, result.grade);
+    this.ui.updateDisplays(s);
+    SoundManager.playSFX('assets/audio/buy.mp3');
+  }
+
+  /**
    * 아이템 지점 타격 실행
    */
   confirmItemUsage(x, y) {
