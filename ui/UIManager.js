@@ -422,9 +422,21 @@ export class UIManager {
             s.silver -= cost.silver;
             s.component -= cost.component;
             
-            const result = GachaSystem.createSpecificWeapon(weaponName);
-            SoundManager.playSFX('assets/audio/buy.mp3');
-            this.app.startPlacement(result);
+            // [Bug Fix] 타워 배치 대신 아이템 인벤토리에 추가
+            const itemKeyMap = {
+                '파쇄 수류탄': 'frag_grenade',
+                '펄스 수류탄': 'pulse_grenade',
+                '화염병': 'molotov',
+                '연막 발사기': 'smoke_launcher',
+                '독소 수류탄': 'toxin_grenade'
+            };
+            const itemKey = itemKeyMap[weaponName];
+            if (itemKey) {
+                s.items[itemKey] = (s.items[itemKey] || 0) + 1;
+                this.addMiniNotification(`${weaponName} 획득! (사용: 우측 아이템 카드 클릭)`);
+                SoundManager.playSFX('assets/audio/buy.mp3');
+            }
+            
             this.updateDisplays(s);
         } else {
             alert("자원이 부족합니다!");

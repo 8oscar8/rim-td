@@ -45,15 +45,16 @@ export const WEAPON_DB = {
 
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.25, ap: 0.3, effect: null, range: 310 },
   '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 30, spd: 0.25, ap: 0.6, effect: 'multi_bullet', isTrueDamage: true, range: 9999 },
+  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'instant_multi', isTrueDamage: true, range: 9999 }
+};
 
-  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'instant_multi', isTrueDamage: true, range: 9999 },
-
-  // 투척류 및 특수 무기
-  '파쇄 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 50, spd: 0.2, ap: 0.2, effect: 'aoe_dmg', shred: 10, range: 150 },
-  '펄스 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 5, spd: 0.15, ap: 0.5, effect: 'armor_break', shred: 12, range: 150 },
-  '연막 발사기': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 0, spd: 0.1, ap: 0, effect: 'smoke', range: 250 },
-  '화염병': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 10, spd: 0.2, ap: 0.1, effect: 'burn_fear', range: 150 },
-  '독소 수류탄': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 5, spd: 0.1, ap: 0.8, effect: 'toxin', range: 180 }
+// 소모성 아이템 DB (타워로 건설 불가, 인벤토리에서 사용)
+export const ITEM_DB = {
+  '파쇄 수류탄': { type: 'item', grade: 'Common', dmg: 250, ap: 0.2, effect: 'aoe_dmg', shred: 30, radius: 100 },
+  '펄스 수류탄': { type: 'item', grade: 'Uncommon', dmg: 50, ap: 0.5, effect: 'emp', shred: 50, radius: 120 },
+  '화염병': { type: 'item', grade: 'Rare', dmg: 20, ap: 0.1, effect: 'burn_fear', radius: 80 },
+  '연막 발사기': { type: 'item', grade: 'Rare', dmg: 0, ap: 0, effect: 'smoke', radius: 150 },
+  '독소 수류탄': { type: 'item', grade: 'Epic', dmg: 10, ap: 0.8, effect: 'toxin', radius: 120 }
 };
 
 export const MATERIAL_DB = {

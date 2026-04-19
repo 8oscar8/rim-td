@@ -1010,8 +1010,52 @@ class App {
             this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
             success = true;
             break;
-        default:
-            this.ui.addMiniNotification("해당 아이템은 개발 중입니다.", "info");
+
+        case 'frag_grenade':
+            // 전원 고위력 데미지 + 강력한 방깎
+            this.enemies.forEach(en => {
+                en.flashTimer = 0.3;
+                en.takeDamage(250, 0.2, 'aoe_dmg', 'Common', 30);
+            });
+            this.ui.addMiniNotification("파쇄 수류탄 투척!", "Common");
+            success = true;
+            break;
+
+        case 'pulse_grenade':
+            // 전원 EMP(기절) + 대량 방깎
+            this.enemies.forEach(en => {
+                en.flashTimer = 0.3;
+                en.takeDamage(50, 0.5, 'emp', 'Uncommon', 50);
+            });
+            this.ui.addMiniNotification("펄스 수류탄 일제 폭발!", "Uncommon");
+            success = true;
+            break;
+
+        case 'molotov':
+            // 전원 화염 + 공포
+            this.enemies.forEach(en => {
+                en.handleStatusEffect('burn_fear');
+                en.takeDamage(20, 0.1, 'burn_fear', 'Rare', 0);
+            });
+            this.ui.addMiniNotification("화염병 투척!", "Rare");
+            success = true;
+            break;
+
+        case 'smoke_launcher':
+            // 전원 시야 차단 (슬로우)
+            this.enemies.forEach(en => { en.handleStatusEffect('smoke'); });
+            this.ui.addMiniNotification("연막 차단기 가동!", "Rare");
+            success = true;
+            break;
+
+        case 'toxin_grenade':
+            // 전원 독성 중독
+            this.enemies.forEach(en => {
+                en.handleStatusEffect('toxin');
+                en.takeDamage(10, 0.8, 'toxin', 'Epic', 0);
+            });
+            this.ui.addMiniNotification("독소 수류탄 살포!", "Epic");
+            success = true;
             break;
     }
 
