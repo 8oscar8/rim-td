@@ -765,6 +765,18 @@ export class UIManager {
         this.herbalVal.textContent = Math.floor(state.herbalMedicine || 0);
     }
 
+    // [New] 약초 및 금융치료 버튼 활성화/비활성화
+    const herbalCard = document.getElementById('btn-use-herbal');
+    if (herbalCard) {
+        const canUse = state.herbalMedicine >= 50 && !state.isPaused;
+        herbalCard.classList.toggle('disabled', !canUse);
+    }
+    const financialCard = document.getElementById('btn-use-financial');
+    if (financialCard) {
+        const canUse = state.silver >= 300 && !state.isPaused;
+        financialCard.classList.toggle('disabled', !canUse);
+    }
+
     if (this.enemyVal) {
       const enemyCount = this.app.enemies ? this.app.enemies.length : 0;
       this.enemyVal.textContent = `${enemyCount} / 100`;

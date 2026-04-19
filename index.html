@@ -53,11 +53,11 @@
                 </div>
                 <!-- 특수 처방 (약초/금융) -->
                 <div class="status-row">
-                    <div class="status-card herbal-card clickable" onclick="window.app.useHerbs()" onmouseenter="window.app.ui.showResourceTooltip(event, 'herbalMedicine')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
+                    <div class="status-card herbal-card clickable" id="btn-use-herbal" onclick="window.app.useHerbs()" onmouseenter="window.app.ui.showResourceTooltip(event, 'herbalMedicine')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
                         <span class="label"><img src="assets/약초.webp" class="res-mini-icon"> 약초</span>
                         <span class="value" id="herbal-val">0</span>
                     </div>
-                    <div class="status-card financial-card clickable" onclick="window.app.useFinancialTherapy()" onmouseenter="window.app.ui.showResourceTooltip(event, 'financialTherapy')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
+                    <div class="status-card financial-card clickable" id="btn-use-financial" onclick="window.app.useFinancialTherapy()" onmouseenter="window.app.ui.showResourceTooltip(event, 'financialTherapy')" onmouseleave="window.app.ui.hideTooltip()" onmousemove="window.app.ui.moveTooltip(event)">
                         <span class="label"><img src="assets/silver.png" class="res-mini-icon"> 금융치료</span>
                         <span class="value">300</span>
                     </div>
