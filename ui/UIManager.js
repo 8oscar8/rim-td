@@ -1219,10 +1219,19 @@ export class UIManager {
             cur: s[r.key]
         }));
         const names = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
-        title = `${names[type] || type} 전투 훈련 (Lv.${curLv} → ${nextLv})`;
-        effect = "해당 계열 무기 데미지 +10% (합연산)";
-        if (nextLv > 50) effect += " <br><span style='color:var(--accent-gold)'>* 51강 이상: 효율 20%로 상승</span>";
-        if (nextLv > 100) effect = "해당 계열 무기 데미지 +30% (소급 적용)";
+        title = `${names[type] || type} 전투 훈련 (Lv.${curLv} -> ${nextLv})`;
+
+        const getRate = (lv) => (lv >= 101 ? 30 : (lv >= 51 ? 20 : 10));
+        const curRate = getRate(curLv);
+        const nextRate = getRate(nextLv);
+        
+        const curBonus = curLv * curRate;
+        const nextBonus = nextLv * nextRate;
+
+        effect = `데미지 배율: <span style="color:#00f2ff">+${curBonus}% -> +${nextBonus}%</span>`;
+        if (nextLv === 51 || nextLv === 101) {
+            effect += ` <br><span style="color:var(--accent-gold)">* 효율 업급구간! (개별 효율 ${nextRate}%로 상승)</span>`;
+        }
     }
     // 2. 생산 업그레이드 (커브 적용)
     else {
@@ -1234,27 +1243,41 @@ export class UIManager {
         const resCurve = [100, 250, 600, 1400, 2750];
         
         const costs = {
-            education: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '현대 교육', desc: '연구 생산량 +25% 및 부품 획득 확률 +5%' },
-            artisan: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '숙련 장인', desc: '무기 제작 시 상위 품질(완벽 이상) 확률 대폭 증가' },
-            farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: '고급 농경', desc: '식량 생산량 +25%' },
-            mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '대규모 채굴', desc: '강철 생산량 +25% 및 희귀 자원 발견 확률 +4%' },
-            logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '기계식 벌목', desc: '목재 생산량 +25%' },
-            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크', desc: '은화 수익 및 플라스틸/비취옥 거래 수량/확률 상승' }
+            education: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '현대 교육' },
+            artisan: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '숙련 장인' },
+            farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: '고급 농경' },
+            mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '대규모 채굴' },
+            logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '기계식 벌목' },
+            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크' }
         };
         
         const costData = costs[type];
         if (costData) {
             const nameMap = { silver: '은화', steel: '강철', wood: '나무', food: '식량', researchPoints: '연구 포인트' };
             Object.entries(costData).forEach(([k, v]) => {
-                if (k === 'name' || k === 'desc') return;
+                if (k === 'name') return;
                 requirements.push({
                     name: nameMap[k] || k,
                     req: v,
                     cur: s[k] || 0
                 });
             });
-            title = `${costData.name || type} 강화 (Lv.${curLv} → ${curLv + 1})`;
-            effect = costData.desc || "";
+            title = `${costData.name || type} 강화 (Lv.${curLv} -> ${curLv + 1})`;
+            
+            const curBonus = curLv * 25;
+            const nextBonus = (curLv + 1) * 25;
+            
+            if (type === 'education') {
+                effect = `연구량: +${curBonus}% -> +${nextBonus}%<br>부품 확률: +${curLv*5}% -> +${(curLv+1)*5}%`;
+            } else if (type === 'artisan') {
+                effect = `품질 보수치: +${curLv*10}% -> +${(curLv+1)*10}%`;
+            } else if (type === 'mining') {
+                effect = `강철 생산: +${curBonus}% -> +${nextBonus}%<br>희귀 확률: +${curLv*4}% -> +${(curLv+1)*4}%`;
+            } else if (type === 'trade') {
+                effect = `기본 수익: +${curLv*100}% -> +${(curLv+1)*100}%<br>비취/플라스틸: +${curLv*8}% -> +${(curLv+1)*8}%`;
+            } else {
+                effect = `생산량: +${curBonus}% -> +${nextBonus}%`;
+            }
         }
     }
 
