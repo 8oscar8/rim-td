@@ -1123,20 +1123,20 @@ class App {
         // 목재 도박 (기초 정제: 소모 200)
         if (rand < 0.05) { s.component += 1; result = { msg: "목재 정제 중 부품 발견! (+1 부품)", grade: "Legendary" }; }
         else if (rand < 0.15) { s.uranium += 3; result = { msg: "심층 우라늄 조각 채취 (+3 우라늄)", grade: "Rare" }; }
-        else if (rand < 0.35) { s.plasteel += 6; result = { msg: "목재 성분에서 플라스틸 정제 (+6 플라스틸)", grade: "Uncommon" }; }
+        else if (rand < 0.35) { s.plasteel += 10; result = { msg: "목재 성분에서 플라스틸 정제 (+10 플라스틸)", grade: "Uncommon" }; }
         else if (rand < 0.65) { s.steel += 40; result = { msg: "불순물을 제거해 강철 확보 (+40 강철)", grade: "Common" }; }
     } else if (type === 'steel') {
         // 강철 도박 (산업 분해: 소모 200)
         if (rand < 0.05) { s.jade += 1; result = { msg: "공업용 비취 결정 발견! (+1 비취)", grade: "Legendary" }; }
         else if (rand < 0.15) { s.component += 2; result = { msg: "추출된 정밀 부품 (+2 부품)", grade: "Epic" }; }
         else if (rand < 0.35) { s.uranium += 6; result = { msg: "농축 우라늄 추출 성공 (+6 우라늄)", grade: "Rare" }; }
-        else if (rand < 0.65) { s.plasteel += 12; result = { msg: "강철을 분해해 플라스틸 확보 (+12 플라스틸)", grade: "Uncommon" }; }
+        else if (rand < 0.65) { s.plasteel += 20; result = { msg: "강철을 분해해 플라스틸 확보 (+20 플라스틸)", grade: "Uncommon" }; }
     } else if (type === 'silver') {
         // 은화 도박 (암시장 거래: 소모 300)
         if (rand < 0.01) { s.silver += 1500; result = { msg: "[암시장 잭팟] 대박 거래 성사! (+1500 은)", grade: "Mythic" }; }
         else if (rand < 0.06) { s.component += 1; result = { msg: "암시장에서 부품을 구매했습니다. (+1 부품)", grade: "Legendary" }; }
         else if (rand < 0.20) { s.uranium += 4; result = { msg: "비밀 거래로 우라늄 입수 (+4 우라늄)", grade: "Rare" }; }
-        else if (rand < 0.45) { s.plasteel += 7; result = { msg: "암시장 플라스틸 거래 성공 (+7 플라스틸)", grade: "Uncommon" }; }
+        else if (rand < 0.45) { s.plasteel += 12; result = { msg: "암시장 플라스틸 거래 성공 (+12 플라스틸)", grade: "Uncommon" }; }
     }
 
     this.ui.addMiniNotification(result.msg, result.grade);
