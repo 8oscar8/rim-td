@@ -645,7 +645,6 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 }
 .status-card.clickable.disabled {
     cursor: not-allowed;
-    pointer-events: none;
     opacity: 0.3;
     filter: grayscale(1);
     border-color: #333 !important;
@@ -891,13 +890,12 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 }
 
 .item-card.empty { opacity: 0.5; filter: grayscale(1); }
-.item-card.on-cooldown {
+.item-card.on-cooldown, .status-card.on-cooldown {
     position: relative;
     overflow: hidden;
-    pointer-events: none;
-    cursor: not-allowed !important;
+    pointer-events: auto !important; /* 툴팁을 보려면 auto여야 함 */
 }
-.item-card.on-cooldown::before {
+.item-card.on-cooldown::before, .status-card.on-cooldown::before {
     content: '';
     position: absolute;
     top: 0; left: 0; width: 100%;
@@ -906,17 +904,16 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     z-index: 5;
     pointer-events: none;
 }
-.item-card.on-cooldown::after {
-    content: "대기 중";
+.item-card.on-cooldown::after, .status-card.on-cooldown::after {
+    content: "대기";
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 11px;
+    font-size: 10px;
     color: #ff3e3e;
     font-weight: bold;
-    text-shadow: 0 0 5px #000;
-    z-index: 10;
-    pointer-events: none;
+    z-index: 6;
+    text-shadow: 0 0 3px #000;
 }
 
 /* ==========================================

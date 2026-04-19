@@ -1554,6 +1554,12 @@ class App {
     if (this.state.isPaused) return;
     const s = this.state;
     
+    // 쿨타임 체크
+    if (s.itemCooldowns.herbal_care > 0) {
+        this.ui.addMiniNotification(`약초 재사용 대기 중... (${Math.ceil(s.itemCooldowns.herbal_care)}초)`, "failure");
+        return;
+    }
+
     if (s.herbalMedicine >= 50) {
         if (s.mood >= 100) {
             this.ui.addMiniNotification("무드가 이미 최상태입니다!", "info");
@@ -1563,6 +1569,9 @@ class App {
         s.herbalMedicine -= 50;
         s.mood = Math.min(100, s.mood + 25);
         
+        // 쿨타임 설정 (15초)
+        s.itemCooldowns.herbal_care = 15;
+
         SoundManager.playSFX('assets/audio/buy.mp3'); 
         this.ui.addMiniNotification("약초 50개를 사용하여 무드를 25 회복했습니다!", "jackpot");
         this.ui.updateDisplays(s);
@@ -1580,6 +1589,12 @@ class App {
     if (this.state.isPaused) return;
     const s = this.state;
     
+    // 쿨타임 체크
+    if (s.itemCooldowns.financial_care > 0) {
+        this.ui.addMiniNotification(`금융치료 재사용 대기 중... (${Math.ceil(s.itemCooldowns.financial_care)}초)`, "failure");
+        return;
+    }
+
     if (s.silver >= 300) {
         if (s.mood >= 100) {
             this.ui.addMiniNotification("무드가 이미 최상태입니다!", "info");
@@ -1589,6 +1604,9 @@ class App {
         s.silver -= 300;
         s.mood = Math.min(100, s.mood + 20);
         
+        // 쿨타임 설정 (60초)
+        s.itemCooldowns.financial_care = 60;
+
         SoundManager.playSFX('assets/audio/buy.mp3'); 
         this.ui.addMiniNotification("금융치료 완료! 은화 300개를 사용하여 무드를 20 회복했습니다.", "jackpot");
         this.ui.updateDisplays(s);

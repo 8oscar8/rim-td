@@ -768,13 +768,33 @@ export class UIManager {
     // [New] 약초 및 금융치료 버튼 활성화/비활성화
     const herbalCard = document.getElementById('btn-use-herbal');
     if (herbalCard) {
-        const canUse = state.herbalMedicine >= 50 && !state.isPaused;
+        const cd = state.itemCooldowns.herbal_care || 0;
+        const canUse = state.herbalMedicine >= 50 && !state.isPaused && cd <= 0;
         herbalCard.classList.toggle('disabled', !canUse);
+        
+        if (cd > 0) {
+            herbalCard.classList.add('on-cooldown');
+            const percent = (cd / 15) * 100;
+            herbalCard.style.setProperty('--cd-percent', `${percent}%`);
+        } else {
+            herbalCard.classList.remove('on-cooldown');
+            herbalCard.style.setProperty('--cd-percent', '0%');
+        }
     }
     const financialCard = document.getElementById('btn-use-financial');
     if (financialCard) {
-        const canUse = state.silver >= 300 && !state.isPaused;
+        const cd = state.itemCooldowns.financial_care || 0;
+        const canUse = state.silver >= 300 && !state.isPaused && cd <= 0;
         financialCard.classList.toggle('disabled', !canUse);
+
+        if (cd > 0) {
+            financialCard.classList.add('on-cooldown');
+            const percent = (cd / 60) * 100;
+            financialCard.style.setProperty('--cd-percent', `${percent}%`);
+        } else {
+            financialCard.classList.remove('on-cooldown');
+            financialCard.style.setProperty('--cd-percent', '0%');
+        }
     }
 
     if (this.enemyVal) {
