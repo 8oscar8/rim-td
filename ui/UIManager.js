@@ -1508,7 +1508,7 @@ export class UIManager {
             name: '야생 약초 (Herbal Medicine)',
             desc: `자연에서 채집한 귀중한 약용 식물입니다.<br><br>
                    • <span style="color:#fbbf24">획득 경로</span>: 벌목(Logging)이나 농사(Farming) 작업 완료 시 <span style="color:#fff">5% 확률</span>로 발견합니다.<br>
-                   • <span style="color:#4ade80">용도</span>: 추후 정착민의 부상 치료나 특수 강화 아이템 제작의 핵심 재료로 사용될 예정입니다.`
+                   • <span style="color:#4ade80">사용 (클릭)</span>: 약초 <span style="color:#fff">50개</span>를 사용하여 무드를 <span style="color:#fff">25</span> 회복합니다. (클릭하여 사용)`
         },
         food: { name: '식량 (Food)', desc: `생존을 위한 필수 자원입니다. 식량 게이지가 <span style="color:var(--accent-gold)">100%</span> (현재 목표: ${s.foodToNextPop})에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.` },
         silver: { name: '은화 (Silver)', desc: '기본적인 화폐입니다. 유닛 구매, 업그레이드, 거래 등에 광범위하게 사용됩니다.' },
