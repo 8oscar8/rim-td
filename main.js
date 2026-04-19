@@ -1147,10 +1147,10 @@ class App {
                 en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
                 break;
             case 'psychic_lance':
-                // 보스일 경우 10초 스턴, 일반 적일 경우 5초 스턴
+                // 보스일 경우 15초 스턴, 일반 적일 경우 5초 스턴
                 // Enemy.js 로직상 stunTimer > 0 일 때 bossTimer(제한시간) 감소가 자동으로 중단됨
                 if (en.isBoss) {
-                    en.stunTimer = 10.0;
+                    en.stunTimer = 15.0;
                     this.ui.addMiniNotification("보스 무력화! (제한 시간 일시 정지)", "Legendary");
                 } else {
                     en.stunTimer = 5.0;

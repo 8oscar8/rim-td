@@ -76,7 +76,7 @@ export const ITEM_DB = {
   },
   'psychic_lance': { 
     name: '정신충격창', type: 'item', grade: 'Legendary', dmg: 0, ap: 0, effect: 'psychic_stun', radius: 40, cooldown: 45,
-    desc: '강력한 정신 파동을 집중 사격합니다. 대상이 보스일 경우 10초간 스턴시키며, 스턴 동안 보스 타이머가 멈춥니다.'
+    desc: '강력한 정신 파동을 집중 사격합니다. 대상이 보스일 경우 15초간 스턴시키며, 스턴 동안 보스 타이머가 멈춥니다.'
   }
 };
 
