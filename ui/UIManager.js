@@ -1417,7 +1417,9 @@ export class UIManager {
             } else if (type === 'trade') {
                 effect = `기본 수익: +${curLv*100}% -> +${(curLv+1)*100}%<br>비취/플라스틸: +${curLv*8}% -> +${(curLv+1)*8}%`;
             } else if (type === 'farming' || type === 'logging') {
-                effect = `생산량: +${curBonus}% -> +${nextBonus}%<br>무드 보너스 확률: +${curLv*2}% -> +${(curLv+1)*2}%`;
+                const curHerb = 5 + (curLv * 2);
+                const nextHerb = 5 + ((curLv + 1) * 2);
+                effect = `생산량: +${curBonus}% -> +${nextBonus}%<br>무드 보너스: +${curLv*2}% -> +${(curLv+1)*2}%<br>약초 확률: <span style="color:#4ade80">${curHerb}% -> ${nextHerb}%</span>`;
             } else {
                 effect = `생산량: +${curBonus}% -> +${nextBonus}%`;
             }
