@@ -79,8 +79,8 @@ export const ITEM_DB = {
     desc: '강력한 정신 파동을 집중 사격합니다. 대상이 보스일 경우 15초간 스턴시키며, 스턴 동안 보스 타이머가 멈춥니다.'
   },
   'go_juice': { 
-    name: '고주스', type: 'item', grade: 'Epic', dmg: 0, ap: 0, effect: 'buff_aura', radius: 120, cooldown: 30,
-    desc: '강력한 전투 고양 약물입니다. 지면에 15초간 유지되는 자극 영역을 생성하여, 범위 내 모든 우군 타워의 공격력과 공격 속도를 50% 향상시킵니다.'
+    name: '고주스', type: 'item', grade: 'Epic', dmg: 0, ap: 0, effect: 'buff_aura', radius: 120, cooldown: 80,
+    desc: '강력한 전투 고양 약물입니다. 지면에 20초간 유지되는 자극 영역을 생성하여, 범위 내 모든 우군 타워의 공격력과 공격 속도를 50% 향상시킵니다.'
   }
 };
 
@@ -91,7 +91,7 @@ export const SPECIAL_CRAFT_DB = {
     '연막 발사기': { silver: 400, steel: 180, component: 5 },
     '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 },
     '정신충격창': { silver: 1500, uranium: 100, plasteel: 50, jade: 10, component: 20 },
-    '고주스': { food: 50, herbalMedicine: 30, uranium: 20, component: 10 }
+    '고주스': { food: 500, herbalMedicine: 50 }
 };
 
 export const MATERIAL_DB = {

@@ -1353,7 +1353,7 @@ class App {
 
     if (type === 'go_juice') {
         this.fieldEffects.push({
-            type: 'go_juice', x: x, y: y, radius: radius, duration: 15.0,
+            type: 'go_juice', x: x, y: y, radius: radius, duration: 20.0,
             render: (ctx) => {
                 ctx.save();
                 ctx.fillStyle = 'rgba(100, 255, 100, 0.15)'; // 연한 연두색 자극제 영역
