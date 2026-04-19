@@ -101,7 +101,7 @@ export const SPECIAL_CRAFT_DB = {
         uranium: 200, 
         jade: 50, 
         component: 50, 
-        researchPoints: 2000 
+        researchPoints: 3000 
     }
 };
 
