@@ -159,7 +159,7 @@ export class Enemy {
   /**
    * 데미지 피격 처리
    */
-  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common', shred = 10) {
+  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common', shred = 10, isTrueDamage = false) {
     if (!this.active) return false;
     this.flashTimer = 0.1; // 번쩍임 효과 활성화
 
@@ -188,8 +188,12 @@ export class Enemy {
     if (effect === 'max_hp_percent') {
       finalDamage = (this.maxHp * 0.015) + amount;
     } else {
-      const effectiveArmor = Math.max(0, this.armor * (1 - ap));
-      const damageMultiplier = 100 / (effectiveArmor + 100);
+      // 트루 데미지일 경우 방어력 무시
+      let damageMultiplier = 1.0;
+      if (!isTrueDamage) {
+        const effectiveArmor = Math.max(0, this.armor * (1 - ap));
+        damageMultiplier = 100 / (effectiveArmor + 100);
+      }
       finalDamage = amount * damageMultiplier * (this.isBoss ? Enemy.bossBonus : 1.0);
     }
 

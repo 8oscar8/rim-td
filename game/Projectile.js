@@ -3,7 +3,7 @@
  * 유닛이 발사하는 모든 투사체(Projectile)의 베이스 클래스
  */
 export class Projectile {
-  constructor(x, y, target, damage, ap, effect, color, shooterGrade = 'Common', shred = 0) {
+  constructor(x, y, target, damage, ap, effect, color, shooterGrade = 'Common', shred = 0, isTrueDamage = false) {
     this.x = x;
     this.y = y;
     this.target = target;
@@ -13,6 +13,7 @@ export class Projectile {
     this.color = color;
     this.shooterGrade = shooterGrade;
     this.shred = shred || 0;
+    this.isTrueDamage = isTrueDamage;
 
     // 에너지탄 계열 발사체는 더욱 빠른 이동 속도와 작은 반경을 가짐
     this.speed = (this.effect === 'multi_bullet') ? 800 : 300; 
@@ -49,7 +50,7 @@ export class Projectile {
       this.y += (dy / distance) * moveDist;
     } else {
       this.active = false;
-      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred);
+      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage);
     }
   }
 
@@ -64,7 +65,7 @@ export class Projectile {
       // 60픽셀 이내의 모든 적에게 범위 데미지/효과 적용
       enemies.forEach(en => {
          if (en.active && Math.hypot(en.x - this.x, en.y - this.y) <= 60) {
-            en.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred);
+            en.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage);
          }
       });
       
@@ -72,7 +73,7 @@ export class Projectile {
       this.createFieldEffect(fieldEffects);
     } else {
       // 단일 적에게 타격
-      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred);
+      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage);
     }
   }
 

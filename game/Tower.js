@@ -233,7 +233,8 @@ export class Tower {
               this.x, this.y, t, this.damage, this.ap, 
               this.weaponData.effect, SpriteManager.getColor(this.quality),
               this.weaponData.grade,
-              this.weaponData.shred || 0
+              this.weaponData.shred || 0,
+              !!this.weaponData.isTrueDamage
             ));
           }, i * 50);
         }
@@ -263,7 +264,11 @@ export class Tower {
       for (let i = 0; i < burstCount; i++) {
         setTimeout(() => {
           if (!target.active) return;
-          target.takeDamage(this.damage, this.ap, this.weaponData.effect, this.weaponData.grade, this.weaponData.shred || 0);
+          target.takeDamage(
+            this.damage, this.ap, this.weaponData.effect, 
+            this.weaponData.grade, this.weaponData.shred || 0,
+            !!this.weaponData.isTrueDamage
+          );
           
           const effect = this.weaponData.effect;
           if (effect === 'splash' || effect === 'splash_knockback') {
