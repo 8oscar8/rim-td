@@ -1,6 +1,6 @@
 import { GachaSystem } from '../game/GachaSystem.js';
 import { SoundManager } from '../engine/SoundManager.js';
-import { ITEM_DB } from '../game/WeaponData.js';
+import { ITEM_DB, SPECIAL_CRAFT_DB } from '../game/WeaponData.js';
 
 /**
  * UIManager.js
@@ -426,17 +426,7 @@ export class UIManager {
       btn.onclick = () => {
         const weaponName = btn.getAttribute('data-weapon');
         const s = this.app.state;
-        
-        const costs = {
-            '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
-            '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
-            '화염병': { silver: 350, wood: 100, component: 5 },
-            '연막 발사기': { silver: 400, steel: 180, component: 5 },
-            '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 },
-            '정신충격창': { silver: 1500, uranium: 100, plasteel: 50, component: 20 }
-        };
-
-        const cost = costs[weaponName];
+        const cost = SPECIAL_CRAFT_DB[weaponName];
         let canAfford = true;
         for (const [res, amt] of Object.entries(cost)) {
             if (s[res] < amt) {
@@ -882,6 +872,27 @@ export class UIManager {
         });
     }
 
+    // [New] 특수 제작 버튼 활성/비활성 갱신
+    if (this.specialCraftBtns) {
+        this.specialCraftBtns.forEach(btn => {
+            const weaponName = btn.getAttribute('data-weapon');
+            const cost = SPECIAL_CRAFT_DB[weaponName];
+            if (!cost) return;
+
+            let canAfford = true;
+            for (const [res, amt] of Object.entries(cost)) {
+                if (state[res] < amt) {
+                    canAfford = false;
+                    break;
+                }
+            }
+            btn.disabled = !canAfford || !canInteract;
+            btn.style.opacity = (canAfford && canInteract) ? "1" : "0.4";
+            btn.style.filter = (canAfford && canInteract) ? "none" : "grayscale(0.5)";
+            btn.style.cursor = (canAfford && canInteract) ? "pointer" : "not-allowed";
+        });
+    }
+
     // DPM 합계 계산 및 업데이트
     let bluntDpm = 0;
     let sharpDpm = 0;
@@ -1157,20 +1168,18 @@ export class UIManager {
   showSpecialCraftTooltip(e, btn) {
     const weaponName = btn.getAttribute('data-weapon');
     const s = this.app.state;
-    const costs = {
-        '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
-        '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
-        '화염병': { silver: 350, wood: 100, component: 5 },
-        '연막 발사기': { silver: 400, steel: 180, component: 5 },
-        '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 }
-    };
-
-    const cost = costs[weaponName];
+    const cost = SPECIAL_CRAFT_DB[weaponName];
     const requirements = [];
-    const nameMap = { silver: '은화', steel: '강철', wood: '나무', component: '부품', plasteel: '플라스틸', jade: '비취' };
+    const nameMap = { 
+        silver: '은화', steel: '강철', wood: '나무', 
+        component: '부품', plasteel: '플라스틸', 
+        jade: '비취', uranium: '우라늄' 
+    };
     
-    for (const [res, amt] of Object.entries(cost)) {
-        requirements.push({ name: nameMap[res] || res, req: amt, cur: s[res] || 0 });
+    if (cost) {
+        for (const [res, amt] of Object.entries(cost)) {
+            requirements.push({ name: nameMap[res] || res, req: amt, cur: s[res] || 0 });
+        }
     }
 
     this.renderTooltip(e, requirements, `${weaponName} 제작 요구사항`);

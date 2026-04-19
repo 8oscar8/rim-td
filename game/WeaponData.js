@@ -80,6 +80,15 @@ export const ITEM_DB = {
   }
 };
 
+export const SPECIAL_CRAFT_DB = {
+    '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
+    '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
+    '화염병': { silver: 350, wood: 100, component: 5 },
+    '연막 발사기': { silver: 400, steel: 180, component: 5 },
+    '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 },
+    '정신충격창': { silver: 1500, uranium: 100, plasteel: 50, component: 20 }
+};
+
 export const MATERIAL_DB = {
   '나무': { matMul: 1.5, spdMul: 1.2, apMul: 0.1 },
   '강철': { matMul: 1.0, spdMul: 1.0, apMul: 1.0 },
