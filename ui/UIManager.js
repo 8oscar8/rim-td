@@ -410,11 +410,11 @@ export class UIManager {
         const s = this.app.state;
         
         const costs = {
-            '파쇄 수류탄': { silver: 150, steel: 50, component: 5 },
-            '펄스 수류탄': { silver: 300, steel: 80, component: 10 },
-            '화염병': { silver: 200, steel: 40, component: 5 },
-            '연막 발사기': { silver: 250, steel: 60, component: 5 },
-            '독소 수류탄': { silver: 500, steel: 120, component: 15 }
+            '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
+            '펄스 수류탄': { silver: 500, steel: 250, component: 10 },
+            '화염병': { silver: 350, steel: 100, component: 5 },
+            '연막 발사기': { silver: 400, steel: 180, component: 5 },
+            '독소 수류탄': { silver: 1000, steel: 400, component: 15 }
         };
 
         const cost = costs[weaponName];
