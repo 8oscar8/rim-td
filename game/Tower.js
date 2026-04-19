@@ -171,7 +171,7 @@ export class Tower {
 
     // 4. 공격 시전
     if (this.cooldown <= 0) {
-      const multiTargetEffects = ['multi_bullet', 'instant_multi'];
+      const multiTargetEffects = ['multi_bullet', 'instant_multi', 'melee_aoe'];
       if (multiTargetEffects.includes(this.weaponData.effect)) {
         const targets = enemies.filter(en => en.active && Math.hypot(en.x - this.x, en.y - this.y) <= (this.currentRange || this.range));
         if (targets.length > 0) {
@@ -290,23 +290,27 @@ export class Tower {
       this.isSwinging = true;
       this.swingTimer = this.swingDuration;
       
-      for (let i = 0; i < burstCount; i++) {
-        setTimeout(() => {
-          if (!target.active) return;
-          target.takeDamage(
-            this.damage, this.ap, this.weaponData.effect, 
-            this.weaponData.grade, this.weaponData.shred || 0,
-            !!this.weaponData.isTrueDamage
-          );
-          
-          const effect = this.weaponData.effect;
-          if (effect === 'splash' || effect === 'splash_knockback') {
-            document.dispatchEvent(new CustomEvent('meleeSplash', { 
-              detail: { x: target.x, y: target.y, radius: 60, damage: this.damage * 0.5, ap: this.ap, effect: effect, shooterGrade: this.weaponData.grade } 
-            }));
-          }
-        }, i * 50);
-      }
+      const targetList = Array.isArray(target) ? target : [target];
+      
+      targetList.forEach(t => {
+        for (let i = 0; i < burstCount; i++) {
+          setTimeout(() => {
+            if (!t.active) return;
+            t.takeDamage(
+              this.damage, this.ap, this.weaponData.effect, 
+              this.weaponData.grade, this.weaponData.shred || 0,
+              !!this.weaponData.isTrueDamage
+            );
+            
+            const effect = this.weaponData.effect;
+            if (effect === 'splash' || effect === 'splash_knockback') {
+              document.dispatchEvent(new CustomEvent('meleeSplash', { 
+                detail: { x: t.x, y: t.y, radius: 60, damage: this.damage * 0.5, ap: this.ap, effect: effect, shooterGrade: this.weaponData.grade } 
+              }));
+            }
+          }, i * 50);
+        }
+      });
     }
   }
 
