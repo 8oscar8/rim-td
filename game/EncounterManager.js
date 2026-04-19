@@ -634,6 +634,15 @@ export class EncounterManager {
   // 글로벌 효율 보너스 계산 (독성 낙진 등 반영)
   getGlobalWorkEfficiency() {
     let efficiency = 1.0;
+
+    // [New] 무드 상태에 따른 생산 효율 반영
+    const mood = this.app.state.mood || 0;
+    if (mood >= 85) {
+        efficiency *= 1.1; // 매우 높음: +10% 보너스
+    } else if (mood < 25) {
+        efficiency *= 0.7; // 매우 낮음: -30% 페널티
+    }
+
     // 독성 낙진: 파견 효율 0% (완전 중단)
     if (this.activeEvents.some(e => e.id === 'toxic_fallout')) {
       efficiency *= 0.0;
