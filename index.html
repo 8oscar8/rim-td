@@ -87,7 +87,8 @@
             <div class="status-section item-section">
                 <h3 class="section-title">특수 아이템</h3>
                 
-                <div class="item-card clickable" id="btn-item-orbital" onclick="window.app.useItem('orbital_strike')">
+                <div class="item-card clickable" id="btn-item-orbital" onclick="window.app.useItem('orbital_strike')"
+                     onmouseenter="window.app.ui.showItemTooltip(event, 'orbital_strike')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
                     <div class="item-info">
                         <img src="assets/궤도폭격기.webp" class="item-icon">
                         <span class="label">궤도 폭격</span>
