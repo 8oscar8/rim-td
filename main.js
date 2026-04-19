@@ -239,8 +239,12 @@ class App {
     
     if (bonusComponent > 0) s.component += bonusComponent;
 
-    // [New] 무드 이벤트 (벌목 및 농사 완료 시 3% 확률)
-    if ((type === 'logging' || type === 'farming') && Math.random() < 0.03) {
+    // [New] 무드 이벤트 (기초 3% + 업그레이드 레벨당 2% 추가 확률)
+    const moodProbBase = 0.03;
+    const upLv = (type === 'logging') ? (s.upgrades.logging || 0) : (type === 'farming' ? (s.upgrades.farming || 0) : 0);
+    const finalMoodProb = moodProbBase + (upLv * 0.02);
+
+    if ((type === 'logging' || type === 'farming') && Math.random() < finalMoodProb) {
         const events = [
             { msg: "신비로운 꽃을 발견하여 정착민들이 잠시 기뻐합니다. (+5% 무드)", bonus: 5 },
             { msg: "정착지 근처의 자연경관을 감상하며 정신을 가다듬습니다. (+3% 무드)", bonus: 3 },
