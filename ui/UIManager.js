@@ -1409,10 +1409,10 @@ export class UIManager {
     this.currentTooltipSource = { method: 'showWorkTooltip', args: [type] };
     const workData = {
         logging: { name: '벌목 작업', desc: '목재를 획득합니다. 목재는 주로 날붙이(Sharp) 계열 무기 강화와 화염병(Molotov) 제작에 사용됩니다.' },
-        mining: { name: '채광 작업', desc: '강철을 주력으로 생산하며, 숙련도가 오르면 플라스틸과 부품을 추가로 발견할 수 있습니다. 둔기(Blunt) 강화와 기계식 무기 제작의 핵심입니다.' },
+        mining: { name: '채광 작업', desc: '강철을 주력으로 생산하며, 숙련도가 오르면 <span style="color:var(--accent-gold)">부품(Component)</span>과 <span style="color:#00f2ff">우라늄(Uranium)</span>을 추가로 채굴할 수 있습니다. 둔기(Blunt) 강화와 기계식 무기 제작의 핵심입니다.' },
         farming: { name: '농사 작업', desc: '정착지의 주 식량원을 확보합니다. 식량이 일정량에 도달할 때마다 정착민 인구가 자동으로 증가하여 운영 효율이 높아집니다.' },
-        research: { name: '연구 활동', desc: '연구 포인트를 축적합니다. 기술 수준(Tech Level)을 높여 상위 등급의 아이템 제작 권한을 해금하고 전반적인 능력을 향상시킵니다.' },
-        trading: { name: '교역 활동', desc: '외부 상단과의 거래를 통해 은화(Silver)를 벌어들입니다. 무역 네트워크 강화 시 매우 희귀한 비취나 초월 기술 자산들을 확보할 확률이 생깁니다.' }
+        research: { name: '연구 활동', desc: '연구 포인트를 축적합니다. 기술 수준(Tech Level)을 높여 상위 등급의 아이템 제작 권한을 해금하고 전반적인 능향을 향상시킵니다.' },
+        trading: { name: '교역 활동', desc: '외부 상단과의 거래를 통해 은화(Silver)를 벌어들입니다. 무역 네트워크 강화 시 매우 희귀한 <span style="color:#4ade80">플라스틸(Plasteel)</span>이나 비취를 대량으로 수입할 수 있습니다.' }
     };
 
     const data = workData[type];
@@ -1488,21 +1488,22 @@ export class UIManager {
       this._lastMouseEvent = e;
     }
     if (this.tooltip) {
-      const margin = 20;
+      const marginX = 15;
+      const marginY = 15;
       const tooltipWidth = this.tooltip.offsetWidth;
       const tooltipHeight = this.tooltip.offsetHeight;
       
-      let x = e.clientX + margin;
-      let y = e.clientY + margin;
+      let x = e.clientX + marginX;
+      let y = e.clientY - tooltipHeight - marginY; // 기본적으로 마우스 위쪽에 배치
 
       // 우측 경계 체크: 화면 밖으로 나가면 왼쪽으로 반전
       if (x + tooltipWidth > window.innerWidth) {
-          x = e.clientX - tooltipWidth - margin;
+          x = e.clientX - tooltipWidth - marginX;
       }
       
-      // 하단 경계 체크: 화면 밖으로 나가면 위쪽으로 반전
-      if (y + tooltipHeight > window.innerHeight) {
-          y = e.clientY - tooltipHeight - margin;
+      // 상단 경계 체크: 화면 위쪽 밖으로 나가면 아래쪽으로 반전
+      if (y < 0) {
+          y = e.clientY + marginY;
       }
 
       this.tooltip.style.left = x + 'px';
