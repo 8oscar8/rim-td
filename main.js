@@ -44,6 +44,7 @@ class App {
     this.pendingItemId = null;
     this.mousePos = { x: 0, y: 0 };
     this.passiveSilverTimer = 0; // 2초당 1은 지급을 위한 타이머
+    this.moodDecayTimer = 0; // 3초당 무드 감소 타이머
 
     // 5. 인카운터(이벤트) 매니저
     this.encounterManager = new EncounterManager(this);
@@ -237,6 +238,18 @@ class App {
     }
     
     if (bonusComponent > 0) s.component += bonusComponent;
+
+    // [New] 무드 이벤트 (벌목 및 농사 완료 시 3% 확률)
+    if ((type === 'logging' || type === 'farming') && Math.random() < 0.03) {
+        const events = [
+            { msg: "신비로운 꽃을 발견하여 정착민들이 잠시 기뻐합니다. (+5% 무드)", bonus: 5 },
+            { msg: "정착지 근처의 자연경관을 감상하며 정신을 가다듬습니다. (+3% 무드)", bonus: 3 },
+            { msg: "기분 좋은 바람이 불어와 작업 효율이 올랐습니다. (+2% 무드)", bonus: 2 }
+        ];
+        const evt = events[Math.floor(Math.random() * events.length)];
+        s.mood = Math.min(100, s.mood + evt.bonus);
+        this.ui.addMiniNotification(`[무드 보너스] ${evt.msg}`, 'jackpot');
+    }
   }
 
   handleMouseMove(e) {
@@ -495,6 +508,13 @@ class App {
     }
 
     this.pendingGachaResult = null;
+    
+    // [New] 등급별 무드 보너스
+    const moodBonus = { Epic: 5, Special: 5, Legendary: 12, Mythic: 30 };
+    if (moodBonus[grade]) {
+        this.state.mood = Math.min(100, this.state.mood + moodBonus[grade]);
+    }
+
     this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 전장에 배치되었습니다.`, grade);
   }
 
@@ -557,11 +577,15 @@ class App {
         }
     }
 
+    // 4. 무드 회복 (처치당 0.2)
+    s.mood = Math.min(100, (s.mood || 0) + 0.2);
+    
     // 보스 전용 보상
     if (isBoss) {
       s.addResource('steel', 10);
       s.addResource('component', 1);
-      this.ui.addMiniNotification(`[처치] 보스 제거! 강철+10, 부품+1`, "info");
+      s.mood = Math.min(100, s.mood + 5); // 보스 처치 시 대폭 상승
+      this.ui.addMiniNotification(`[처치] 보스 제거! 강철+10, 부품+1, 무드+5%`, "info");
     } else if (lootMsg) {
       // 모든 전리품 획득 시 [전리품] 태그와 함께 알림
       this.ui.addMiniNotification(`[전리품] ${lootMsg}`);
@@ -592,6 +616,13 @@ class App {
       const silverMult = this.encounterManager.getGlobalSilverMultiplier();
       this.state.silver += Math.floor(1 * silverMult);
       this.passiveSilverTimer -= 2.0;
+    }
+
+    // [New] 무드 자연 감소 (3초당 -1)
+    this.moodDecayTimer += scaledDt;
+    if (this.moodDecayTimer >= 3.0) {
+        this.state.mood = Math.max(0, this.state.mood - 1);
+        this.moodDecayTimer -= 3.0;
     }
 
     // [New] 작업 파견 진행 (v2)
