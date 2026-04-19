@@ -1572,6 +1572,32 @@ class App {
         this.ui.addMiniNotification(`약초가 부족합니다! (50개 필요, 현재: ${Math.floor(s.herbalMedicine)})`, "failure");
     }
   }
+
+  /**
+   * [New] 금융치료 (300은 소모하여 무드 20 회복)
+   */
+  useFinancialTherapy() {
+    if (this.state.isPaused) return;
+    const s = this.state;
+    
+    if (s.silver >= 300) {
+        if (s.mood >= 100) {
+            this.ui.addMiniNotification("무드가 이미 최상태입니다!", "info");
+            return;
+        }
+
+        s.silver -= 300;
+        s.mood = Math.min(100, s.mood + 20);
+        
+        SoundManager.playSFX('assets/audio/buy.mp3'); 
+        this.ui.addMiniNotification("금융치료 완료! 은화 300개를 사용하여 무드를 20 회복했습니다.", "jackpot");
+        this.ui.updateDisplays(s);
+        
+        console.log(`[Use] Financial therapy used. Remaining silver: ${s.silver}, Current Mood: ${s.mood}`);
+    } else {
+        this.ui.addMiniNotification(`은화가 부족합니다! (300은 필요, 현재: ${Math.floor(s.silver)})`, "failure");
+    }
+  }
 }
 
 // 창 로드 시 앱 시작
