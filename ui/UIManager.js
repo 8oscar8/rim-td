@@ -224,15 +224,14 @@ export class UIManager {
         const grade = btn.getAttribute('data-grade');
         const state = this.app.state;
         
-        // 기술 수준 체크
+        // 기술 수준 체크 (산업 단계 추가하여 인덱스 정정)
         const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
         const techIdx = levels.indexOf(state.techLevel);
         let techMet = true;
-        // Rare는 이제 산업(Industrial, 1) 단계 필요
-        if (grade === 'Rare' && techIdx < 1) techMet = false;
-        else if (grade === 'Epic' && techIdx < 2) techMet = false;
+        // Rare는 이제 원시(Primitive, 0)에서도 가능하도록 수정
+        if (grade === 'Epic' && techIdx < 2) techMet = false;
         else if (grade === 'Legendary' && techIdx < 3) techMet = false;
-        else if (grade === 'Mythic' && techIdx < 4) techMet = false;
+        else if (grade === 'Mythic' && techIdx < 3) techMet = false;
 
         if (!techMet) {
           this.addMiniNotification("지식이 부족하여 아직 제작할 수 없습니다!", "failure");
