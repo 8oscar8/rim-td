@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RimWorld TD: 메운디 에디션</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tutorial.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -703,6 +704,30 @@
                 <button id="settings-close-btn">닫기 (ESC)</button>
             </div>
         </div>
+    </div>
+
+    <!-- [New] 튜토리얼 무전창 (Tutorial Overlay) -->
+    <div id="tutorial-overlay" class="hidden">
+        <div class="tutorial-box">
+            <div class="tutorial-header">
+                <span class="terminal-icon">📡</span> [무전] 교신 중...
+            </div>
+            <div class="tutorial-body">
+                <div id="tutorial-msg">정착지에 오신 것을 환영합니다!</div>
+                <div id="tutorial-mission" class="hidden">
+                    <span class="mission-tag">임무:</span> <span id="mission-text">-</span>
+                </div>
+            </div>
+            <div class="tutorial-footer">
+                <button id="tutorial-next-btn">다음 (Next)</button>
+                <button id="tutorial-skip-btn">튜토리얼 건너뛰기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- [New] 튜토리얼 지시 화살표 (Tutorial Pointer) -->
+    <div id="tutorial-pointer" class="hidden">
+        <div class="pointer-arrow">▼</div>
     </div>
 
     <script type="module" src="main.js"></script>

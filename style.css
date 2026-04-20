@@ -1344,3 +1344,116 @@ input[type=range] {
     background: #3d4044;
     border-color: #888;
 }
+
+/* ==========================================
+   Tutorial System Styles
+   ========================================== */
+#tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 6000;
+}
+
+#tutorial-msg-box {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    background: rgba(18, 22, 25, 0.9);
+    border: 1px solid rgba(250, 189, 47, 0.4);
+    border-left: 4px solid #fabd2f;
+    color: #e2e8f0;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: slideInRight 0.4s ease-out;
+    pointer-events: auto;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.tutorial-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 8px;
+}
+
+.tutorial-icon {
+    color: #fabd2f;
+    font-size: 1.2rem;
+}
+
+.tutorial-title {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #fabd2f;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#tutorial-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+#tutorial-text b {
+    color: #00f2ff;
+    font-weight: 800;
+}
+
+.tutorial-footer {
+    font-size: 0.8rem;
+    color: #888;
+    font-style: italic;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 8px;
+}
+
+#tutorial-highlight {
+    position: absolute;
+    border: 3px solid #fabd2f;
+    border-radius: 8px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 15px #fabd2f;
+    pointer-events: none;
+    z-index: 5999;
+    transition: all 0.3s ease;
+}
+
+.highlight-pulse {
+    animation: highlightPulse 1.5s infinite;
+}
+
+@keyframes highlightPulse {
+    0% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 0px #fabd2f; }
+    50% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 20px #fabd2f; }
+    100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 0px #fabd2f; }
+}
+#tutorial-btn-area {
+    margin-top: 15px;
+    text-align: right;
+}
+
+#tutorial-next-btn {
+    background: #fabd2f;
+    border: none;
+    color: #000;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+#tutorial-next-btn:hover {
+    background: #ffd571;
+}

@@ -1,0 +1,172 @@
+/* ==========================================
+   Premium Tutorial System Styles (RimWorld Style)
+   ========================================== */
+body #tutorial-overlay {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 80px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 600px !important;
+    height: auto !important;
+    z-index: 99999 !important;
+    pointer-events: none !important;
+    animation: fadeInBottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+#tutorial-overlay.hidden {
+    display: none;
+}
+
+.tutorial-box {
+    background: rgba(20, 25, 30, 0.95);
+    border: 1px solid rgba(0, 242, 255, 0.3);
+    border-left: 4px solid #00f2ff;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    padding: 0;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    pointer-events: auto !important;
+}
+
+.tutorial-header {
+    background: rgba(0, 242, 255, 0.1);
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #00f2ff;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.terminal-icon {
+    animation: blink 1s step-end infinite;
+}
+
+.tutorial-body {
+    padding: 20px;
+}
+
+#tutorial-msg {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #eee;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+}
+
+#tutorial-mission {
+    background: rgba(250, 189, 47, 0.1);
+    border: 1px dashed #fabd2f;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #fabd2f;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#tutorial-mission.hidden {
+    display: none;
+}
+
+.mission-tag {
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    background: #fabd2f;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 2px;
+}
+
+.tutorial-footer {
+    padding: 15px 20px;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.tutorial-footer button {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 8px 15px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#tutorial-next-btn {
+    background: #00f2ff;
+    color: #000;
+    font-weight: bold;
+    border: none;
+}
+
+#tutorial-next-btn:hover {
+    background: #00d2dd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 242, 255, 0.4);
+}
+
+#tutorial-skip-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+@keyframes fadeInBottom {
+    from { transform: translate(-50%, 20px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Tutorial Pointer (Arrow) */
+#tutorial-pointer {
+    position: fixed;
+    z-index: 100000;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    transition: all 0.3s ease-out;
+}
+
+#tutorial-pointer.hidden {
+    display: none;
+}
+
+.pointer-arrow {
+    font-size: 40px;
+    color: #fabd2f;
+    text-shadow: 0 0 10px rgba(250, 189, 47, 0.8), 0 5px 15px rgba(0,0,0,0.5);
+    animation: bounceDown 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes bounceDown {
+    from { transform: translateY(0); }
+    to { transform: translateY(-15px); }
+}
+
+/* Tutorial Highlight Effect */
+.tutorial-highlight {
+    box-shadow: 0 0 15px #fabd2f, inset 0 0 10px #fabd2f !important;
+    border: 2px solid #fabd2f !important;
+    animation: glow 1.5s ease-in-out infinite alternate !important;
+    z-index: 100 !important;
+    position: relative;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 5px #fabd2f, inset 0 0 5px #fabd2f; }
+    to { box-shadow: 0 0 25px #fabd2f, inset 0 0 15px #fabd2f; }
+}

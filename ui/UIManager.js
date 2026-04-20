@@ -483,12 +483,25 @@ export class UIManager {
   }
 
   switchTab(tabId) {
+    // [Tutorial] 특정 단계 이전에 탭 전환 차단
+    if (tabId === 'special' && this.app.tutorial && !this.app.tutorial.isActionAllowed('switch_tab_work')) {
+        return;
+    }
+
     this.tabBtns.forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
     });
     this.tabPanes.forEach(pane => {
       pane.classList.toggle('active', pane.id === `tab-${tabId}`);
     });
+
+    // [Tutorial] 탭 전환 감지
+    if (tabId === 'special' && this.app.tutorial) {
+        this.app.tutorial.trigger('switch_tab_work');
+    }
+    if (tabId === 'train' && this.app.tutorial) {
+        this.app.tutorial.trigger('switch_tab_train');
+    }
   }
 
   showNotification(title, text, grade = 'Common') {
@@ -842,7 +855,7 @@ export class UIManager {
 
   updateDisplays(state) {
     if (!state) return;
-    const canInteract = !state.isPaused;
+    const canInteract = !state.isPaused || (this.app.tutorial && !this.app.tutorial.overlay.classList.contains('hidden'));
 
     // 일시정지 상태 반영
     if (this.pauseBtn) {
@@ -1149,7 +1162,9 @@ export class UIManager {
     if (this.rangedDpmVal) this.rangedDpmVal.textContent = this.formatNumber(rangedDpm);
 
     // 5. 버튼 활성화/비활성화 및 비용 업데이트
-    const canBuyRandom = state.silver >= 50 && canInteract;
+    const isTutorialActive = this.app.tutorial && !this.app.tutorial.overlay.classList.contains('hidden');
+    const canBuyRandom = state.silver >= 50 && (!state.isPaused || (isTutorialActive && this.app.tutorial.isActionAllowed('buy_unit')));
+    
     if (this.buyRandomBtn) {
       this.buyRandomBtn.disabled = !canBuyRandom;
       this.buyRandomBtn.style.opacity = canBuyRandom ? "1" : "0.4";
@@ -1157,7 +1172,7 @@ export class UIManager {
       this.buyRandomBtn.style.cursor = canBuyRandom ? "pointer" : "not-allowed";
     }
 
-    const canBuyAdvanced = state.silver >= 1000 && canInteract;
+    const canBuyAdvanced = state.silver >= 1000 && (!state.isPaused || (isTutorialActive && this.app.tutorial.isActionAllowed('buy_unit')));
     if (this.buyAdvancedBtn) {
         this.buyAdvancedBtn.disabled = !canBuyAdvanced;
         this.buyAdvancedBtn.style.opacity = canBuyAdvanced ? "1" : "0.4";
@@ -2026,6 +2041,9 @@ export class UIManager {
       
       // 모든 유닛 스탯 재설정 (전투력 즉시 반영)
       this.app.units.forEach(u => { if (u.setupStats) u.setupStats(); });
+      
+      // [Tutorial] 업그레이드 실행 트리거
+      if (this.app.tutorial) this.app.tutorial.trigger('upgrade_unit');
     } else {
       this.addMiniNotification("자원이 부족합니다!", 'failure');
     }
@@ -2220,6 +2238,11 @@ export class UIManager {
         }
     }
     this.updateDisplays(s);
+
+    // [Tutorial] 정착민 작업 배정 트리거
+    if (this.app.tutorial && delta > 0) {
+        this.app.tutorial.trigger('assign_worker');
+    }
   }
 
   getJobName(type) {

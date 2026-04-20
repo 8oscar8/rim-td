@@ -11,6 +11,7 @@ import { GachaSystem } from './game/GachaSystem.js';
 import { EncounterManager } from './game/EncounterManager.js';
 import { HiddenEventManager } from './game/HiddenEventManager.js';
 import { ITEM_DB } from './game/WeaponData.js';
+import { TutorialManager } from './core/TutorialManager.js';
 
 // [New] Supabase 초기화
 const SUPABASE_URL = "https://ibgnfoiolxgprsevcfhw.supabase.co";
@@ -55,6 +56,7 @@ class App {
     // 5. 인카운터(이벤트) 매니저
     this.encounterManager = new EncounterManager(this);
     this.hiddenEventManager = new HiddenEventManager(this);
+    this.tutorial = new TutorialManager(this);
 
     // 6. 게임 루프 설정
     this.loop = new GameLoop(
@@ -410,7 +412,7 @@ class App {
   }
 
   buyAdvancedUnit() {
-    if (this.state.isPaused) return;
+    if (this.tutorial && !this.tutorial.isActionAllowed('buy_unit')) return;
     if (this.state.silver >= 1000) {
       this.state.spendResource('silver', 1000);
       const artisanLv = this.state.upgrades.artisan || 0;
@@ -418,13 +420,14 @@ class App {
       SoundManager.playSFX('assets/audio/buy.mp3');
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
+      if (this.tutorial) this.tutorial.trigger('buy_unit');
     } else {
       this.ui.addMiniNotification("은화가 부족합니다! (1,000 은 필요)", "failure");
     }
   }
 
   buyRandomUnit() {
-    if (this.state.isPaused) return;
+    if (this.tutorial && !this.tutorial.isActionAllowed('buy_unit')) return;
     if (this.state.silver >= 50) {
       this.state.spendResource('silver', 50);
       const artisanLv = this.state.upgrades.artisan || 0;
@@ -432,6 +435,7 @@ class App {
       SoundManager.playSFX('assets/audio/buy.mp3');
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
+      if (this.tutorial) this.tutorial.trigger('buy_unit');
     } else {
       this.ui.addMiniNotification("은화가 부족합니다! (50 은 필요)", "failure");
     }
@@ -472,8 +476,12 @@ class App {
     // 글로벌 접근 허용 (일부 레거시 로직 대응용)
     window.gameCore = this;
     
+    this.state.isPaused = true;
     this.ui.updateDisplays(this.state);
     this.loop.start();
+
+    // [New] 튜토리얼 즉시 시작
+    if (this.tutorial) this.tutorial.start();
   }
 
   /**
@@ -504,6 +512,7 @@ class App {
         this.ui.addMiniNotification("아이템 사용 취소");
     } else if (this.placementMode) {
         this.cancelPlacement();
+        if (this.tutorial) this.tutorial.show(); // 배치 취소 시 다시 표시
     } else {
         this.ui.hideUnitDetail();
     }
@@ -521,6 +530,9 @@ class App {
     // 배치 모드 강제 활성화
     this.placementMode = true;
     this.pendingGachaResult = gachaResult;
+    
+    // [Tutorial] 배치 중 지도 가림 방지를 위해 일시 숨김
+    if (this.tutorial) this.tutorial.hide();
 
     // UI 알림
     this.ui.addMiniNotification(`배치 준비: ${gachaResult.weaponName} (${gachaResult.quality})`, "info");
@@ -534,7 +546,7 @@ class App {
    * 유닛 배치 확정
    */
   confirmPlacement() {
-    if (this.state.isPaused) return;
+    if (this.tutorial && !this.tutorial.isActionAllowed('place_unit')) return;
     // 실제 배치를 확정하는 순간에 파업 체크
     if (this.encounterManager && this.encounterManager.isStrikeActive()) {
         this.ui.addMiniNotification("아직 파업이 끝나지 않았습니다! 배치를 완료할 수 없습니다.", "failure");
@@ -570,6 +582,9 @@ class App {
     }
 
     this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 전장에 배치되었습니다.`, grade);
+
+    // [Tutorial] 유닛 배치 감지
+    if (this.tutorial) this.tutorial.trigger('place_unit');
   }
 
   handleEnemyDeath(enemy) {
@@ -2021,6 +2036,7 @@ class App {
             this.placementMode = false;
             this.pendingGachaResult = null;
             this.ui.addMiniNotification("배치를 취소했습니다.");
+            if (this.tutorial) this.tutorial.show(); // 배치 취소 시 다시 표시
         } else if (this.units.some(u => u.selected) || this.enemies.some(en => en.selected)) {
             this.units.forEach(u => u.selected = false);
             this.enemies.forEach(en => en.selected = false);
