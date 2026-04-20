@@ -1000,8 +1000,8 @@ class App {
     this.units.forEach(u => {
       if (u.isBlueprint) return;
       const key = `${u.weaponName}-${u.weaponData.grade}`;
-      const isLowGrade = u.weaponData.grade === 'Common' || u.weaponData.grade === 'Uncommon';
-      u.isCombinable = (counts[key] >= 4 && isLowGrade);
+      const isCombinableGrade = u.weaponData.grade === 'Common' || u.weaponData.grade === 'Uncommon' || u.weaponData.grade === 'Rare';
+      u.isCombinable = (counts[key] >= 4 && isCombinableGrade);
     });
   }
 
@@ -1012,14 +1012,16 @@ class App {
     if (!targetUnit || !targetUnit.isCombinable) return;
     
     try {
-        const cost = 200;
-        if (this.state.researchPoints < cost) {
-            this.ui.addMiniNotification("연구 포인트가 부족합니다! (200 필요)", "failure");
-            return;
-        }
-
         const name = targetUnit.weaponName;
         const grade = targetUnit.weaponData.grade;
+        
+        // [New] Rare 이상의 경우 연구 포인트 500 소모
+        const cost = (grade === 'Rare') ? 500 : 200;
+        
+        if (this.state.researchPoints < cost) {
+            this.ui.addMiniNotification(`연구 포인트가 부족합니다! (${cost} 필요)`, "failure");
+            return;
+        }
         
         // 1. 재료 후보군 추출 (동일 이름, 동일 등급)
         const candidates = this.units.filter(u => u.weaponName === name && u.weaponData.grade === grade && !u.isBlueprint);
@@ -1043,8 +1045,8 @@ class App {
         // 3. 자원 소모
         this.state.researchPoints -= cost;
         
-        // 4. 성패 판정
-        const successProb = (grade === 'Common') ? 0.8 : 0.7;
+        // 4. 성패 판정 (Rare의 경우 40% 확률로 파괴됨)
+        const successProb = (grade === 'Common') ? 0.8 : (grade === 'Uncommon' ? 0.7 : 0.6);
         const isSuccess = Math.random() < successProb;
 
         if (isSuccess) {

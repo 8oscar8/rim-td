@@ -260,6 +260,10 @@ export class GachaSystem {
             dist = { Uncommon: 70, Rare: 20, Epic: 7, Legendary: 2, Mythic: 1 };
         } else if (effectiveGrade === 'Uncommon') {
             dist = { Rare: 65, Epic: 25, Legendary: 8, Mythic: 2 };
+        } else if (effectiveGrade === 'Rare') {
+            // 사용자 요청 기반 (절대확률 실패 40%, 성공 60% 중의 비중)
+            // 에픽 55%, 신화(Legendary) 4%, 전설(Mythic) 1%
+            dist = { Epic: 55, Legendary: 4, Mythic: 1 };
         } else {
             const nextGrade = grades[curIdx + 1];
             dist[nextGrade] = 100;

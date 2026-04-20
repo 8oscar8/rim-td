@@ -70,7 +70,6 @@ export class Tower {
     this.overheatDuration = 6.0; 
     
     // 특수 버프 상태
-    this.isLuciferiumActive = false;
     this.goJuiceTimer = 0; // 고주스 투약 지속 시간
     this.auraBuffTimer = 0; // 근처 엘텍스 지팡이 등에 의한 버프 타이머
     this.personaBuffTimer = 0; // [New] 인공자아핵 버프 지속 타이머
@@ -99,7 +98,8 @@ export class Tower {
     
     const state = this.gameCore.state;
     const upgradeMul = state.getUpgradeMultiplier(typeKey);
-    const luciMul = this.isLuciferiumActive ? 1.5 : 1.0;
+    const encounterManager = this.gameCore.encounterManager;
+    const luciMul = encounterManager ? encounterManager.getGlobalLuciferiumMultiplier() : 1.0;
     const moodMul = (state.mood >= 85) ? 1.1 : 1.0;
     const goJuiceMul = (this.goJuiceTimer > 0) ? 1.5 : 1.0;
     const personaMul = (this.personaBuffTimer > 0) ? (this.personaBuffValue || 1.0) : 1.0; 
