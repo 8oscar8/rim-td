@@ -401,7 +401,7 @@ class App {
   buyAdvancedUnit() {
     if (this.state.isPaused) return;
     if (this.state.silver >= 1000) {
-      this.state.silver -= 1000;
+      this.state.spendResource('silver', 1000);
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.drawAdvanced(artisanLv);
       SoundManager.playSFX('assets/audio/buy.mp3');
@@ -415,7 +415,7 @@ class App {
   buyRandomUnit() {
     if (this.state.isPaused) return;
     if (this.state.silver >= 50) {
-      this.state.silver -= 50;
+      this.state.spendResource('silver', 50);
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.draw(artisanLv);
       SoundManager.playSFX('assets/audio/buy.mp3');
@@ -432,7 +432,7 @@ class App {
   exchangeJade() {
     if (this.state.isPaused) return;
     if (this.state.jade >= 1) {
-        this.state.jade -= 1;
+        this.state.spendResource('jade', 1);
         this.state.silver += 250;
         this.ui.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
         SoundManager.playSFX('assets/audio/buy.mp3');
@@ -532,6 +532,11 @@ class App {
 
     const tower = new Tower(this.mousePos.x, this.mousePos.y, this.pendingGachaResult, this);
     tower.isBlueprint = false;
+    // 건설 통계 기록
+    this.state.stats.towersBuilt++;
+    const tName = tower.weaponName;
+    this.state.stats.towerCounts[tName] = (this.state.stats.towerCounts[tName] || 0) + 1;
+
     this.units.push(tower);
     // this.state.population = this.units.length; <- 이 줄이 버그의 원인이었습니다. 인구는 구매 시 늘어나는 것이 아니라 식량 등에 의해 결정되어야 합니다.
     
@@ -557,6 +562,7 @@ class App {
   }
 
   handleEnemyDeath(enemy) {
+    this.state.stats.enemiesKilled++;
     if (!enemy) return;
     
     const s = this.state;
@@ -940,7 +946,7 @@ class App {
     const s = this.state;
     // 은화 30% 및 주요 자원 소실
     const lossSilver = Math.floor(s.silver * 0.3);
-    s.silver -= lossSilver;
+    s.spendResource('silver', lossSilver);
     
     s.addResource('steel', -50);
     s.addResource('plasteel', -20);
@@ -1129,13 +1135,11 @@ class App {
    */
   handleGameOver(reason) {
     this.loop.stop();
-    this.ui.addMiniNotification(`[GAME OVER] ${reason}`, "failure");
+    this.state.isPaused = true;
     SoundManager.playSFX('assets/audio/failure.mp3'); 
     
-    // 게임 오버 리다이렉트 전 3초 대기
-    setTimeout(() => {
-        location.reload();
-    }, 3000);
+    // [New] 게임 결과 통계 결과창 표시
+    this.ui.showGameResult(this.state);
   }
 
   /**

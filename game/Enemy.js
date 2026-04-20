@@ -159,7 +159,7 @@ export class Enemy {
   /**
    * 데미지 피격 처리
    */
-  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common', shred = 10, isTrueDamage = false) {
+  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common', shred = 10, isTrueDamage = false, shooterName = '알 수 없음') {
     if (!this.active) return false;
     this.flashTimer = 0.1; // 번쩍임 효과 활성화
 
@@ -172,7 +172,9 @@ export class Enemy {
       if (this.gradeFilter.mode === 'above' && shooterIdx < limitIdx) return false;
     }
 
-    // SoundManager.playSFX('assets/audio/hit.mp3', 0.3); // 파일 부재로 인한 주석 처리
+    // [New] 최고 딜량 추적을 위한 전역 접근
+    const app = window.app;
+    const s = app ? app.state : null;
 
     let finalDamage = 0;
 
@@ -195,6 +197,14 @@ export class Enemy {
         damageMultiplier = 100 / (effectiveArmor + 100);
       }
       finalDamage = amount * damageMultiplier * (this.isBoss ? Enemy.bossBonus : 1.0);
+    }
+
+    // [New] 최고 딜량 기록 업데이트
+    if (s && s.stats) {
+        if (finalDamage > s.stats.maxDamage) {
+            s.stats.maxDamage = Math.floor(finalDamage);
+            s.stats.maxDamageUnit = shooterName;
+        }
     }
 
     // 보호막 차감 및 전환 처리

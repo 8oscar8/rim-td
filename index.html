@@ -573,6 +573,48 @@
     <!-- 전역 커스텀 툴팁 -->
     <div id="custom-tooltip" class="custom-tooltip hidden"></div>
 
+    <!-- [New] 게임 결과 모달 (Game Over Report) -->
+    <div id="result-modal" class="hidden">
+        <div class="result-content">
+            <div class="result-header">
+                <h2 id="result-title">정착지 함락</h2>
+                <div id="result-message" style="color: #888; margin-bottom: 20px;">모든 정착민이 기지를 떠났습니다...</div>
+            </div>
+            
+            <div class="result-stats-grid">
+                <div class="stat-item">
+                    <span class="label">최종 웨이브</span>
+                    <span id="res-wave" class="value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">생존 시간</span>
+                    <span id="res-time" class="value">00:00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">처치한 적</span>
+                    <span id="res-kills" class="value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">소모한 은화</span>
+                    <span id="res-silver" class="value">0</span>
+                </div>
+                <div class="stat-item highlight">
+                    <span class="label">최고 데미지 (유닛)</span>
+                    <span id="res-max-dmg" class="value">0 (없음)</span>
+                </div>
+            </div>
+
+            <div class="result-tower-summary">
+                <h4>최종 방어선 구성</h4>
+                <div id="res-tower-list"></div>
+            </div>
+
+            <div class="result-actions">
+                <button id="result-restart-btn">새로운 정착지 건설</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="main.js"></script>
 </body>
 </html>

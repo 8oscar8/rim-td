@@ -12,6 +12,7 @@ export class Projectile {
     this.effect = effect;
     this.color = color;
     this.shooterGrade = shooterGrade;
+    this.shooterName = ""; // 타워에서 전달받을 이름
     this.shred = shred || 0;
     this.isTrueDamage = isTrueDamage;
 
@@ -55,7 +56,7 @@ export class Projectile {
       this.y += (dy / distance) * moveDist;
     } else {
       this.active = false;
-      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage);
+      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage, this.shooterName);
     }
   }
 
@@ -72,7 +73,7 @@ export class Projectile {
       
       enemies.forEach(en => {
          if (en.active && Math.hypot(en.x - this.x, en.y - this.y) <= radius) {
-            en.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage);
+            en.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage, this.shooterName);
          }
       });
       
@@ -80,7 +81,7 @@ export class Projectile {
       this.createFieldEffect(fieldEffects);
     } else {
       // 단일 적에게 타격
-      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage);
+      this.target.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage, this.shooterName);
     }
   }
 

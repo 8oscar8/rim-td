@@ -90,12 +90,44 @@ export class GameState {
         herbal_care: 0,
         financial_care: 0
     };
+
+    // 7. 게임 통계 (Statistics)
+    this.stats = {
+        enemiesKilled: 0,
+        totalSilverSpent: 0,
+        totalResourcesSpent: {
+            wood: 0, steel: 0, plasteel: 0, uranium: 0, component: 0, jade: 0, food: 0
+        },
+        towersBuilt: 0, // 총 건설 횟수
+        towerCounts: {}, // 종류별 건설 수 { '단궁': 5, '강철검': 3 ... }
+        maxDamage: 0, // 단일 타격 최고 데미지
+        maxDamageUnit: '없음', // 최고 데미지를 입힌 유닛명
+        startTime: Date.now() // 게임 시작 시각
+    };
   }
 
   addResource(type, amount) {
     if (this[type] !== undefined) {
       this[type] += amount;
       if (this[type] < 0) this[type] = 0;
+    }
+  }
+
+  spendResource(type, amount) {
+    if (this[type] !== undefined) {
+      this[type] -= amount;
+      if (this[type] < 0) this[type] = 0;
+      
+      // 통계 기록
+      if (type === 'silver') {
+        this.stats.totalSilverSpent += amount;
+      }
+      if (this.stats.totalResourcesSpent[type] !== undefined) {
+        this.stats.totalResourcesSpent[type] += amount;
+      } else {
+        // 정의되지 않은 자원(연구 등)도 필요시 추정치 저장을 위해 확장 가능
+        this.stats.totalResourcesSpent[type] = (this.stats.totalResourcesSpent[type] || 0) + amount;
+      }
     }
   }
 

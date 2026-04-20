@@ -288,7 +288,8 @@ export class Tower {
            t.takeDamage(
              this.damage, this.ap, effect, 
              this.weaponData.grade, this.weaponData.shred || 0,
-             !!this.weaponData.isTrueDamage
+             !!this.weaponData.isTrueDamage,
+             this.weaponName
            );
         });
         return; 
@@ -298,13 +299,15 @@ export class Tower {
         for (let i = 0; i < burstCount; i++) {
           setTimeout(() => {
             if (!t.active) return;
-            addProjectile(new Projectile(
+            const p = new Projectile(
               this.x, this.y, t, this.damage, this.ap, 
               this.weaponData.effect, SpriteManager.getColor(this.quality),
               this.weaponData.grade,
               this.weaponData.shred || 0,
               !!this.weaponData.isTrueDamage
-            ));
+            );
+            p.shooterName = this.weaponName;
+            addProjectile(p);
           }, i * 50);
         }
       });
@@ -339,7 +342,8 @@ export class Tower {
             t.takeDamage(
               this.damage, this.ap, this.weaponData.effect, 
               this.weaponData.grade, this.weaponData.shred || 0,
-              !!this.weaponData.isTrueDamage
+              !!this.weaponData.isTrueDamage,
+              this.weaponName
             );
             
             const effect = this.weaponData.effect;

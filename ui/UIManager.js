@@ -196,8 +196,8 @@ export class UIManager {
         else if (currIdx === 3) { sCost = 2500; rCost = 2000; }
 
         if (this.app.state.silver >= sCost && this.app.state.researchPoints >= rCost) {
-          this.app.state.silver -= sCost;
-          this.app.state.researchPoints -= rCost;
+          this.app.state.spendResource('silver', sCost);
+          this.app.state.spendResource('researchPoints', rCost);
           this.app.state.techLevel = levels[currIdx + 1];
           // [Sound] 기술 업그레이드 효과음
           const audio = new Audio('assets/audio/upgrade.mp3');
@@ -255,13 +255,13 @@ export class UIManager {
            if (result) {
              // [Fix] 무기 생성이 성공했을 때만 자원 소모
              if (grade === 'Rare') {
-               state.wood -= 30; state.steel -= 30; state.component -= 1;
+               state.spendResource('wood', 30); state.spendResource('steel', 30); state.spendResource('component', 1);
              } else if (grade === 'Epic') {
-               state.steel -= 50; state.plasteel -= 10; state.component -= 5;
+               state.spendResource('steel', 50); state.spendResource('plasteel', 10); state.spendResource('component', 5);
              } else if (grade === 'Legendary') {
-               state.plasteel -= 30; state.uranium -= 20; state.researchPoints -= 100; state.component -= 10;
+               state.spendResource('plasteel', 30); state.spendResource('uranium', 20); state.spendResource('researchPoints', 100); state.spendResource('component', 10);
              } else if (grade === 'Mythic') {
-               state.plasteel -= 50; state.uranium -= 30; state.researchPoints -= 300; state.component -= 20;
+               state.spendResource('plasteel', 50); state.spendResource('uranium', 30); state.spendResource('researchPoints', 300); state.spendResource('component', 20);
              }
 
              SoundManager.playSFX('assets/audio/buy.mp3');
@@ -349,7 +349,7 @@ export class UIManager {
 
         if (canAfford) {
             for (const [res, amt] of Object.entries(cost)) {
-                s[res] -= amt;
+                s.spendResource(res, amt);
             }
             s.upgrades[type] = curLv + 1;
             
@@ -394,7 +394,7 @@ export class UIManager {
 
         if (canAfford) {
             for (const [res, amt] of Object.entries(cost)) {
-                s[res] -= amt;
+                s.spendResource(res, amt);
             }
             
             // [Bug Fix] 타워 배치 대신 아이템 인벤토리에 추가
@@ -1939,7 +1939,7 @@ export class UIManager {
 
     if (canAfford) {
       resKeys.forEach(res => {
-        s[res] -= nextLevelCost;
+        s.spendResource(res, nextLevelCost);
       });
       s.upgrades[type]++;
       
@@ -1957,6 +1957,56 @@ export class UIManager {
     }
     this.updateDisplays(s);
   }
+
+  /**
+   * [New] 게임 결과 통계 화면 표시
+   */
+  showGameResult(state) {
+    const stats = state.stats;
+    const modal = document.getElementById('result-modal');
+    if (!modal) return;
+
+    // 1. 기본 정보 채우기
+    document.getElementById('res-wave').textContent = state.waveNumber;
+    document.getElementById('res-kills').textContent = stats.enemiesKilled.toLocaleString();
+    document.getElementById('res-silver').textContent = stats.totalSilverSpent.toLocaleString();
+    
+    const maxDmgStr = stats.maxDamage > 0 ? `${stats.maxDamage.toLocaleString()} (${stats.maxDamageUnit})` : '0 (없음)';
+    document.getElementById('res-max-dmg').textContent = maxDmgStr;
+
+    // 2. 생존 시간 계산 (분:초)
+    const elapsed = Math.floor((Date.now() - stats.startTime) / 1000);
+    const mins = Math.floor(elapsed / 60);
+    const secs = elapsed % 60;
+    document.getElementById('res-time').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+    // 3. 설치한 타워 목록 생성
+    const listContainer = document.getElementById('res-tower-list');
+    listContainer.innerHTML = '';
+    
+    // 개수가 많은 순으로 정렬하여 표시
+    const sortedTowers = Object.entries(stats.towerCounts).sort((a, b) => b[1] - a[1]);
+    sortedTowers.forEach(([name, count]) => {
+        const tag = document.createElement('div');
+        tag.className = 'res-tower-tag';
+        tag.textContent = `${name} x${count}`;
+        listContainer.appendChild(tag);
+    });
+
+    if (sortedTowers.length === 0) {
+        listContainer.innerHTML = '<span style="color:#555">설치한 타워 없음</span>';
+    }
+
+    // 4. 모달 표시
+    modal.classList.remove('hidden');
+
+    // 5. 버튼 이벤트 바인딩
+    const restartBtn = document.getElementById('result-restart-btn');
+    restartBtn.onclick = () => {
+        location.reload(); // 가장 깔끔한 재시작 방법
+    };
+  }
+
   /**
    * [New] 작업자 배정/해제 처리 (단축키 등 외부 호출용)
    */
