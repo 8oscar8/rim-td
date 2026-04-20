@@ -102,8 +102,19 @@ export class UIManager {
     this.detailEffect = document.getElementById('detail-effect');
     this.unitDetailBox = document.getElementById('unit-detail-box');
     this.tooltip = document.getElementById('custom-tooltip');
-    this.currentTooltipSource = null; // 실시간 갱신을 위한 현재 툴팁 정보 저장
     this._isRefreshingTooltip = false; // 무한 루프 방지 플래그
+
+    // 10. 설정 창 요소
+    this.settingsModal = document.getElementById('settings-modal');
+    this.settingsCloseBtn = document.getElementById('settings-close-btn');
+    this.settingMasterVol = document.getElementById('setting-master-vol');
+    this.settingBgmVol = document.getElementById('setting-bgm-vol');
+    this.settingSfxVol = document.getElementById('setting-sfx-vol');
+    this.settingShowNotif = document.getElementById('setting-show-notif');
+    
+    this.valMasterVol = document.getElementById('val-master-vol');
+    this.valBgmVol = document.getElementById('val-bgm-vol');
+    this.valSfxVol = document.getElementById('val-sfx-vol');
   }
 
   initEvents() {
@@ -128,12 +139,46 @@ export class UIManager {
       };
     });
 
-    // 일시정지 토글
     if (this.pauseBtn) {
       this.pauseBtn.onclick = () => {
         this.app.state.isPaused = !this.app.state.isPaused;
         this.updateDisplays(this.app.state);
       };
+    }
+
+    // 설정 창 닫기 버튼
+    if (this.settingsCloseBtn) {
+      this.settingsCloseBtn.onclick = () => {
+        if (this.app.toggleSettings) this.app.toggleSettings();
+      };
+    }
+
+    // 슬라이더 변경 시 시각적 수치 업데이트 (%)
+    const updateVolText = (input, span) => {
+        if (input && span) {
+            span.textContent = Math.round(input.value * 100) + '%';
+        }
+    };
+
+    [this.settingMasterVol, this.settingBgmVol, this.settingSfxVol].forEach((slider, idx) => {
+        if (slider) {
+            const spans = [this.valMasterVol, this.valBgmVol, this.valSfxVol];
+            slider.oninput = () => {
+                updateVolText(slider, spans[idx]);
+                // 볼륨 저장 로직은 나중에 추가
+            };
+        }
+    });
+
+    // 알림 켜기/끄기 체크박스 연동
+    if (this.settingShowNotif) {
+        this.settingShowNotif.onchange = (e) => {
+            const isChecked = e.target.checked;
+            this.app.state.settings.showNotifications = isChecked;
+            if (this.app.saveSettings) this.app.saveSettings(); // 설정 저장
+            
+            this.addMiniNotification(`알림 팝업이 ${isChecked ? '활성화' : '비활성화'}되었습니다.`, 'info');
+        };
     }
 
     // 작업자 배정 이벤트 (v2)
@@ -489,6 +534,15 @@ export class UIManager {
    * 림월드 스타일 미니 알림 (5시 방향)
    */
   addMiniNotification(text, styleClass = '') {
+    // [Setting Check] 알림 설정이 꺼져 있으면 중단 (단, 시스템 알림일 경우 예외 처리 가능)
+    if (this.app.state.settings && !this.app.state.settings.showNotifications) {
+        // 'info'나 'jackpot' 같은 중요 알림도 끄길 원하셨으므로 전체 차단
+        // 단, 방금 설정을 바꿨다는 피드백 알림은 예외적으로 보여주면 좋으므로 
+        // 텍스트에 "알림"이 포함된 설정 변경 피드백은 허용하는 식의 처리가 가능하지만, 
+        // 일단은 유저 요청대로 순수하게 차단합니다.
+        return;
+    }
+
     const container = document.getElementById('mini-notif-container');
     if (!container) return;
 
@@ -914,6 +968,19 @@ export class UIManager {
       };
       this.techLevelVal.textContent = names[state.techLevel] || state.techLevel;
       
+      // [New] 설정 창 UI 동기화
+      if (this.settingShowNotif) {
+          this.settingShowNotif.checked = state.settings.showNotifications;
+      }
+      // 볼륨 수치 및 슬라이더 위치 동기화
+      if (this.settingMasterVol) this.settingMasterVol.value = state.settings.masterVolume;
+      if (this.settingBgmVol) this.settingBgmVol.value = state.settings.bgmVolume;
+      if (this.settingSfxVol) this.settingSfxVol.value = state.settings.sfxVolume;
+
+      if (this.valMasterVol) this.valMasterVol.textContent = Math.round(state.settings.masterVolume * 100) + '%';
+      if (this.valBgmVol) this.valBgmVol.textContent = Math.round(state.settings.bgmVolume * 100) + '%';
+      if (this.valSfxVol) this.valSfxVol.textContent = Math.round(state.settings.sfxVolume * 100) + '%';
+
       const box = this.techLevelVal.closest('.tech-level-box');
       if (box) {
           const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];

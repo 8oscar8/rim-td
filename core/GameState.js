@@ -91,7 +91,6 @@ export class GameState {
         financial_care: 0
     };
 
-    // 7. 게임 통계 (Statistics)
     this.stats = {
         enemiesKilled: 0,
         totalSilverSpent: 0,
@@ -108,6 +107,14 @@ export class GameState {
         moodSum: 0,           // [New] 무드 합계 (평균용)
         moodTicks: 0,          // [New] 무드 측정 횟수
         startTime: Date.now() // 게임 시작 시각
+    };
+
+    // 8. 게임 설정 (Persistent Settings)
+    this.settings = {
+        masterVolume: 0.5,
+        bgmVolume: 0.5,
+        sfxVolume: 0.5,
+        showNotifications: true
     };
   }
 

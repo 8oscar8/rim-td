@@ -73,6 +73,9 @@ class App {
     // [New] 키보드 입력 이벤트 핸들러 등록
     window.addEventListener('keydown', (e) => this.handleKeyDown(e));
 
+    // [New] 게임 설정 로드
+    this.loadSettings();
+
     this.init();
   }
 
@@ -1875,6 +1878,48 @@ class App {
     }
   }
   /**
+   * [New] 설정 데이터 영속화 (LocalStorage)
+   */
+  saveSettings() {
+    if (!this.state || !this.state.settings) return;
+    localStorage.setItem('rim_td_settings', JSON.stringify(this.state.settings));
+    console.log("[Settings] 설정이 브라우저에 저장되었습니다.");
+  }
+
+  loadSettings() {
+    const saved = localStorage.getItem('rim_td_settings');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // 기존 기본값에 덮어쓰기 (새로 추가된 설정 항목이 누락되지 않도록 함)
+        this.state.settings = { ...this.state.settings, ...parsed };
+        console.log("[Settings] 브라우저에서 설정을 성공적으로 불러왔습니다.");
+      } catch (e) {
+        console.error("[Settings] 설정 로드 중 오류 발생:", e);
+      }
+    }
+  }
+
+  /**
+   * [New] 설정 창 토글 로직
+   */
+  toggleSettings() {
+    const modal = document.getElementById('settings-modal');
+    if (!modal) return;
+
+    const isHidden = modal.classList.contains('hidden');
+    
+    if (isHidden) {
+      modal.classList.remove('hidden');
+      this.state.isPaused = true; // 설정 창을 열면 일시정지
+    } else {
+      modal.classList.add('hidden');
+      this.state.isPaused = false; // [수정] 설정 창을 닫으면 다시 게임 재개
+    }
+    this.ui.updateDisplays(this.state);
+  }
+
+  /**
    * [New] 키보드 단축키 처리
    */
   handleKeyDown(e) {
@@ -1945,16 +1990,26 @@ class App {
         return;
     }
 
-    // 7. 선택 취소 / 배치 취소 (Esc)
+    // 7. 선택 취소 / 배치 취소 / 설정 창 토글 (Esc)
     if (e.key === 'Escape') {
-        if (this.placementMode) {
+        const settingsModal = document.getElementById('settings-modal');
+        const isSettingsOpen = settingsModal && !settingsModal.classList.contains('hidden');
+
+        if (isSettingsOpen) {
+            this.toggleSettings();
+        } else if (this.placementMode) {
             this.placementMode = false;
             this.pendingGachaResult = null;
             this.ui.addMiniNotification("배치를 취소했습니다.");
+        } else if (this.units.some(u => u.selected) || this.enemies.some(en => en.selected)) {
+            this.units.forEach(u => u.selected = false);
+            this.enemies.forEach(en => en.selected = false);
+            this.ui.hideUnitDetail();
+        } else {
+            // 아무것도 닫을 게 없을 때 설정 창 열기
+            this.toggleSettings();
         }
-        this.units.forEach(u => u.selected = false);
-        this.enemies.forEach(en => en.selected = false);
-        this.ui.hideUnitDetail();
+        
         this.ui.updateDisplays(this.state);
         return;
     }
