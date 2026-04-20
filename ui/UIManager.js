@@ -319,6 +319,8 @@ export class UIManager {
           return Math.floor(level * multiplier);
       };
 
+      const nextLevelCost = getCategoryUpgradeCost(type, nextLevel);
+
       // 자원 매핑 (수정: 은화도 메인 자원과 동일하게 배율 적용)
       const resourceMap = {
         blunt: ['steel', 'silver'],
