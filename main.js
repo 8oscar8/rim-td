@@ -1949,7 +1949,12 @@ class App {
       this.state.isPaused = true; // 설정 창을 열면 일시정지
     } else {
       modal.classList.add('hidden');
-      this.state.isPaused = false; // [수정] 설정 창을 닫으면 다시 게임 재개
+      // [Tutorial Lock] 튜토리얼 중에는 설정 창을 닫아도 게임 재개 금지
+      if (this.tutorial && !this.tutorial.overlay.classList.contains('hidden')) {
+          this.state.isPaused = true;
+      } else {
+          this.state.isPaused = false;
+      }
     }
     this.ui.updateDisplays(this.state);
   }
@@ -1966,6 +1971,9 @@ class App {
     // 1. 일시정지 (Space)
     if (e.code === 'Space') {
         e.preventDefault();
+        // [Tutorial Lock] 튜토리얼 중에는 시간 제어 불가
+        if (this.tutorial && !this.tutorial.overlay.classList.contains('hidden')) return;
+        
         this.state.isPaused = !this.state.isPaused;
         this.ui.updateDisplays(this.state);
         return;

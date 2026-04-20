@@ -132,15 +132,21 @@ export class UIManager {
     this.speedBtns.forEach(btn => {
       if (btn.id === 'btn-pause') return; // 일시정지 버튼은 별도 처리
       btn.onclick = () => {
+        // [Tutorial Lock] 튜토리얼 중에는 시간 제어 불가
+        if (this.app.tutorial && !this.app.tutorial.overlay.classList.contains('hidden')) return;
+
         this.speedBtns.forEach(b => { if(b.id !== 'btn-pause') b.classList.remove('active'); });
         btn.classList.add('active');
-        const speed = parseFloat(btn.textContent);
+        const speed = parseFloat(btn.textContent.replace('x', ''));
         if (this.app.state) this.app.state.timeScale = speed;
       };
     });
 
     if (this.pauseBtn) {
       this.pauseBtn.onclick = () => {
+        // [Tutorial Lock] 튜토리얼 중에는 시간 제어 불가
+        if (this.app.tutorial && !this.app.tutorial.overlay.classList.contains('hidden')) return;
+
         this.app.state.isPaused = !this.app.state.isPaused;
         this.updateDisplays(this.app.state);
       };
@@ -870,7 +876,7 @@ export class UIManager {
     if (this.speedBtns) {
         this.speedBtns.forEach(btn => {
             if (btn.id === 'btn-pause') return;
-            const btnSpeed = parseFloat(btn.textContent);
+            const btnSpeed = parseFloat(btn.textContent.replace('x', ''));
             btn.classList.toggle('active', btnSpeed === state.timeScale);
         });
     }
