@@ -866,6 +866,15 @@ export class UIManager {
         this.pauseBtn.textContent = state.isPaused ? "재개" : "일시정지";
     }
 
+    // [New] 배속 버튼 활성화 상태 동기화
+    if (this.speedBtns) {
+        this.speedBtns.forEach(btn => {
+            if (btn.id === 'btn-pause') return;
+            const btnSpeed = parseFloat(btn.textContent);
+            btn.classList.toggle('active', btnSpeed === state.timeScale);
+        });
+    }
+
     if (this.waveVal) this.waveVal.textContent = state.waveNumber;
     if (this.timerVal) {
       const totalSeconds = Math.max(0, Math.floor(state.nextWaveTimer));

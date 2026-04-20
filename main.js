@@ -65,10 +65,8 @@ class App {
         this.handleCanvasRightClick(e);
     });
     
-    // [New] 특수 적 스폰 이벤트 수신
-    document.addEventListener('spawnSpecial', (e) => {
-        if (e.detail) this.enemies.push(e.detail);
-    });
+    // [New] 키보드 입력 이벤트 핸들러 등록
+    window.addEventListener('keydown', (e) => this.handleKeyDown(e));
 
     this.init();
   }
@@ -1705,6 +1703,87 @@ class App {
         console.log(`[Use] Financial therapy used. Remaining silver: ${s.silver}, Current Mood: ${s.mood}`);
     } else {
         this.ui.addMiniNotification(`은화가 부족합니다! (300은 필요, 현재: ${Math.floor(s.silver)})`, "failure");
+    }
+  }
+  /**
+   * [New] 키보드 단축키 처리
+   */
+  handleKeyDown(e) {
+    // 입력창 포커스 시 단축키 방지
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    const key = e.key.toLowerCase();
+    
+    // 1. 일시정지 (Space)
+    if (e.code === 'Space') {
+        e.preventDefault();
+        this.state.isPaused = !this.state.isPaused;
+        this.ui.updateDisplays(this.state);
+        return;
+    }
+
+    // 2. 배속 조절 (1, 2, 3)
+    if (key === '1' || key === '2' || key === '3') {
+        const speed = parseInt(key);
+        this.state.timeScale = speed;
+        this.ui.updateDisplays(this.state);
+        return;
+    }
+
+    // 3. 일반 무기 구매 (Q)
+    if (key === 'q') {
+        this.buyRandomUnit();
+        return;
+    }
+
+    // 4. 고급 무기 상자 (W)
+    if (key === 'w') {
+        this.buyAdvancedUnit();
+        return;
+    }
+
+    // 5. 조합 (E)
+    if (key === 'e') {
+        const selected = this.units.find(u => u.selected);
+        if (selected) {
+            if (selected.isCombinable) {
+                this.combineUnits(selected);
+            } else {
+                this.ui.addMiniNotification("조합 가능한 유닛이 아닙니다.", "failure");
+            }
+        }
+        return;
+    }
+
+    // 6. 유닛 판매 (S)
+    if (key === 's') {
+        this.sellSelectedUnit();
+        return;
+    }
+
+    // 7. 선택 취소 / 배치 취소 (Esc)
+    if (e.key === 'Escape') {
+        if (this.placementMode) {
+            this.placementMode = false;
+            this.pendingGachaResult = null;
+            this.ui.addMiniNotification("배치를 취소했습니다.");
+        }
+        this.units.forEach(u => u.selected = false);
+        this.enemies.forEach(en => en.selected = false);
+        this.ui.hideUnitDetail();
+        this.ui.updateDisplays(this.state);
+        return;
+    }
+
+    // 8. 탭 전환 (Tab)
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const tabs = ['shop', 'craft', 'special', 'train'];
+        const activeBtn = Array.from(this.ui.tabBtns).find(btn => btn.classList.contains('active'));
+        const currentTab = activeBtn ? activeBtn.getAttribute('data-tab') : 'shop';
+        const nextIdx = (tabs.indexOf(currentTab) + 1) % tabs.length;
+        this.ui.switchTab(tabs[nextIdx]);
+        return;
     }
   }
 }
