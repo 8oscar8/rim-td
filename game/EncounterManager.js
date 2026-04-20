@@ -314,15 +314,30 @@ export class EncounterManager {
     }, 500);
   }
 
-  showEventModal(event) {
+  showEventModal(event, onClose = null) {
     if (!this.modal) return;
     
     this.modalTitle.innerText = event.name;
     this.modalTitle.style.color = (event.type === 'positive') ? "#4ade80" : "#ef4444";
+    if (event.id === 'victory') this.modalTitle.style.color = "#fbbf24"; // 승리 시 황금색
+    
     this.modalText.innerText = event.desc;
     this.modal.classList.remove('hidden');
     
     this.app.state.isPaused = true; // 게임 일시정지
+
+    // [New] 닫기 버튼에 콜백 바인딩 지원
+    if (this.modalCloseBtn) {
+        this.modalCloseBtn.onclick = (e) => {
+            if (e) e.stopPropagation();
+            this.modal.classList.add('hidden');
+            if (onClose) {
+                onClose();
+            } else {
+                this.app.state.isPaused = false; // 기본: 일시정지 해제
+            }
+        };
+    }
   }
 
   /**

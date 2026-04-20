@@ -1964,13 +1964,16 @@ export class UIManager {
   /**
    * [New] 게임 결과 통계 화면 표시
    */
-  showGameResult(state) {
+  showGameResult(state, isVictory = false) {
     const stats = state.stats;
     const modal = document.getElementById('result-modal');
     if (!modal) return;
 
+    // [New] 최종 기록용 웨이브 결정 (패배 시 현재 웨이브는 미달성으로 간주)
+    const finalWave = isVictory ? state.waveNumber : Math.max(0, state.waveNumber - 1);
+
     // 1. 기본 정보 채우기
-    document.getElementById('res-wave').textContent = state.waveNumber;
+    document.getElementById('res-wave').textContent = finalWave;
     document.getElementById('res-kills').textContent = stats.enemiesKilled.toLocaleString();
     
     // 큰 숫자 포맷터 (K, M)
@@ -1985,8 +1988,8 @@ export class UIManager {
     const elapsed = Math.floor((Date.now() - stats.startTime) / 1000) || 0; // 생존 초
     const avgMood = stats.moodTicks > 0 ? Math.floor(stats.moodSum / stats.moodTicks) : 0;
     
-    // 1. 전투 지표
-    const waveScore = (state.waveNumber || 1) * 2000;
+    // 1. 전투 지표 (최종 클리어한 웨이브 기준으로만 점수 부여)
+    const waveScore = (finalWave || 0) * 2000;
     const maxDmgScore = (stats.maxDamage || 0) * 50; 
     const totalDmgScore = (stats.totalDamageDealt || 0) * 0.1; // 10딜당 1점
     
@@ -2025,6 +2028,8 @@ export class UIManager {
     const prodBonus = (state.upgrades.logging + state.upgrades.mining + state.upgrades.farming) * 5; // 레벨당 5% 가정
 
     console.log("정착지 리포트 생성:", { 
+        최종웨이브: finalWave,
+        승리여부: isVictory,
         연구: stats.totalResearchCompleted, 
         최대인구: stats.maxPopulationReached, 
         생산보너스: prodBonus, 
@@ -2113,8 +2118,7 @@ export class UIManager {
             submitBtn.textContent = "등록 중...";
             
             // App의 submitScore 호출 (정착지 위력 점수 전송)
-            const state = window.app.state;
-            await window.app.submitScore(name, this.lastCalculatedScore, state.waveNumber);
+            await window.app.submitScore(name, this.lastCalculatedScore, finalWave);
             
             submitBtn.textContent = "등록 완료";
             nameInput.disabled = true;

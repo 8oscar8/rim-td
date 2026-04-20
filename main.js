@@ -8,8 +8,6 @@ import { SpriteManager } from './engine/SpriteManager.js';
 import { SoundManager } from './engine/SoundManager.js';
 import { GachaSystem } from './game/GachaSystem.js';
 
-// [Test] 콘솔에서 치트 사용을 위해 전역 등록
-window.GachaSystem = GachaSystem;
 import { EncounterManager } from './game/EncounterManager.js';
 import { HiddenEventManager } from './game/HiddenEventManager.js';
 import { ITEM_DB } from './game/WeaponData.js';
@@ -27,7 +25,6 @@ class App {
   constructor() {
     window.app = this; // 전역 접근 허용 (UI 이벤트용)
     window.gameCore = this; // [Alias] WaveManager 등에서 보상 처리용으로 사용
-    window.GachaSystem = GachaSystem; // 콘솔 테스트용 노출
     this.state = new GameState();
     this.renderer = new Renderer('game-canvas');
     this.ui = new UIManager(this);
@@ -650,6 +647,27 @@ class App {
     // [New] 웨이브 클리어 시 무드 보너스 +7
     this.state.mood = Math.min(100, this.state.mood + 7);
     this.ui.addMiniNotification(`웨이브 ${this.state.waveNumber} 클리어! 정착민 무드 +7%`, "info");
+
+    // [New] 100라운드 클리어 시 승리 처리 (인카운터 모달 -> 결과창 연동)
+    if (this.state.waveNumber >= 100) {
+        setTimeout(() => {
+            const victoryText = `이제 인공지능은 가장 안전한 방향으로 우주선을 이끌 겁니다. 운이 좋다면 그저 같은 태양계 안에 있는 좀 더 번영한 행성에 도착하는 것으로 짧은 여행을 끝마칠 겁니다. 어쩌면 다른 별을 향해 수 세기 동안 항해할 수도 있습니다. 최악의 경우 엄청난 세월이 흐르는 동안 그저 소행성의 얼음층 아래에 숨어 근처에 새로운 문명이 건설되기를 기다릴지도 모릅니다.\n\n깨어나면 알 수 있겠지요.`;
+            
+            const victoryEvent = {
+                id: 'victory',
+                name: "보스를 처치해 우주선이 안전하게 탈출했습니다",
+                desc: victoryText,
+                type: 'positive'
+            };
+
+            // 인카운터 모달을 먼저 띄우고, 확인 버튼 누르면 최종 결과창 표시
+            this.encounterManager.showEventModal(victoryEvent, () => {
+                this.handleGameOver("정착지 방어 성공! 모든 위협으로부터 살아남았습니다.", true);
+            });
+            
+            SoundManager.playSFX('assets/audio/encounter_success.mp3');
+        }, 2000); // 2초 뒤 여운을 주며 표시
+    }
   }
 
   handleWaveStart(num) {
@@ -1148,15 +1166,28 @@ class App {
   }
 
   /**
-   * 게임 오버 처리
+   * 게임 오버 및 승리 처리
    */
-  handleGameOver(reason) {
+  handleGameOver(reason, isVictory = false) {
     this.loop.stop();
     this.state.isPaused = true;
-    SoundManager.playSFX('assets/audio/failure.mp3'); 
     
-    // [New] 게임 결과 통계 결과창 표시
-    this.ui.showGameResult(this.state);
+    // UI 텍스트 및 사운드 분기 처리
+    const titleEl = document.getElementById('result-title');
+    const msgEl = document.getElementById('result-message');
+    
+    if (isVictory) {
+        if (titleEl) titleEl.textContent = "정착지 방어 성공";
+        if (msgEl) msgEl.textContent = reason || "모든 위협으로부터 살아남았습니다!";
+        SoundManager.playSFX('assets/audio/encounter_success.mp3');
+    } else {
+        if (titleEl) titleEl.textContent = "정착지 함락";
+        if (msgEl) msgEl.textContent = reason || "모든 정착민이 기지를 떠났습니다...";
+        SoundManager.playSFX('assets/audio/bad_alert.mp3');
+    }
+    
+    // [New] 게임 결과 통계 결과창 표시 (승리 여부 전달)
+    this.ui.showGameResult(this.state, isVictory);
     
     // [New] 리더보드 불러오기
     this.renderLeaderboard();
