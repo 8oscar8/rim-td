@@ -29,7 +29,7 @@ export const WEAPON_DB = {
   '단궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 11, spd: 0.33, ap: 0.1, effect: 'arrow', range: 230 },
   '곡궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.32, ap: 0.1, effect: 'arrow', range: 260 },
   '자동권총': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 10, spd: 1.0, ap: 0.1, effect: null, range: 240 },
-  '인공자아핵': { type: 'special', tech: 'ultra', grade: 'Mythic', dmg: 0, spd: 0, ap: 0, range: 280, effect: 'aura_persona', fixedMaterial: 'None' },
+  '인공자아핵': { type: 'special', tech: 'ultra', grade: 'Mythic', dmg: 0, spd: 0, ap: 0, range: 200, effect: 'aura_persona', fixedMaterial: 'None' },
 
   '장궁': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 17, spd: 0.28, ap: 0.2, effect: 'arrow', range: 300 },
   '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260 },

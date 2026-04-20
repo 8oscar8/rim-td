@@ -41,7 +41,8 @@ export class SpriteManager {
       '연막 발사기': 'assets/smokelauncher.webp',
       '999강 나무몽둥이': 'assets/rimworld/목재.webp',
       '전설의 꽁치검': 'assets/saury_sword.png',
-      '결속 단분자검': 'assets/rimworld/단분자검.webp'
+      '결속 단분자검': 'assets/rimworld/단분자검.webp',
+      '인공자아핵': 'assets/인공자아핵.webp'
     };
 
     for (const [name, src] of Object.entries(weaponImages)) {
