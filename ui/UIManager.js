@@ -660,7 +660,17 @@ export class UIManager {
       
       this.detailDps.textContent = (total * burst * spd).toFixed(1);
       this.detailAtk.textContent = Math.floor(total);
-      if (this.detailAtkBonus) this.detailAtkBonus.innerHTML = "";
+      
+      // [New] 공격력 보너스 백분율 표시 (공속과 동일한 스타일)
+      if (this.detailAtkBonus) {
+        const atkBonusPct = Math.round((total / base - 1) * 100);
+        if (atkBonusPct > 0) {
+          this.detailAtkBonus.textContent = `(+${atkBonusPct}%)`;
+          this.detailAtkBonus.style.color = "var(--accent-cyan)";
+        } else {
+          this.detailAtkBonus.textContent = "";
+        }
+      }
       if (this.detailUpLv) this.detailUpLv.textContent = upLv;
       
       this.detailRange.textContent = tower.range || 0;
