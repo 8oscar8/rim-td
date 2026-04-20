@@ -773,8 +773,8 @@ export class UIManager {
   hideUnitDetail() {
     this.selectedUnit = null;
     this.selectedEnemy = null;
-    const detailArea = document.getElementById('unit-detail-area');
-    if (detailArea) {
+    const detailBox = document.getElementById('unit-detail-box');
+    if (detailBox) {
         if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
     }
   }
