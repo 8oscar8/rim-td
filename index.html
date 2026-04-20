@@ -6,6 +6,7 @@
     <title>RimWorld TD: 메운디 에디션</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="dark-theme">
     <div id="app-container">
@@ -581,51 +582,56 @@
                 <div id="result-message" style="color: #888; margin-bottom: 20px;">모든 정착민이 기지를 떠났습니다...</div>
             </div>
             
-            <div class="result-stats-grid">
-                <div class="stat-item">
-                    <span class="label">최종 웨이브</span>
-                    <span id="res-wave" class="value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="label">생존 시간</span>
-                    <span id="res-time" class="value">00:00</span>
-                </div>
-                <div class="stat-item">
-                    <span class="label">처치한 적</span>
-                    <span id="res-kills" class="value">0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="label">소모한 은화</span>
-                    <span id="res-silver" class="value">0</span>
-                </div>
-                <div class="stat-item highlight">
-                    <span class="label">최고 데미지 (유닛)</span>
-                    <span id="res-max-dmg" class="value">0 (없음)</span>
-                </div>
-            </div>
+            <div class="result-columns">
+                <!-- 왼쪽: 정착지 기록 요약 -->
+                <div class="res-col col-left">
+                    <div class="result-stats-grid">
+                        <div class="stat-item">
+                            <span class="label">최종 웨이브</span>
+                            <span id="res-wave" class="value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="label">생존 시간</span>
+                            <span id="res-time" class="value">00:00</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="label">처치한 적</span>
+                            <span id="res-kills" class="value">0</span>
+                        </div>
+                        <div class="stat-item highlight">
+                            <span class="label">은화 누적 소모</span>
+                            <span id="res-silver" class="value">0</span>
+                        </div>
+                    </div>
 
-            <div class="result-resource-summary">
-                <h4>사용한 총 자원</h4>
-                <div id="res-resource-list"></div>
-            </div>
+                    <div class="result-resource-summary">
+                        <h4>사용한 총 자원</h4>
+                        <div id="res-resource-list"></div>
+                    </div>
 
-            <!-- [New] 실시간 리더보드 영역 -->
-            <div id="res-leaderboard-section" class="result-section">
-                <h4>전 세계 정착지 랭킹 (Top 10)</h4>
-                <div id="leaderboard-list">
-                    <div class="loading-msg">데이터 불러오는 중...</div>
+                    <div class="result-tower-summary">
+                        <h4>최종 방어선 구성</h4>
+                        <div id="res-tower-list"></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- [New] 닉네임 입력 섹션 -->
-            <div id="res-nickname-section" class="result-section">
-                <input type="text" id="res-nickname-input" placeholder="정착지 이름 입력 (최대 10자)" maxlength="10">
-                <button id="res-submit-btn">기록 등록</button>
-            </div>
+                <!-- 오른쪽: 실시간 랭킹 및 닉네임 입력 -->
+                <div class="res-col col-right">
+                    <div id="res-leaderboard-section" class="result-section">
+                        <h4>전 세계 정착지 랭킹 (Top 10)</h4>
+                        <div id="leaderboard-list">
+                            <div class="loading-msg">데이터 불러오는 중...</div>
+                        </div>
+                    </div>
 
-            <div class="result-tower-summary">
-                <h4>최종 방어선 구성</h4>
-                <div id="res-tower-list"></div>
+                    <div id="res-nickname-section" class="result-section">
+                        <h4>내 기록 등재</h4>
+                        <div class="nickname-controls">
+                            <input type="text" id="res-nickname-input" placeholder="정착지 이름 입력" maxlength="10">
+                            <button id="res-submit-btn">기록 등록</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="result-actions">
