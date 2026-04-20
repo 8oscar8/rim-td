@@ -477,11 +477,20 @@ export class UIManager {
                 '정신충격창': 'psychic_lance',
                 '고주스': 'go_juice'
             };
-            const itemKey = itemKeyMap[weaponName];
-            if (itemKey) {
-                s.items[itemKey] = (s.items[itemKey] || 0) + 1;
-                this.addMiniNotification(`${weaponName} 획득! (사용: 우측 아이템 카드 클릭)`);
+            // [Fix] 인공자아핵은 타워이므로 즉시 배치 모드로 진입
+            if (weaponName === '인공자아핵') {
+                const result = GachaSystem.createSpecificWeapon('인공자아핵', 'normal', 'None');
                 SoundManager.playSFX('assets/audio/buy.mp3');
+                setTimeout(() => {
+                    this.app.startPlacement(result);
+                }, 50);
+            } else {
+                const itemKey = itemKeyMap[weaponName];
+                if (itemKey) {
+                    s.items[itemKey] = (s.items[itemKey] || 0) + 1;
+                    this.addMiniNotification(`${weaponName} 획득! (사용: 우측 아이템 카드 클릭)`);
+                    SoundManager.playSFX('assets/audio/buy.mp3');
+                }
             }
             
             this.updateDisplays(s);
