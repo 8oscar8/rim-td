@@ -1980,7 +1980,24 @@ export class UIManager {
     const secs = elapsed % 60;
     document.getElementById('res-time').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-    // 3. 설치한 타워 목록 생성
+    // 3. 사용한 자원 목록 생성
+    const resContainer = document.getElementById('res-resource-list');
+    if (resContainer) {
+        resContainer.innerHTML = '';
+        const koRes = { wood: '목재', steel: '강철', plasteel: '플라스틸', component: '부품', uranium: '우라늄', jade: '비취', researchPoints: '연구' };
+        
+        Object.entries(stats.totalResourcesSpent).forEach(([key, amt]) => {
+            if (amt > 0) {
+                const tag = document.createElement('div');
+                tag.className = 'res-tag';
+                tag.textContent = `${koRes[key] || key}: ${amt.toLocaleString()}`;
+                resContainer.appendChild(tag);
+            }
+        });
+        if (resContainer.innerHTML === '') resContainer.innerHTML = '<span style="color:#444">소모 자원 없음</span>';
+    }
+
+    // 4. 설치한 타워 목록 생성
     const listContainer = document.getElementById('res-tower-list');
     listContainer.innerHTML = '';
     

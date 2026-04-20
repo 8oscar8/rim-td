@@ -1172,9 +1172,10 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .stat-item .value { font-family: 'Courier New', monospace; font-size: 20px; font-weight: 800; color: #fff; margin-top: 5px; }
 .stat-item.highlight .value { color: var(--accent-gold); }
 
-.result-tower-summary { text-align: left; margin-bottom: 24px; padding: 15px; background: #0a0b0c; border-radius: 12px; border: 1px solid #1c1e21; }
-.result-tower-summary h4 { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; border-bottom: 1px solid #1c1e21; padding-bottom: 6px; }
-#res-tower-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; }
+.result-resource-summary, .result-tower-summary { text-align: left; margin-bottom: 20px; padding: 15px; background: #0a0b0c; border-radius: 12px; border: 1px solid #1c1e21; }
+.result-resource-summary h4, .result-tower-summary h4 { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; border-bottom: 1px solid #1c1e21; padding-bottom: 6px; text-transform: uppercase; }
+#res-resource-list, #res-tower-list { display: flex; flex-wrap: wrap; gap: 6px; max-height: 80px; overflow-y: auto; }
+.res-tag { font-size: 10px; background: #1c2128; padding: 4px 8px; border-radius: 4px; border: 1px solid #2d333b; color: #adbac7; }
 .res-tower-tag { font-size: 10px; background: #1c1e21; padding: 4px 8px; border-radius: 4px; border: 1px solid #2d2f33; color: #eee; }
 
 #result-restart-btn { 
