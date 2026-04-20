@@ -162,10 +162,14 @@ export class UIManager {
 
     [this.settingMasterVol, this.settingBgmVol, this.settingSfxVol].forEach((slider, idx) => {
         if (slider) {
+            const categories = ['master', 'bgm', 'sfx'];
             const spans = [this.valMasterVol, this.valBgmVol, this.valSfxVol];
             slider.oninput = () => {
                 updateVolText(slider, spans[idx]);
-                // 볼륨 저장 로직은 나중에 추가
+                // [New] 즉시 볼륨 반영 및 저장 호출
+                if (this.app.updateVolume) {
+                    this.app.updateVolume(categories[idx], slider.value);
+                }
             };
         }
     });

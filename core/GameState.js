@@ -111,7 +111,7 @@ export class GameState {
 
     // 8. 게임 설정 (Persistent Settings)
     this.settings = {
-        masterVolume: 0.5,
+        masterVolume: 1.0,
         bgmVolume: 0.5,
         sfxVolume: 0.5,
         showNotifications: true

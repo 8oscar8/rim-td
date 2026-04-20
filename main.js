@@ -76,6 +76,9 @@ class App {
     // [New] 게임 설정 로드
     this.loadSettings();
 
+    // 불러온 설정을 사운드 매니저에 즉시 반영
+    SoundManager.updateVolumes(this.state.settings);
+
     this.init();
   }
 
@@ -1898,6 +1901,23 @@ class App {
         console.error("[Settings] 설정 로드 중 오류 발생:", e);
       }
     }
+  }
+
+  /**
+   * [New] 실시간 볼륨 업데이트 및 저장
+   */
+  updateVolume(category, value) {
+    if (!this.state.settings) return;
+    
+    // category: masterVolume, bgmVolume, sfxVolume
+    const key = `${category}Volume`;
+    this.state.settings[key] = parseFloat(value);
+    
+    // 사운드 매니저에 즉시 반영
+    SoundManager.updateVolumes(this.state.settings);
+    
+    // 설정 저장 (디바운싱 없이 바로 저장해도 사운드 설정은 가벼움)
+    this.saveSettings();
   }
 
   /**
