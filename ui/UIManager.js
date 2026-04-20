@@ -99,6 +99,7 @@ export class UIManager {
     this.detailShred = document.getElementById('detail-shred');
     this.rowEffect = document.getElementById('row-effect');
     this.detailEffect = document.getElementById('detail-effect');
+    this.unitDetailBox = document.getElementById('unit-detail-box');
     this.tooltip = document.getElementById('custom-tooltip');
     this.currentTooltipSource = null; // 실시간 갱신을 위한 현재 툴팁 정보 저장
     this._isRefreshingTooltip = false; // 무한 루프 방지 플래그
