@@ -147,8 +147,9 @@ export class WaveManager {
     
     const enemy = new Enemy(this.waypoints, this.currentEnemyHp, this.currentReward, type, false, armor);
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
-    enemy.takeDamage = (amount, ap, effect, shooterName) => {
-      const died = originalTakeDamage(amount, ap, effect, shooterName);
+    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName) => {
+      // 7번째 인자인 shooterName이 정확히 전달되도록 수정
+      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName);
       if (died) {
           this.enemiesKilledInWave++;
           this.onEnemyDeath(enemy);
@@ -174,8 +175,8 @@ export class WaveManager {
     enemy.name = bossName;
 
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
-    enemy.takeDamage = (amount, ap, effect, shooterName) => {
-      const died = originalTakeDamage(amount, ap, effect, shooterName);
+    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName) => {
+      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName);
       if (died) {
           this.enemiesKilledInWave++;
           this.onEnemyDeath(enemy);

@@ -1233,8 +1233,8 @@ class App {
         const targets = this.enemies.filter(en => !en.isBoss);
         targets.forEach(en => {
             en.flashTimer = 0.5;
-            // 즉사 로직 (보상 처리 포함)
-            const died = en.takeDamage(99999999, 1.0, 'instakill', 'Hidden');
+            // 즉사 로직 (보상 처리 포함) - 8번째 인자에 isItem=true 전달하여 기록 제외
+            const died = en.takeDamage(99999999, 1.0, 'instakill', 'Legendary', 0, true, '궤도 폭격', true);
             if (died) this.handleEnemyDeath(en);
         });
         this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
@@ -1368,10 +1368,10 @@ class App {
         en.flashTimer = 0.3;
         switch (type) {
             case 'frag_grenade':
-                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 0);
+                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 0, false, '파편 수류탄', true);
                 break;
             case 'pulse_grenade':
-                en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0);
+                en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0, false, '펄스 수류탄', true);
                 en.shield = 0; // [New] 보호막 즉시 제거
                 break;
             case 'psychic_lance':

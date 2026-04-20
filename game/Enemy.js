@@ -159,7 +159,7 @@ export class Enemy {
   /**
    * 데미지 피격 처리
    */
-  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common', shred = 10, isTrueDamage = false, shooterName = '알 수 없음') {
+  takeDamage(amount, ap = 0, effect = null, shooterGrade = 'Common', shred = 10, isTrueDamage = false, shooterName = '알 수 없음', isItem = false) {
     if (!this.active) return false;
     this.flashTimer = 0.1; // 번쩍임 효과 활성화
 
@@ -199,8 +199,8 @@ export class Enemy {
       finalDamage = amount * damageMultiplier * (this.isBoss ? Enemy.bossBonus : 1.0);
     }
 
-    // [New] 최고 딜량 기록 업데이트
-    if (s && s.stats) {
+    // [New] 최고 딜량 기록 업데이트 (아이템 데미지는 제외하여 타워의 기록만 보존)
+    if (s && s.stats && !isItem) {
         if (finalDamage > s.stats.maxDamage) {
             s.stats.maxDamage = Math.floor(finalDamage);
             s.stats.maxDamageUnit = shooterName;
