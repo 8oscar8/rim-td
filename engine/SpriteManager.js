@@ -42,7 +42,9 @@ export class SpriteManager {
       '999강 나무몽둥이': 'assets/rimworld/목재.webp',
       '전설의 꽁치검': 'assets/saury_sword.png',
       '결속 단분자검': 'assets/rimworld/단분자검.webp',
-      '인공자아핵': 'assets/인공자아핵.webp'
+      '인공자아핵': 'assets/인공자아핵.webp',
+      '신경석궁': 'assets/신경석궁.webp',
+      '시원한 은행가는 길': 'assets/시원한은행가는길.webp'
     };
 
     for (const [name, src] of Object.entries(weaponImages)) {

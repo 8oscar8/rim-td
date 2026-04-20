@@ -104,7 +104,14 @@ export class Tower {
     const goJuiceMul = (this.goJuiceTimer > 0) ? 1.5 : 1.0;
     const personaMul = (this.personaBuffTimer > 0) ? (this.personaBuffValue || 1.0) : 1.0; 
     
-    return Math.floor(this.baseDamage * upgradeMul * luciMul * moodMul * goJuiceMul * personaMul);
+    let currentDmg = Math.floor(this.baseDamage * upgradeMul * luciMul * moodMul * goJuiceMul * personaMul);
+    
+    // [히든 효과] 시원한 은행가는 길: 실시간 은화량 데미지 추가
+    if (this.weaponData.effect === 'capitalist_rocket') {
+      currentDmg += (state.silver || 0);
+    }
+    
+    return currentDmg;
   }
 
   /**

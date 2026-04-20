@@ -15,9 +15,14 @@ export class Projectile {
     this.shred = shred || 0;
     this.isTrueDamage = isTrueDamage;
 
-    // 에너지탄 계열 발사체는 더욱 빠른 이동 속도와 작은 반경을 가짐
-    this.speed = (this.effect === 'multi_bullet') ? 800 : 300; 
-    this.radius = (this.effect === 'multi_bullet') ? 2 : 4;
+    // 자본주의 로켓은 느리지만 거대함
+    if (this.effect === 'capitalist_rocket') {
+      this.speed = 200;
+      this.radius = 8;
+    } else {
+      this.speed = (this.effect === 'multi_bullet') ? 800 : 300; 
+      this.radius = (this.effect === 'multi_bullet') ? 2 : 4;
+    }
     this.active = true;
     this.history = []; // 잔상(Tail) 효과 구현을 위한 이동 이력
   }
@@ -58,13 +63,15 @@ export class Projectile {
    * 투사체가 적에게 명중했을 때의 처리 분기
    */
   handleImpact(enemies, fieldEffects) {
-    const aoeEffects = ['aoe_dmg', 'aoe_knockback', 'emp', 'smoke', 'burn_fear', 'toxin', 'splash', 'splash_knockback'];
+    const aoeEffects = ['aoe_dmg', 'aoe_knockback', 'emp', 'smoke', 'burn_fear', 'toxin', 'splash', 'splash_knockback', 'capitalist_rocket'];
     const isAOE = aoeEffects.includes(this.effect);
     
     if (isAOE) {
-      // 60픽셀 이내의 모든 적에게 범위 데미지/효과 적용
+      // 광역 데미지 범위 설정 (자본주의 로켓은 100, 나머지는 60)
+      const radius = (this.effect === 'capitalist_rocket') ? 100 : 60;
+      
       enemies.forEach(en => {
-         if (en.active && Math.hypot(en.x - this.x, en.y - this.y) <= 60) {
+         if (en.active && Math.hypot(en.x - this.x, en.y - this.y) <= radius) {
             en.takeDamage(this.damage, this.ap, this.effect, this.shooterGrade, this.shred, this.isTrueDamage);
          }
       });
@@ -131,7 +138,7 @@ export class Projectile {
       ctx.shadowColor = this.color;
       ctx.beginPath(); ctx.arc(0, 0, this.radius, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
-    } else if (this.effect === 'arrow') {
+    } else if (this.effect === 'arrow' || this.effect === 'toxic_stun') {
       // 화살/투창형 (실 같은 선 모양)
       if (this.target && this.target.active) {
         const dx = this.target.x - this.x;
@@ -159,6 +166,29 @@ export class Projectile {
         ctx.rotate(angle);
       }
       ctx.fillRect(-this.radius, -this.radius/2, this.radius*2, this.radius);
+      ctx.restore();
+    } else if (this.effect === 'capitalist_rocket') {
+      // 자본주의 로켓 전용 렌더링 (거대하고 화려함)
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      if (this.target && this.target.active) {
+        const angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
+        ctx.rotate(angle);
+      }
+      
+      // 뒤쪽 화염 오오라
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = '#e67e22';
+      ctx.fillStyle = '#f1c40f';
+      ctx.beginPath();
+      ctx.moveTo(-this.radius * 2, 0);
+      ctx.lineTo(-this.radius, -this.radius / 2);
+      ctx.lineTo(-this.radius, this.radius / 2);
+      ctx.fill();
+
+      // 로켓 몸체
+      ctx.fillStyle = '#e67e22';
+      ctx.fillRect(-this.radius, -this.radius / 2, this.radius * 2, this.radius);
       ctx.restore();
     } else {
       ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();

@@ -734,6 +734,8 @@ export class UIManager {
         'instakill': '즉사 확률',
         'max_hp_percent': '체력 비례 피해',
         'stun_long': '장기 기절',
+        'toxic_stun': '신경 마비 (기절+독성)',
+        'capitalist_rocket': '자본주의의 철퇴 (은화 비례 데미지)',
         'aura_persona': '궁극의 오라 (공/공속 1.5배)'
       };
       

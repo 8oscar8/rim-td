@@ -213,7 +213,7 @@ export class Enemy {
     }
 
     // 상태 이상 적용
-    this.handleStatusEffect(effect, shred);
+    this.handleStatusEffect(effect, shred, amount);
 
     if (this.hp <= 0) {
       this.active = false;
@@ -225,7 +225,7 @@ export class Enemy {
   /**
    * 투사체 효과에 따른 상태 이상 분기 처리
    */
-  handleStatusEffect(effect, shred = 0) {
+  handleStatusEffect(effect, shred = 0, amount = 0) {
     // 1. 방어력 깎기 (무기 효과와 상관없이 shred 수치가 있으면 발동)
     if (shred > 0) {
       const minArmor = Math.floor(this.initialArmor * 0.5);
@@ -252,6 +252,9 @@ export class Enemy {
     } else if (effect === 'burn_percent') {
       this.hp -= this.hp * 0.03;
       if (Math.random() < 0.8) this.activeDots.push({ damagePerSec: 15, duration: 2.0 });
+    } else if (effect === 'toxic_stun') {
+      this.stunTimer = 1.5;
+      this.activeDots.push({ damagePerSec: amount, duration: 6.0 });
     } else if (effect && effect.includes('knockback')) {
       this.distanceTraveled = Math.max(0, this.distanceTraveled - 15);
       this.stunTimer = 0.2;

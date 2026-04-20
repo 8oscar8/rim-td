@@ -14,8 +14,8 @@ export class GachaSystem {
       }
     }
 
-    // 2. 해당 등급에 맞는 무기들 추출 (수류탄/투약류 등 특수 효과 무기 제외)
-    const excludeEffects = ['emp', 'smoke', 'burn_fear', 'toxin'];
+    // 2. 해당 등급에 맞는 무기들 추출 (수류탄/투약류 등 특수 효과 무기 및 인공자아핵 제외)
+    const excludeEffects = ['emp', 'smoke', 'burn_fear', 'toxin', 'aura_persona'];
     const availableWeapons = Object.entries(WEAPON_DB)
       .filter(([name, data]) => data.grade === selectedGrade && !excludeEffects.includes(data.effect))
       .map(([name, data]) => ({ name, ...data }));

@@ -2,15 +2,16 @@
 export const WEAPPON_CATEGORIES = ['blunt', 'sharp', 'ranged'];
 
 export const WEAPON_DB = {
-  // 둔기
+  // 둔기 (Blunt)
   '맨손/목재': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 10, spd: 0.5, ap: 0, effect: null },
   '곤봉': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.5, ap: 0, effect: null },
   '철퇴': { type: 'blunt', tech: 'primitive', grade: 'Uncommon', dmg: 35, spd: 0.5, ap: 0, effect: null },
   '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'melee_aoe', range: 60 },
   '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None' },
   '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Mythic', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
+  '999강 나무몽둥이': { type: 'blunt', tech: 'primitive', grade: 'Hidden', dmg: 9999, spd: 2.0, ap: 1.0, range: 180, effect: 'knockback', fixedMaterial: 'Wood' },
 
-  // 날붙이
+  // 날붙이 (Sharp)
   '단검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 12, spd: 1.0, ap: 0, effect: null },
   '단창': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 18, spd: 0.8, ap: 0.2, effect: null },
   '검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 16, spd: 0.8, ap: 0, effect: null },
@@ -22,7 +23,6 @@ export const WEAPON_DB = {
   '단분자검': { type: 'sharp', tech: 'advanced', grade: 'Mythic', dmg: 135, spd: 0.9, ap: 0.95, effect: null, fixedMaterial: 'None' },
   '알파 트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Hidden', dmg: 250, spd: 1.1, ap: 0.5, effect: 'instakill', fixedMaterial: 'None' },
   '결속 단분자검': { type: 'sharp', tech: 'advanced', grade: 'Hidden', dmg: 300, spd: 1.3, ap: 1.0, effect: 'max_hp_percent', fixedMaterial: 'None' },
-  '999강 나무몽둥이': { type: 'blunt', tech: 'primitive', grade: 'Hidden', dmg: 9999, spd: 2.0, ap: 1.0, range: 180, effect: 'knockback', fixedMaterial: 'Wood' },
   '전설의 꽁치검': { type: 'sharp', tech: 'advanced', grade: 'Hidden', dmg: 333, spd: 1.2, ap: 0.4, range: 200, effect: 'stun_long', fixedMaterial: 'None' },
 
   // 원거리 (Ranged)
@@ -30,6 +30,7 @@ export const WEAPON_DB = {
   '곡궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.32, ap: 0.1, effect: 'arrow', range: 260 },
   '자동권총': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 10, spd: 1.0, ap: 0.1, effect: null, range: 240 },
   '인공자아핵': { type: 'special', tech: 'ultra', grade: 'Mythic', dmg: 0, spd: 0, ap: 0, range: 200, effect: 'aura_persona', fixedMaterial: 'None' },
+  '시원한 은행가는 길': { type: 'ranged', tech: 'advanced', grade: 'Hidden', dmg: 200, spd: 0.15, ap: 0.5, effect: 'capitalist_rocket', range: 400 },
 
   '장궁': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 17, spd: 0.28, ap: 0.2, effect: 'arrow', range: 300 },
   '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260 },
@@ -46,7 +47,8 @@ export const WEAPON_DB = {
 
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.8, ap: 0.3, effect: null, range: 310 },
   '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 30, spd: 0.25, ap: 0.6, effect: 'multi_bullet', isTrueDamage: true, range: 9999 },
-  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'instant_multi', isTrueDamage: true, range: 9999 }
+  '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'instant_multi', isTrueDamage: true, range: 9999 },
+  '신경석궁': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 120, spd: 0.4, ap: 0.4, effect: 'toxic_stun', range: 190 }
 };
 
 // 소모성 아이템 DB (타워로 건설 불가, 인벤토리에서 사용)
