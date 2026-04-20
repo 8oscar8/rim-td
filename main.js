@@ -992,14 +992,15 @@ class App {
     const counts = {}; // "Name-Grade": count
     this.units.forEach(u => {
       if (u.isBlueprint) return;
-      const key = `${u.weaponName}-${u.weaponData.grade}`;
+      const key = `${u.weaponName.trim()}-${u.weaponData.grade}`;
       counts[key] = (counts[key] || 0) + 1;
     });
 
     this.units.forEach(u => {
       if (u.isBlueprint) return;
-      const key = `${u.weaponName}-${u.weaponData.grade}`;
-      const isCombinableGrade = u.weaponData.grade === 'Common' || u.weaponData.grade === 'Uncommon' || u.weaponData.grade === 'Rare';
+      const key = `${u.weaponName.trim()}-${u.weaponData.grade}`;
+      const grade = (u.weaponData.grade || "").toUpperCase();
+      const isCombinableGrade = (grade === "COMMON" || grade === "UNCOMMON" || grade === "RARE");
       u.isCombinable = (counts[key] >= 4 && isCombinableGrade);
     });
   }

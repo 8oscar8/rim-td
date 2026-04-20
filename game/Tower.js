@@ -142,7 +142,16 @@ export class Tower {
         return; // 원거리 타워는 흑점 폭발 시 작동 중지
     }
 
-    if (this.isBlueprint) return;
+    // [Fix] 건설 진행 로직 복구
+    if (this.isBlueprint) {
+      this.buildProgress += dt * 34; // 약 3초 정도면 완공 (100 / 33.3)
+      if (this.buildProgress >= 100) {
+        this.isBlueprint = false;
+        this.buildProgress = 100;
+        console.log(`[Tower] ${this.weaponName} 건설 완료!`);
+      }
+      return;
+    }
 
     // 외부 효과 반영 (EMI 등)
     const isAdvanced = this.weaponData.tech === 'advanced';
