@@ -1732,19 +1732,19 @@ class App {
     }
 
     // 3. 일반 무기 구매 (Q)
-    if (key === 'q') {
+    if (key === 'q' && !e.shiftKey) {
         this.buyRandomUnit();
         return;
     }
 
     // 4. 고급 무기 상자 (W)
-    if (key === 'w') {
+    if (key === 'w' && !e.shiftKey) {
         this.buyAdvancedUnit();
         return;
     }
 
     // 5. 조합 (E)
-    if (key === 'e') {
+    if (key === 'e' && !e.shiftKey) {
         const selected = this.units.find(u => u.selected);
         if (selected) {
             if (selected.isCombinable) {
@@ -1757,7 +1757,7 @@ class App {
     }
 
     // 6. 유닛 판매 (S)
-    if (key === 's') {
+    if (key === 's' && !e.shiftKey) {
         this.sellSelectedUnit();
         return;
     }
@@ -1785,6 +1785,22 @@ class App {
         const nextIdx = (tabs.indexOf(currentTab) + 1) % tabs.length;
         this.ui.switchTab(tabs[nextIdx]);
         return;
+    }
+
+    // 9. 훈련 업그레이드 (Shift + Q, W, E)
+    if (e.shiftKey) {
+        if (key === 'q') {
+            this.ui.handleUpgrade('blunt'); // Shift+Q -> 둔기
+            return;
+        }
+        if (key === 'w') {
+            this.ui.handleUpgrade('sharp'); // Shift+W -> 날붙이
+            return;
+        }
+        if (key === 'e') {
+            this.ui.handleUpgrade('ranged'); // Shift+E -> 원거리
+            return;
+        }
     }
   }
 }

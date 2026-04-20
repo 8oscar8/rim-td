@@ -301,86 +301,25 @@ export class UIManager {
       btn.onmouseleave = () => this.hideTooltip();
     });
 
-    // 업그레이드 버튼 이벤트
-    const handleUpgrade = (type) => {
-      console.log(`[UIManager] handleUpgrade triggered for: ${type}`);
-      const s = this.app.state;
-      const currentLevel = s.upgrades[type] || 0;
-      const nextLevel = currentLevel + 1;
-      
-      // 구간별 가중치 비용 계산 로직
-      const getCategoryUpgradeCost = (category, level) => {
-          let multiplier = 1.0;
-          if (category === 'sharp') {
-              if (level >= 101) multiplier = 3.0;
-              else if (level >= 51) multiplier = 2.0;
-          } else if (category === 'blunt') {
-              if (level >= 101) multiplier = 2.5;
-              else if (level >= 51) multiplier = 1.5;
-          } else if (category === 'ranged') {
-              multiplier = 1.0; // 원거리는 기존 방식 유지
-          }
-          return Math.floor(level * multiplier);
-      };
-
-      const nextLevelCost = getCategoryUpgradeCost(type, nextLevel);
-
-      // 자원 매핑 (수정: 은화도 메인 자원과 동일하게 배율 적용)
-      const resourceMap = {
-        blunt: ['steel', 'silver'],
-        sharp: ['wood', 'silver'],
-        ranged: ['plasteel', 'silver']
-      };
-      
-      const resKeys = resourceMap[type];
-      
-      // 자원 체크
-      let canAfford = true;
-      resKeys.forEach(res => {
-        if (s[res] < nextLevelCost) canAfford = false;
-      });
-
-      if (canAfford) {
-        // 자원 소모
-        resKeys.forEach(res => {
-          s[res] -= nextLevelCost;
-        });
-        
-        // 업그레이드 레벨 증가
-        s.upgrades[type]++;
-        console.log(`[UIManager] Upgrade SUCCESS: ${type} is now Lv.${s.upgrades[type]}`);
-        
-        // [Critical Fix] 가장 직접적인 방식으로 사운드 재생 강제 시도
-        const audio = new Audio('assets/audio/upgrade.mp3');
-        audio.volume = 0.4;
-        audio.play().catch(err => console.error("Audio play failed:", err));
-
-        const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
-        this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
-      } else {
-        this.addMiniNotification("자원이 부족합니다!", 'failure');
-      }
-      this.updateDisplays(s);
-    };
-
     if (this.upgradeBluntBtn) {
-      this.upgradeBluntBtn.onclick = () => handleUpgrade('blunt');
+      this.upgradeBluntBtn.onclick = () => this.handleUpgrade('blunt');
       this.upgradeBluntBtn.onmouseenter = (e) => this.showUpgradeTooltip(e, this.upgradeBluntBtn);
       this.upgradeBluntBtn.onmousemove = (e) => this.moveTooltip(e);
       this.upgradeBluntBtn.onmouseleave = () => this.hideTooltip();
     }
     if (this.upgradeMeleeBtn) {
-      this.upgradeMeleeBtn.onclick = () => handleUpgrade('sharp');
+      this.upgradeMeleeBtn.onclick = () => this.handleUpgrade('sharp');
       this.upgradeMeleeBtn.onmouseenter = (e) => this.showUpgradeTooltip(e, this.upgradeMeleeBtn);
       this.upgradeMeleeBtn.onmousemove = (e) => this.moveTooltip(e);
       this.upgradeMeleeBtn.onmouseleave = () => this.hideTooltip();
     }
     if (this.upgradeRangedBtn) {
-      this.upgradeRangedBtn.onclick = () => handleUpgrade('ranged');
+      this.upgradeRangedBtn.onclick = () => this.handleUpgrade('ranged');
       this.upgradeRangedBtn.onmouseenter = (e) => this.showUpgradeTooltip(e, this.upgradeRangedBtn);
       this.upgradeRangedBtn.onmousemove = (e) => this.moveTooltip(e);
       this.upgradeRangedBtn.onmouseleave = () => this.hideTooltip();
     }
+
 
     // 5.5 생산 업그레이드 이벤트
     this.prodUpBtns = document.querySelectorAll('.prod-up');
@@ -1971,5 +1910,66 @@ export class UIManager {
         console.error("[UI] Tooltip Refresh Error:", e);
     }
     this._isRefreshingTooltip = false;
+  }
+  /**
+   * [New] 전투 업그레이드 실행 (단축키 등 외부 호출용)
+   */
+  handleUpgrade(type) {
+    console.log(`[UIManager] handleUpgrade triggered for: ${type}`);
+    const s = this.app.state;
+    // 파업 체크
+    if (this.app.encounterManager && this.app.encounterManager.isStrikeActive()) {
+        this.addMiniNotification("정착민들이 파업 중입니다! 훈련을 진행할 수 없습니다.", "failure");
+        return;
+    }
+
+    const currentLevel = s.upgrades[type] || 0;
+    const nextLevel = currentLevel + 1;
+    
+    // 구간별 가중치 비용 계산 로직
+    const getCategoryUpgradeCost = (category, level) => {
+        let multiplier = 1.0;
+        if (category === 'sharp') {
+            if (level >= 101) multiplier = 3.0;
+            else if (level >= 51) multiplier = 2.0;
+        } else if (category === 'blunt') {
+            if (level >= 101) multiplier = 2.5;
+            else if (level >= 51) multiplier = 1.5;
+        }
+        return Math.floor(level * multiplier);
+    };
+
+    const nextLevelCost = getCategoryUpgradeCost(type, nextLevel);
+    const resourceMap = {
+      blunt: ['steel', 'silver'],
+      sharp: ['wood', 'silver'],
+      ranged: ['plasteel', 'silver']
+    };
+    
+    const resKeys = resourceMap[type];
+    let canAfford = true;
+    resKeys.forEach(res => {
+      if (s[res] < nextLevelCost) canAfford = false;
+    });
+
+    if (canAfford) {
+      resKeys.forEach(res => {
+        s[res] -= nextLevelCost;
+      });
+      s.upgrades[type]++;
+      
+      const audio = new Audio('assets/audio/upgrade.mp3');
+      audio.volume = 0.4;
+      audio.play().catch(err => console.error("Audio play failed:", err));
+
+      const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
+      this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
+      
+      // 모든 유닛 스탯 재설정 (전투력 즉시 반영)
+      this.app.units.forEach(u => { if (u.setupStats) u.setupStats(); });
+    } else {
+      this.addMiniNotification("자원이 부족합니다!", 'failure');
+    }
+    this.updateDisplays(s);
   }
 }
