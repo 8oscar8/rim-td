@@ -1216,7 +1216,7 @@ class App {
                         <th class="rank-col">순위</th>
                         <th>닉네임</th>
                         <th>웨이브</th>
-                        <th class="score-col">은화 점수</th>
+                        <th class="score-col">정착지 위력 점수</th>
                     </tr>
                 </thead>
                 <tbody>

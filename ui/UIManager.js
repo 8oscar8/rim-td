@@ -1969,13 +1969,29 @@ export class UIManager {
     // 1. 기본 정보 채우기
     document.getElementById('res-wave').textContent = state.waveNumber;
     document.getElementById('res-kills').textContent = stats.enemiesKilled.toLocaleString();
-    document.getElementById('res-silver').textContent = stats.totalSilverSpent.toLocaleString();
+    
+    // [New] 정착지 위력 점수 계산식
+    const elapsed = Math.floor((Date.now() - stats.startTime) / 1000); // 생존 초
+    const waveScore = state.waveNumber * 2000;
+    const dmgScore = stats.maxDamage * 100;
+    
+    // 자원 가중치 합산
+    const weights = { silver: 1, wood: 1, steel: 2, researchPoints: 5, component: 10, jade: 20, plasteel: 50, uranium: 100 };
+    let resourceTotalScore = (stats.totalSilverSpent || 0) * weights.silver;
+    Object.entries(stats.totalResourcesSpent).forEach(([key, amt]) => {
+        const weight = weights[key] || 0;
+        resourceTotalScore += (Number(amt) || 0) * weight;
+    });
+
+    const finalPowerScore = Math.max(0, waveScore + dmgScore + resourceTotalScore - (elapsed * 50) + 10000);
+    this.lastCalculatedScore = finalPowerScore; // 등록 시 사용하기 위해 저장
+
+    document.getElementById('res-total-score').textContent = Math.floor(finalPowerScore).toLocaleString();
     
     const maxDmgStr = stats.maxDamage > 0 ? `${stats.maxDamage.toLocaleString()} (${stats.maxDamageUnit})` : '0 (없음)';
     document.getElementById('res-max-dmg').textContent = maxDmgStr;
 
     // 2. 생존 시간 계산 (분:초)
-    const elapsed = Math.floor((Date.now() - stats.startTime) / 1000);
     const mins = Math.floor(elapsed / 60);
     const secs = elapsed % 60;
     document.getElementById('res-time').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
@@ -2047,10 +2063,9 @@ export class UIManager {
             submitBtn.disabled = true;
             submitBtn.textContent = "등록 중...";
             
-            // App의 submitScore 호출 (은화 소모량이 기록 점수)
-            const stats = window.app.state.stats;
+            // App의 submitScore 호출 (정착지 위력 점수 전송)
             const state = window.app.state;
-            await window.app.submitScore(name, stats.totalSilverSpent, state.waveNumber);
+            await window.app.submitScore(name, this.lastCalculatedScore, state.waveNumber);
             
             submitBtn.textContent = "등록 완료";
             nameInput.disabled = true;
