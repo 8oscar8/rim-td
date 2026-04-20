@@ -483,8 +483,8 @@ export class UIManager {
   }
 
   switchTab(tabId) {
-    // [Tutorial] 특정 단계 이전에 탭 전환 차단
-    if (tabId === 'special' && this.app.tutorial && !this.app.tutorial.isActionAllowed('switch_tab_work')) {
+    // [Tutorial] 튜토리얼 중 허용되지 않은 탭 전환 차단
+    if (this.app.tutorial && !this.app.tutorial.isActionAllowed('switch_tab')) {
         return;
     }
 
@@ -497,10 +497,13 @@ export class UIManager {
 
     // [Tutorial] 탭 전환 감지
     if (tabId === 'special' && this.app.tutorial) {
-        this.app.tutorial.trigger('switch_tab_work');
+        this.app.tutorial.trigger('switch_tab_special');
     }
     if (tabId === 'train' && this.app.tutorial) {
         this.app.tutorial.trigger('switch_tab_train');
+    }
+    if (tabId === 'craft' && this.app.tutorial) {
+        this.app.tutorial.trigger('switch_tab_craft');
     }
   }
 
@@ -2239,9 +2242,9 @@ export class UIManager {
     }
     this.updateDisplays(s);
 
-    // [Tutorial] 정착민 작업 배정 트리거
-    if (this.app.tutorial && delta > 0) {
-        this.app.tutorial.trigger('assign_worker');
+    // [Tutorial] 정착민 작업 모든 배정 완료 트리거
+    if (this.app.tutorial && delta > 0 && s.idlePopulation === 0) {
+        this.app.tutorial.trigger('assign_all_workers');
     }
   }
 

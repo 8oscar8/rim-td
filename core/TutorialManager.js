@@ -20,17 +20,17 @@ export class TutorialManager {
                 pointer: '#btn-buy-random'
             },
             {
-                msg: "성공적이군요. 이제 정착민들을 실제 작업에 투입해야 합니다.\n\n우측 사이드바를 마우스 휠로 끝까지 내려서 [정착민 파견 관리] 구역을 찾아보세요.",
+                msg: "성공적이군요. 이제 정착민들을 실제 작업에 투입해야 합니다.\n\n왼쪽 사이드바를 마우스 휠로 끝까지 내려서 [정착민 파견 관리] 구역을 찾아보세요.",
                 mission: "휠을 내려 파견 관리 확인하기",
                 canNext: false,
                 trigger: 'view_dispatch',
                 pointer: '.work-management'
             },
             {
-                msg: "좋습니다. 이제 노는 정착민을 작업에 배정해 봅시다.\n\n각 항목의 [+] 버튼을 클릭하거나 단축키(Z, X, C, V, B)를 눌러보세요.",
-                mission: "정착민 작업 배정하기 (Z,X,C,V,B)",
+                msg: "좋습니다. 이제 노는 정착민들을 모두 작업에 배정해 봅시다.\n\n각 항목의 [+] 버튼이나 단축키를 사용해 대기 중인 정착민을 0명으로 만들어보세요.",
+                mission: "대기 중인 정착민 모두 배정하기 (0명 만들기)",
                 canNext: false,
-                trigger: 'assign_worker',
+                trigger: 'assign_all_workers',
                 pointer: '.btn-circle.plus'
             },
             {
@@ -45,10 +45,31 @@ export class TutorialManager {
                 mission: "유닛 강화 1회 실행하기",
                 canNext: false,
                 trigger: 'upgrade_unit',
-                pointer: '#up-ranged' // 예시로 원거리 가리키기
+                pointer: '#up-ranged' 
             },
             {
-                msg: "축하합니다! 이제 기지를 방어하기 위한 기초 지식을 모두 습득하셨습니다.\n\n[무전 종료] 진정한 관리자로서 기지를 번영시켜 보세요. 행운을 빕니다!",
+                msg: "훈련을 통해 기초 화력을 갖추셨군요. 아주 좋습니다!\n\n다음으로 상단 [제작] 탭으로 이동해 보세요.",
+                mission: "[제작] 탭 클릭하기",
+                canNext: false,
+                trigger: 'switch_tab_craft',
+                pointer: '.tab-btn[data-tab="craft"]'
+            },
+            {
+                msg: "이곳에서는 자원을 소모하여 특정 등급의 타워를 확정적으로 획득할 수 있습니다.\n\n운에 맡기지 않고 확실한 전력 보강이 필요할 때 이용해 보세요. \n\n다음으로 [특수] 탭으로 이동해 봅시다.",
+                mission: "[특수] 탭 클릭하기",
+                canNext: false,
+                trigger: 'switch_tab_special',
+                pointer: '.tab-btn[data-tab="special"]'
+            },
+            {
+                msg: "잘하셨습니다. 이제 왼쪽 사이드바를 마우스 휠로 아래로 내려보세요.\n\n이곳에서는 전투에 큰 도움을 주는 [특수 소모품]을 제작하여 사용할 수 있습니다.",
+                mission: "휠을 내려 [특수 아이템] 확인하기",
+                canNext: false,
+                trigger: 'view_special_items',
+                pointer: '.item-section'
+            },
+            {
+                msg: "수고하셨습니다! 소모품은 위급한 순간에 전세를 역전시킬 강력한 수단입니다.\n\n[무전 종료] 모든 기초 지식을 습득하셨습니다. 관리자님의 정착지에 번영이 가득하기를!",
                 mission: null,
                 canNext: true
             }
@@ -154,11 +175,11 @@ export class TutorialManager {
 
                 const rect = target.getBoundingClientRect();
                 
-                // [New] 파견 구역이 화면 중앙 근처에 보이면 자동으로 다음 단계(배정 안내)로 진행
-                if (this.currentTargetSelector === '.work-management' && rect.top < window.innerHeight * 0.8) {
+                // [New] 파견 구역 혹은 특수 아이템 구역이 화면 중앙 근처에 보이면 자동으로 다음 단계로 진행
+                if ((this.currentTargetSelector === '.work-management' || this.currentTargetSelector === '.item-section') && rect.top < window.innerHeight * 0.8) {
                      const step = this.tutorialData[this.currentStep];
-                     if (step && step.trigger === 'view_dispatch') {
-                         this.trigger('view_dispatch');
+                     if (step && (step.trigger === 'view_dispatch' || step.trigger === 'view_special_items')) {
+                         this.trigger(step.trigger);
                      }
                 }
 
@@ -250,6 +271,9 @@ export class TutorialManager {
 
         // [New Exception] 배치 미션 중에는 구매 행동도 허용함
         if (action === 'buy_unit' && step.trigger === 'place_unit') return true;
+
+        // [New Exception] 탭 전환 미션 중에는 탭 버튼 활성화 허용
+        if (action === 'switch_tab' && step.trigger && step.trigger.startsWith('switch_tab_')) return true;
 
         // 현재 단계의 트리거가 없으면 자유로운 조작 허용 (미션이 완료된 마지막 안내 등)
         if (!step.trigger) return true;
