@@ -7,6 +7,9 @@ import { Tower } from './game/Tower.js';
 import { SpriteManager } from './engine/SpriteManager.js';
 import { SoundManager } from './engine/SoundManager.js';
 import { GachaSystem } from './game/GachaSystem.js';
+
+// [Test] 콘솔에서 치트 사용을 위해 전역 등록
+window.GachaSystem = GachaSystem;
 import { EncounterManager } from './game/EncounterManager.js';
 import { HiddenEventManager } from './game/HiddenEventManager.js';
 import { ITEM_DB } from './game/WeaponData.js';
