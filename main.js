@@ -670,12 +670,21 @@ class App {
         return;
     }
 
-    // 0. 기본 자금 수입 (2초당 1은)
+    // 0. 기본 자금 수입 (2초당 1은) 및 통계 추적
     this.passiveSilverTimer += scaledDt;
     if (this.passiveSilverTimer >= 2.0) {
       const silverMult = this.encounterManager.getGlobalSilverMultiplier();
       this.state.silver += Math.floor(1 * silverMult);
       this.passiveSilverTimer -= 2.0;
+    }
+
+    // [New] 통계 실시간 추적 (최고 인구 및 무드 평균용 데이터)
+    this.statsRecordTimer = (this.statsRecordTimer || 0) + scaledDt;
+    if (this.statsRecordTimer >= 1.0) {
+        this.state.stats.maxPopulationReached = Math.max(this.state.stats.maxPopulationReached, this.state.population);
+        this.state.stats.moodSum += this.state.mood;
+        this.state.stats.moodTicks++;
+        this.statsRecordTimer -= 1.0;
     }
 
     // [New] 무드 자연 감소 (4초당 -1)

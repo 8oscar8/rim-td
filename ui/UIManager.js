@@ -199,6 +199,7 @@ export class UIManager {
           this.app.state.spendResource('silver', sCost);
           this.app.state.spendResource('researchPoints', rCost);
           this.app.state.techLevel = levels[currIdx + 1];
+          this.app.state.stats.totalResearchCompleted++; // [New] 기술 발전도 연구로 카운트
           // [Sound] 기술 업그레이드 효과음
           const audio = new Audio('assets/audio/upgrade.mp3');
           audio.volume = 0.4;
@@ -352,6 +353,7 @@ export class UIManager {
                 s.spendResource(res, amt);
             }
             s.upgrades[type] = curLv + 1;
+            s.stats.totalResearchCompleted++; // [New] 생산 연구 건수 카운트
             
             // [Critical Fix] 가장 직접적인 방식으로 사운드 재생 강제 시도
             const audio = new Audio('assets/audio/upgrade.mp3');
@@ -1942,6 +1944,7 @@ export class UIManager {
         s.spendResource(res, nextLevelCost);
       });
       s.upgrades[type]++;
+      s.stats.totalResearchCompleted++; // [New] 전투 연구 건수 카운트
       
       const audio = new Audio('assets/audio/upgrade.mp3');
       audio.volume = 0.4;
@@ -1970,6 +1973,14 @@ export class UIManager {
     document.getElementById('res-wave').textContent = state.waveNumber;
     document.getElementById('res-kills').textContent = stats.enemiesKilled.toLocaleString();
     
+    // 큰 숫자 포맷터 (K, M)
+    const formatNum = (n) => {
+        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+        if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+        return Math.floor(n).toLocaleString();
+    };
+    document.getElementById('res-total-damage').textContent = formatNum(stats.totalDamageDealt || 0);
+
     // [New] 정착지 위력 점수 계산식
     const elapsed = Math.floor((Date.now() - stats.startTime) / 1000); // 생존 초
     const waveScore = state.waveNumber * 2000;
@@ -1988,6 +1999,15 @@ export class UIManager {
 
     document.getElementById('res-total-score').textContent = Math.floor(finalPowerScore).toLocaleString();
     
+    // [New] 정착지 상세 데이터 출력
+    const avgMood = stats.moodTicks > 0 ? Math.floor(stats.moodSum / stats.moodTicks) : 0;
+    const prodBonus = (state.upgrades.logging + state.upgrades.mining + state.upgrades.farming) * 5; // 레벨당 5% 가정
+
+    document.getElementById('res-total-research').textContent = `${stats.totalResearchCompleted || 0}건`;
+    document.getElementById('res-max-pop').textContent = `${stats.maxPopulationReached || 3}명`;
+    document.getElementById('res-prod-bonus').textContent = `+${prodBonus}%`;
+    document.getElementById('res-avg-mood').textContent = `${avgMood}%`;
+
     const maxDmgStr = stats.maxDamage > 0 ? `${stats.maxDamage.toLocaleString()} (${stats.maxDamageUnit})` : '0 (없음)';
     document.getElementById('res-max-dmg').textContent = maxDmgStr;
 

@@ -102,6 +102,11 @@ export class GameState {
         towerCounts: {}, // 종류별 건설 수 { '단궁': 5, '강철검': 3 ... }
         maxDamage: 0, // 단일 타격 최고 데미지
         maxDamageUnit: '없음', // 최고 데미지를 입힌 유닛명
+        totalDamageDealt: 0,   // [New] 누적 총 피해량
+        maxPopulationReached: 3, // [New] 역대 최고 인구
+        totalResearchCompleted: 0, // [New] 연구 완료 횟수
+        moodSum: 0,           // [New] 무드 합계 (평균용)
+        moodTicks: 0,          // [New] 무드 측정 횟수
         startTime: Date.now() // 게임 시작 시각
     };
   }

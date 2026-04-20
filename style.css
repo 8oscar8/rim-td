@@ -1211,6 +1211,29 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     margin-top: 5px;
 }
 
+/* Settlement Detail Grid */
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.detail-item .lbl {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+.detail-item .val {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+
 /* Modal Responsiveness */
 @media (max-width: 800px) {
     .result-columns { grid-template-columns: 1fr; }
