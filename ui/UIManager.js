@@ -82,6 +82,8 @@ export class UIManager {
     this.detailUpLv = document.getElementById('detail-up-lv');
     this.detailAtkBonus = document.getElementById('detail-atk-bonus');
     this.detailSpdBonus = document.getElementById('detail-spd-bonus');
+    this.detailBaseAtk = document.getElementById('detail-base-atk');
+    this.detailBaseSpd = document.getElementById('detail-base-spd');
 
     // 9. 정보창 레이블 및 행 제어
     this.lblDps = document.getElementById('lbl-dps');
@@ -627,6 +629,11 @@ export class UIManager {
           this.detailRange.textContent = tower.range || 0;
           this.detailGrade.textContent = ""; // [Grade Hidden] 등급 표시 제거
           this.detailType.textContent = "전략 도구";
+
+          // [New] 원시 능력치 표시
+          if (this.detailBaseAtk) this.detailBaseAtk.textContent = tower.baseDamage || 0;
+          if (this.detailBaseSpd) this.detailBaseSpd.textContent = `${(tower.baseAttackSpeed || 0).toFixed(2)}/s`;
+
           return; 
       }
       
@@ -656,6 +663,10 @@ export class UIManager {
       if (this.detailUpLv) this.detailUpLv.textContent = upLv;
       
       this.detailRange.textContent = tower.range || 0;
+
+      // [New] 원시 능력치 표시
+      if (this.detailBaseAtk) this.detailBaseAtk.textContent = tower.baseDamage || 0;
+      if (this.detailBaseSpd) this.detailBaseSpd.textContent = `${(tower.baseAttackSpeed || 0).toFixed(2)}/s`;
       this.detailSpd.textContent = `${spd.toFixed(2)}/s`;
       
       // 공속 보너스 계산 및 표시
