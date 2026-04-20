@@ -206,6 +206,7 @@ export class Tower {
       if (multiTargetEffects.includes(this.weaponData.effect)) {
         const targets = enemies.filter(en => en.active && Math.hypot(en.x - this.x, en.y - this.y) <= (this.currentRange || this.range));
         if (targets.length > 0) {
+          this.target = targets[0]; // [Fix] 광역 공격 시에도 첫 번째 적을 기준으로 휘두르기 방향 결정
           this.fire(targets, addProjectile); // 모든 대상에게 발사
           if (!this.isOverheated) {
             this.cooldown = 1.0 / this.attackSpeed;
