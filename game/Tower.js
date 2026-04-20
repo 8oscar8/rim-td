@@ -371,8 +371,14 @@ export class Tower {
         ctx.restore();
       }
 
-      ctx.shadowBlur = 25;
-      ctx.shadowColor = SpriteManager.getColor(this.quality);
+      // [New] 인공자아핵 버프 수혜 시 붉은 글로우 강조
+      if (this.personaBuffTimer > 0 && !this.isBlueprint) {
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = "rgba(255, 0, 0, 0.8)";
+      } else {
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = SpriteManager.getColor(this.quality);
+      }
       
       const size = 48; 
       ctx.translate(this.x, this.y);
@@ -442,6 +448,24 @@ export class Tower {
       grad.addColorStop(1, 'rgba(0, 121, 255, 0)');
       ctx.fillStyle = grad;
       ctx.beginPath(); ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2); ctx.fill();
+    } else if (this.weaponData.effect === 'aura_persona') {
+      // 인공자아핵 붉은 오오라
+      const pulse = Math.sin(Date.now() * 0.003) * 0.2 + 0.8;
+      const glowSize = this.range;
+      const grad = ctx.createRadialGradient(this.x, this.y, 10, this.x, this.y, glowSize);
+      grad.addColorStop(0, `rgba(255, 0, 0, ${0.15 * pulse})`);
+      grad.addColorStop(1, 'rgba(255, 0, 0, 0)');
+      
+      ctx.save();
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2); ctx.fill();
+      
+      // 범위 테두리 점선 연출
+      ctx.strokeStyle = `rgba(255, 50, 50, ${0.3 * pulse})`;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 10]);
+      ctx.beginPath(); ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
     } else if (this.weaponName === '999강 나무몽둥이') {
       const glowSize = 50 + Math.sin(time) * 10;
       const gradient = ctx.createRadialGradient(this.x, this.y, 5, this.x, this.y, glowSize);
