@@ -1783,9 +1783,17 @@ class App {
         return;
     }
 
-    // 10. 비취옥 환전 (B)
-    if (key === 'b') {
+    // 10. 비취옥 환전 (H)
+    if (key === 'h') {
         this.exchangeJade();
+        return;
+    }
+
+    // 11. 작업자 배정 (Z, X, C, V, B)
+    const workerKeys = { 'z': 'logging', 'x': 'mining', 'c': 'farming', 'v': 'research', 'b': 'trading' };
+    if (workerKeys[key]) {
+        const delta = e.shiftKey ? -1 : 1;
+        this.ui.handleWorker(workerKeys[key], delta);
         return;
     }
 

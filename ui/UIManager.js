@@ -140,22 +140,14 @@ export class UIManager {
     this.workPlusBtns.forEach(btn => {
       btn.onclick = (e) => {
         const type = e.target.getAttribute('data-type');
-        if (this.app.state.idlePopulation > 0) {
-          this.app.state.workers[type]++;
-          this.app.state.idlePopulation--;
-          this.updateDisplays(this.app.state); // 즉시 갱신
-        }
+        this.handleWorker(type, 1);
       };
     });
 
     this.workMinusBtns.forEach(btn => {
       btn.onclick = (e) => {
         const type = e.target.getAttribute('data-type');
-        if (this.app.state.workers[type] > 0) {
-          this.app.state.workers[type]--;
-          this.app.state.idlePopulation++;
-          this.updateDisplays(this.app.state); // 즉시 갱신
-        }
+        this.handleWorker(type, -1);
       };
     });
 
@@ -1964,5 +1956,34 @@ export class UIManager {
       this.addMiniNotification("자원이 부족합니다!", 'failure');
     }
     this.updateDisplays(s);
+  }
+  /**
+   * [New] 작업자 배정/해제 처리 (단축키 등 외부 호출용)
+   */
+  handleWorker(type, delta) {
+    const s = this.app.state;
+    if (delta > 0) {
+        // 배정 (+)
+        if (s.idlePopulation > 0) {
+            s.workers[type]++;
+            s.idlePopulation--;
+            this.addMiniNotification(`${this.getJobName(type)}에 정착민 1명을 배정했습니다.`, "info");
+        } else {
+            this.addMiniNotification("대기 중인 정착민이 없습니다!", "failure");
+        }
+    } else {
+        // 해제 (-)
+        if (s.workers[type] > 0) {
+            s.workers[type]--;
+            s.idlePopulation++;
+            this.addMiniNotification(`${this.getJobName(type)}에서 정착민 1명을 철수시켰습니다.`, "info");
+        }
+    }
+    this.updateDisplays(s);
+  }
+
+  getJobName(type) {
+    const names = { farming: '농사', mining: '채광', logging: '벌목', research: '연구', trading: '교역' };
+    return names[type] || type;
   }
 }
