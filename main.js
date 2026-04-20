@@ -1724,7 +1724,8 @@ class App {
 
     // 2. 배속 조절 (1, 2, 3)
     if (key === '1' || key === '2' || key === '3') {
-        const speed = parseInt(key);
+        let speed = parseInt(key);
+        if (speed === 3) speed = 4; // 3 누르면 4배속으로 변경
         this.state.timeScale = speed;
         this.ui.updateDisplays(this.state);
         return;
