@@ -652,31 +652,7 @@ export class UIManager {
       
       this.detailDps.textContent = (total * burst * spd).toFixed(1);
       this.detailAtk.textContent = Math.floor(total);
-      // 공격력 보너스 계산 (훈련 정수 보너스와 버프 배율 분리)
-      const state = this.app.state;
-      const upgradeMul = state.getUpgradeMultiplier(typeKey);
-      const trainingBonus = Math.floor(base * (upgradeMul - 1));
-      
-      const moodMul = (state.mood >= 85) ? 1.1 : 1.0;
-      const luciMul = tower.isLuciferiumActive ? 1.5 : 1.0;
-      const goJuiceMul = (tower.goJuiceTimer > 0) ? 1.5 : 1.0;
-      const totalMul = moodMul * luciMul * goJuiceMul;
-
-      let bonusHtml = `(${Math.floor(base)} +${trainingBonus} 훈련)`;
-      if (totalMul > 1.0) {
-          bonusHtml += ` <span style="color:var(--accent-gold); font-weight:800;">×${totalMul.toFixed(2)}</span>`;
-      }
-
-      const activeBuffs = [];
-      if (state.mood >= 85) activeBuffs.push("무드+10%");
-      if (tower.goJuiceTimer > 0) activeBuffs.push("고주스+50%");
-      if (tower.isLuciferiumActive) activeBuffs.push("루시페륨+50%");
-      
-      if (activeBuffs.length > 0) {
-          bonusHtml += `<br><span style="color:var(--accent-gold); font-size:10px; font-weight:bold; letter-spacing: -0.5px;">[${activeBuffs.join(', ')}]</span>`;
-      }
-      
-      if (this.detailAtkBonus) this.detailAtkBonus.innerHTML = bonusHtml;
+      if (this.detailAtkBonus) this.detailAtkBonus.innerHTML = "";
       if (this.detailUpLv) this.detailUpLv.textContent = upLv;
       
       this.detailRange.textContent = tower.range || 0;
