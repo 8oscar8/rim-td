@@ -11,6 +11,11 @@ import { EncounterManager } from './game/EncounterManager.js';
 import { HiddenEventManager } from './game/HiddenEventManager.js';
 import { ITEM_DB } from './game/WeaponData.js';
 
+// [New] Supabase 초기화
+const SUPABASE_URL = "https://ibgnfoiolxgprsevcfhw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_3mLUgdzB6L7r7-HDQTUaLA_BzIoKRuB";
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
 /**
  * Main Application Class
  * 림월드 TD의 모든 핵심 시스템을 제어합니다.
@@ -1140,6 +1145,84 @@ class App {
     
     // [New] 게임 결과 통계 결과창 표시
     this.ui.showGameResult(this.state);
+    
+    // [New] 리더보드 불러오기
+    this.renderLeaderboard();
+  }
+
+  /**
+   * Supabase 데이터 저장 (기록 등록)
+   */
+  async submitScore(playerName, score, wave) {
+    if (!supabase) return;
+    try {
+        const { data, error } = await supabase
+            .from('leaderboard')
+            .insert([{ player_name: playerName, score: score, wave: wave }]);
+            
+        if (error) throw error;
+        this.ui.addMiniNotification("기록이 성공적으로 등록되었습니다!", "success");
+        this.renderLeaderboard(); // 등록 후 리드보드 즉시 갱신
+    } catch (e) {
+        console.error("Supabase Submit Error:", e);
+        this.ui.addMiniNotification("기록 등록 실패: " + e.message, "failure");
+    }
+  }
+
+  /**
+   * Supabase 리더보드 조회 및 렌더링
+   */
+  async renderLeaderboard() {
+    const listContainer = document.getElementById('leaderboard-list');
+    if (!listContainer || !supabase) return;
+
+    listContainer.innerHTML = '<div class="loading-msg">데이터 불러오는 중...</div>';
+
+    try {
+        const { data, error } = await supabase
+            .from('leaderboard')
+            .select('*')
+            .order('score', { ascending: false })
+            .limit(10);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            listContainer.innerHTML = '<div class="loading-msg">첫 번째 정착민이 되어보세요!</div>';
+            return;
+        }
+
+        let html = `
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th class="rank-col">순위</th>
+                        <th>닉네임</th>
+                        <th>웨이브</th>
+                        <th class="score-col">은화 점수</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        data.forEach((row, index) => {
+            html += `
+                <tr>
+                    <td class="rank-col">${index + 1}</td>
+                    <td>${row.player_name || '익명'}</td>
+                    <td>W${row.wave}</td>
+                    <td class="score-col">${(row.score || 0).toLocaleString()}</td>
+                </tr>
+            `;
+        });
+
+        html += '</tbody></table>';
+        listContainer.innerHTML = html;
+
+    } catch (e) {
+        console.error("Supabase Load Error:", e);
+        listContainer.innerHTML = `<div class="loading-msg" style="color:#ff6b6b">로드 실패: ${e.message}</div>`;
+    }
   }
 
   /**

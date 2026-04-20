@@ -2022,6 +2022,35 @@ export class UIManager {
     restartBtn.onclick = () => {
         location.reload(); // 가장 깔끔한 재시작 방법
     };
+
+    // [New] Supabase 기록 등록 버튼 이벤트
+    const submitBtn = document.getElementById('res-submit-btn');
+    const nameInput = document.getElementById('res-nickname-input');
+    
+    if (submitBtn && nameInput) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "기록 등록";
+        nameInput.disabled = false;
+        nameInput.value = ""; // 초기화
+
+        submitBtn.onclick = async () => {
+            const name = nameInput.value.trim();
+            if (!name) {
+                this.addMiniNotification("정착지 이름을 입력해주세요!", "failure");
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = "등록 중...";
+            
+            // App의 submitScore 호출 (은화 소모량이 기록 점수)
+            const stats = window.app.state.stats;
+            await window.app.submitScore(name, stats.totalSilverSpent, stats.wave);
+            
+            submitBtn.textContent = "등록 완료";
+            nameInput.disabled = true;
+        };
+    }
   }
 
   /**
