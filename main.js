@@ -426,6 +426,22 @@ class App {
     }
   }
 
+  /**
+   * [New] 비취옥 환전 실행
+   */
+  exchangeJade() {
+    if (this.state.isPaused) return;
+    if (this.state.jade >= 1) {
+        this.state.jade -= 1;
+        this.state.silver += 250;
+        this.ui.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
+        SoundManager.playSFX('assets/audio/buy.mp3');
+        this.ui.updateDisplays(this.state);
+    } else {
+        this.ui.addMiniNotification("환전할 비취옥이 부족합니다!", 'failure');
+    }
+  }
+
   init() {
     console.log("%c[RimWorld TD] Engine V2 Started", "color: #00f2ff; font-weight: bold;");
     
@@ -1764,6 +1780,12 @@ class App {
     // 6. 유닛 판매 (S)
     if (key === 's' && !e.shiftKey) {
         this.sellSelectedUnit();
+        return;
+    }
+
+    // 10. 비취옥 환전 (B)
+    if (key === 'b') {
+        this.exchangeJade();
         return;
     }
 

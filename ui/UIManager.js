@@ -176,14 +176,7 @@ export class UIManager {
     // 2.5 비취옥 환전 (1개 -> 250 은)
     if (this.exchangeJadeBtn) {
       this.exchangeJadeBtn.onclick = () => {
-        if (this.app.state.jade >= 1) {
-          this.app.state.jade -= 1;
-          this.app.state.silver += 250;
-          this.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
-          this.updateDisplays(this.app.state);
-        } else {
-          this.addMiniNotification("비취옥이 부족합니다!", 'failure');
-        }
+        this.app.exchangeJade();
       };
     }
 
