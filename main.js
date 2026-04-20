@@ -730,24 +730,25 @@ class App {
       return f.duration > 0;
     });
 
-    // [New] 무기 조합 가능 여부 체크 (상태 업데이트 최우선 지원)
-    this.checkCombinationAvailability();
-
     // 6. 아이템 쿨타임 업데이트
     for (const key in this.state.itemCooldowns) {
-        if (this.state.researchPoints < 0) this.state.researchPoints = 0; // 안전장치
         if (this.state.itemCooldowns[key] > 0) {
             this.state.itemCooldowns[key] = Math.max(0, this.state.itemCooldowns[key] - scaledDt);
         }
     }
+
+    // UI 동기화
+    this.ui.updateDisplays(this.state);
 
     // [New] 히든 인카운터 타이머 및 로직 업데이트
     if (this.hiddenEventManager) {
         this.hiddenEventManager.update(scaledDt);
     }
 
-    // UI 동기화 (모든 상태 변화 후 마지막에 호출)
-    this.ui.updateDisplays(this.state);
+    // [New] 무기 조합 가능 여부 체크 (20프레임마다 한 번씩 수행하여 최적화)
+    if (Math.floor(Date.now() / 333) % 1 === 0) {
+        this.checkCombinationAvailability();
+    }
 
     // [New] 보스 시간 초과 체크
     const timedOutBoss = this.enemies.find(e => e.active && e.isBoss && e.bossTimer <= 0);
@@ -992,16 +993,15 @@ class App {
     const counts = {}; // "Name-Grade": count
     this.units.forEach(u => {
       if (u.isBlueprint) return;
-      const key = `${u.weaponName.trim()}-${u.weaponData.grade}`;
+      const key = `${u.weaponName}-${u.weaponData.grade}`;
       counts[key] = (counts[key] || 0) + 1;
     });
 
     this.units.forEach(u => {
       if (u.isBlueprint) return;
-      const key = `${u.weaponName.trim()}-${u.weaponData.grade}`;
-      const grade = (u.weaponData.grade || "").toUpperCase();
-      const isCombinableGrade = (grade === "COMMON" || grade === "UNCOMMON" || grade === "RARE");
-      u.isCombinable = (counts[key] >= 4 && isCombinableGrade);
+      const key = `${u.weaponName}-${u.weaponData.grade}`;
+      const isLowGrade = u.weaponData.grade === 'Common' || u.weaponData.grade === 'Uncommon';
+      u.isCombinable = (counts[key] >= 4 && isLowGrade);
     });
   }
 
@@ -1012,16 +1012,14 @@ class App {
     if (!targetUnit || !targetUnit.isCombinable) return;
     
     try {
-        const name = targetUnit.weaponName;
-        const grade = targetUnit.weaponData.grade;
-        
-        // [New] Rare 이상의 경우 연구 포인트 500 소모
-        const cost = (grade === 'Rare') ? 500 : 200;
-        
+        const cost = 200;
         if (this.state.researchPoints < cost) {
-            this.ui.addMiniNotification(`연구 포인트가 부족합니다! (${cost} 필요)`, "failure");
+            this.ui.addMiniNotification("연구 포인트가 부족합니다! (200 필요)", "failure");
             return;
         }
+
+        const name = targetUnit.weaponName;
+        const grade = targetUnit.weaponData.grade;
         
         // 1. 재료 후보군 추출 (동일 이름, 동일 등급)
         const candidates = this.units.filter(u => u.weaponName === name && u.weaponData.grade === grade && !u.isBlueprint);
@@ -1045,8 +1043,8 @@ class App {
         // 3. 자원 소모
         this.state.researchPoints -= cost;
         
-        // 4. 성패 판정 (Rare의 경우 40% 확률로 파괴됨)
-        const successProb = (grade === 'Common') ? 0.8 : (grade === 'Uncommon' ? 0.7 : 0.6);
+        // 4. 성패 판정
+        const successProb = (grade === 'Common') ? 0.8 : 0.7;
         const isSuccess = Math.random() < successProb;
 
         if (isSuccess) {

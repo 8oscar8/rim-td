@@ -54,7 +54,6 @@ export class UIManager {
     this.sellUnitsBtn = document.getElementById('btn-sell-units');
     this.techUpBtn = document.getElementById('btn-tech-upgrade');
     this.combineUnitBtn = document.getElementById('btn-combine-unit');
-    this.combineCostText = document.getElementById('combine-cost');
     this.craftBtns = document.querySelectorAll('.shop-btn.craft');
     
     this.upgradeMeleeBtn = document.getElementById('up-melee');
@@ -695,12 +694,11 @@ export class UIManager {
       }
 
       // 버프 시각화 (금색/하늘색 강조)
-      const isBuffed = (spd > tower.baseAttackSpeed) || (total > base) || (activeBuffs.length > 0);
+      const isBuffed = (spd > tower.baseAttackSpeed) || (total > base);
       if (isBuffed) {
-        const buffColor = (activeBuffs.length > 0) ? "var(--accent-gold)" : "#00f2ff";
-        this.detailSpd.style.color = buffColor;
-        this.detailDps.style.color = buffColor;
-        this.detailAtk.style.color = buffColor;
+        this.detailSpd.style.color = "#00f2ff";
+        this.detailDps.style.color = "#00f2ff";
+        this.detailAtk.style.color = "#00f2ff";
         this.detailSpd.classList.add('buff-text');
       } else {
         this.detailSpd.style.color = "";
@@ -751,9 +749,7 @@ export class UIManager {
           this.combineUnitBtn.classList.remove('hidden');
           
           // 연구 포인트 부족 시 비활성화
-          const cost = (tower.weaponData.grade === 'Rare') ? 500 : 200;
-          if (this.combineCostText) this.combineCostText.textContent = cost;
-          const canAfford = (this.app.state.researchPoints >= cost);
+          const canAfford = (this.app.state.researchPoints >= 200);
           this.combineUnitBtn.style.opacity = canAfford ? "1" : "0.5";
           // disabled나 pointer-events: none을 제거하여 툴팁 호버가 작동하도록 함
 
@@ -773,8 +769,8 @@ export class UIManager {
   hideUnitDetail() {
     this.selectedUnit = null;
     this.selectedEnemy = null;
-    const detailBox = document.getElementById('unit-detail-box');
-    if (detailBox) {
+    const detailArea = document.getElementById('unit-detail-area');
+    if (detailArea) {
         if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
     }
   }
