@@ -13,10 +13,10 @@
         <aside id="left-sidebar" class="sidebar glass-panel">
             <div class="speed-control-container">
                 <div class="speed-controls">
-                    <button class="speed-btn active">1x</button>
-                    <button class="speed-btn">2x</button>
-                    <button class="speed-btn">4x</button>
-                    <button id="btn-pause" class="speed-btn">일시정지</button>
+                    <button class="speed-btn active">1x [1]</button>
+                    <button class="speed-btn">2x [2]</button>
+                    <button class="speed-btn">4x [3]</button>
+                    <button id="btn-pause" class="speed-btn">일시정지 [SPACE]</button>
                 </div>
             </div>
 
@@ -255,10 +255,10 @@
 
             <!-- 탭 메뉴 -->
             <nav class="action-tabs">
-                <button class="tab-btn active" data-tab="shop">🎁 상점</button>
-                <button class="tab-btn" data-tab="craft">🛠️ 제작</button>
-                <button class="tab-btn" data-tab="special">💣 특수</button>
-                <button class="tab-btn" data-tab="train">🎓 훈련</button>
+                <button class="tab-btn active" data-tab="shop">상점 [TAB]</button>
+                <button class="tab-btn" data-tab="craft">제작</button>
+                <button class="tab-btn" data-tab="special">특수</button>
+                <button class="tab-btn" data-tab="train">훈련</button>
             </nav>
             
             <!-- 탭 콘텐츠 영역 -->
@@ -269,12 +269,12 @@
                         <button id="btn-buy-random" class="shop-btn"
                             onmouseenter="window.app.ui.showGachaTooltip(event, 'random')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
                             <img src="assets/silver.png" class="res-mini-icon">
-                            <span class="text">무작위 유닛 구매 (50)</span>
+                            <span class="text">무작위 유닛 구매 (50) [Q]</span>
                         </button>
                         <button id="btn-buy-advanced" class="shop-btn"
                             onmouseenter="window.app.ui.showGachaTooltip(event, 'advanced')" onmousemove="window.app.ui.moveTooltip(event)" onmouseleave="window.app.ui.hideTooltip()">
                             <img src="assets/silver.png" class="res-mini-icon">
-                            <span class="text">고급 무기 상자 (1,000)</span>
+                            <span class="text">고급 무기 상자 (1,000) [W]</span>
                         </button>
                         <button id="btn-exchange-jade" class="shop-btn upgrade-btn" style="background: rgba(30, 100, 30, 0.3);">
                             <img src="assets/jade.png" class="res-mini-icon">

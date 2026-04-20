@@ -756,7 +756,7 @@ export class UIManager {
           if (tower.weaponData.grade === 'Rare') cost = 500;
           else if (tower.weaponData.grade === 'Uncommon') cost = 300;
           
-          if (this.combineUnitText) this.combineUnitText.textContent = `조합 실행 (${cost})`;
+          if (this.combineUnitText) this.combineUnitText.textContent = `조합 실행 (${cost}) [E]`;
 
           // 연구 포인트 부족 시 비활성화
           const canAfford = (this.app.state.researchPoints >= cost);
@@ -1184,11 +1184,11 @@ export class UIManager {
             const price = this.app.calculateSellPrice(selectedUnit);
             this.sellUnitsBtn.style.opacity = "1";
             this.sellUnitsBtn.style.filter = "none";
-            if (sellText) sellText.textContent = `판매 (${price})`;
+            if (sellText) sellText.textContent = `판매 (${price}) [S]`;
         } else {
             this.sellUnitsBtn.style.opacity = "0.4";
             this.sellUnitsBtn.style.filter = "grayscale(1)";
-            if (sellText) sellText.textContent = `판매 (유닛 선택 필요)`;
+            if (sellText) sellText.textContent = `판매 [S] (유닛 선택 필요)`;
         }
     }
 
