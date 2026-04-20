@@ -1734,7 +1734,7 @@ export class UIManager {
 
     let html = `<div class="tooltip-title" style="color: #fff">${data.name}</div>`;
     html += `<div class="tooltip-body" style="font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; margin: 10px 0;">${data.desc}</div>`;
-    html += `<div class="tooltip-footer" style="color: #888; font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">* 정착지에 보관된 자산 가치를 나타냅니다.</div>`;
+
 
     if (this.tooltip) {
       this.tooltip.innerHTML = html;
