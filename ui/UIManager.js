@@ -2045,7 +2045,8 @@ export class UIManager {
             
             // App의 submitScore 호출 (은화 소모량이 기록 점수)
             const stats = window.app.state.stats;
-            await window.app.submitScore(name, stats.totalSilverSpent, stats.wave);
+            const state = window.app.state;
+            await window.app.submitScore(name, stats.totalSilverSpent, state.waveNumber);
             
             submitBtn.textContent = "등록 완료";
             nameInput.disabled = true;

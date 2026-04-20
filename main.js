@@ -1156,21 +1156,38 @@ class App {
   async submitScore(playerName, score, wave) {
     if (!supabase) return;
     try {
+        const numScore = Number(score);
+        const numWave = Number(wave);
+        
+        console.log("전송 시도:", { name: playerName, score: numScore, wave: numWave });
+
         const { data, error } = await supabase
             .from('leaderboard')
-            .insert([{ player_name: playerName, score: score, wave: wave }]);
+            .insert([{ 
+                name: playerName, 
+                score: numScore, 
+                wave: numWave 
+            }]);
             
-        if (error) throw error;
+        if (error) {
+            console.error("Supabase 상세 에러:", {
+                메시지: error.message,
+                상세: error.details,
+                힌트: error.hint,
+                코드: error.code
+            });
+            throw error;
+        }
+
         this.ui.addMiniNotification("기록이 성공적으로 등록되었습니다!", "success");
-        this.renderLeaderboard(); // 등록 후 리드보드 즉시 갱신
+        this.renderLeaderboard(); 
     } catch (e) {
-        console.error("Supabase Submit Error:", e);
-        this.ui.addMiniNotification("기록 등록 실패: " + e.message, "failure");
+        this.ui.addMiniNotification("기록 등록 실패: " + (e.message || "알 수 없는 오류"), "failure");
     }
   }
 
   /**
-   * Supabase 리더보드 조회 및 렌더링
+   * Supabase 리더보드 조회
    */
   async renderLeaderboard() {
     const listContainer = document.getElementById('leaderboard-list');
@@ -1209,7 +1226,7 @@ class App {
             html += `
                 <tr>
                     <td class="rank-col">${index + 1}</td>
-                    <td>${row.player_name || '익명'}</td>
+                    <td>${row.name || '익명'}</td>
                     <td>W${row.wave}</td>
                     <td class="score-col">${(row.score || 0).toLocaleString()}</td>
                 </tr>
@@ -1220,7 +1237,7 @@ class App {
         listContainer.innerHTML = html;
 
     } catch (e) {
-        console.error("Supabase Load Error:", e);
+        console.error("리더보드 로드 에러 상세:", e);
         listContainer.innerHTML = `<div class="loading-msg" style="color:#ff6b6b">로드 실패: ${e.message}</div>`;
     }
   }
