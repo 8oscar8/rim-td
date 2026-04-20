@@ -1082,7 +1082,22 @@ class App {
             }
         } else {
             SoundManager.playSFX('assets/audio/failure.mp3');
-            this.ui.showNotification("조합 실패", `${name} 4개가 전부 파괴되었습니다...`, 'failure');
+            this.state.combinationFailCount++;
+            this.ui.showNotification("조합 실패", `${name} 4개가 전부 파괴되었습니다... (누적 실패: ${this.state.combinationFailCount}회)`, 'failure');
+
+            // [Hidden] 조합 실패 7회 달성 시 '시원한 은행가는 길' 지급
+            if (this.state.combinationFailCount === 7) {
+                const event = {
+                    name: "실패의 결실: 운명의 보상",
+                    desc: "당신은 무려 7번의 장비 파괴를 겪으면서도 굴하지 않고 계속해서 도전했습니다! \n\n당신의 끈기에 감동한 운명의 여신이 강력한 히든 병기 '시원한 은행가는 길'을 당신에게 선사했습니다.",
+                    type: 'positive'
+                };
+                if (this.encounterManager) this.encounterManager.showEventModal(event);
+                
+                const result = GachaSystem.createSpecificWeapon('시원한 은행가는 길', 'Hidden', 'None');
+                this.startPlacement(result);
+                SoundManager.playSFX('assets/audio/encounter_success.mp3');
+            }
         }
 
         // 5. 재료 제거 (반드시 수행)
