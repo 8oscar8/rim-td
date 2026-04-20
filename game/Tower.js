@@ -151,6 +151,7 @@ export class Tower {
           u.personaBuffTimer = 0.2; 
         }
       });
+      return; // [Fix] 인공자아핵은 공격을 하지 않음
     }
 
     // 과열 처리

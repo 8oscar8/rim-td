@@ -600,6 +600,30 @@ export class UIManager {
       if (this.rowAp) this.rowAp.classList.remove('hidden');
       if (this.rowRange) this.rowRange.classList.remove('hidden');
       if (this.rowShred) this.rowShred.classList.add('hidden'); // 일단 숨김 후 체크
+
+      // [New] 인공자아핵 전용 UI 처리
+      if (tower.weaponData.effect === 'aura_persona') {
+          if (this.lblDps) this.lblDps.textContent = "공격력 증가";
+          if (this.lblAtk) this.lblAtk.textContent = "공격속도 증가";
+          if (this.lblSpd) {
+              this.lblSpd.textContent = "방어 방어력"; // 또는 사거리 등 다른 정보로 활용 가능하나 일단 유지
+              this.detailSpd.textContent = "-";
+          }
+          
+          this.detailDps.textContent = "+50%";
+          this.detailAtk.textContent = "+50%";
+          if (this.detailAtkBonus) this.detailAtkBonus.textContent = "";
+          if (this.detailSpdBonus) this.detailSpdBonus.textContent = "";
+          
+          if (this.rowAp) this.rowAp.classList.add('hidden');
+          if (this.rowSpd) this.rowSpd.classList.add('hidden'); // 공속행 숨김
+          
+          this.detailRange.textContent = tower.range || 0;
+          this.detailGrade.textContent = `[MYTHIC]`;
+          this.detailGrade.style.color = "var(--accent-gold)";
+          this.detailType.textContent = "전략 도구";
+          return; 
+      }
       
       const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
       const displayGrade = gradeMap[tower.weaponData.grade] || tower.weaponData.grade || 'Common';
