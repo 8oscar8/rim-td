@@ -1000,7 +1000,7 @@ class App {
     this.units.forEach(u => {
       if (u.isBlueprint) return;
       const key = `${u.weaponName}-${u.weaponData.grade}`;
-      const isLowGrade = u.weaponData.grade === 'Common' || u.weaponData.grade === 'Uncommon';
+      const isLowGrade = u.weaponData.grade === 'Common' || u.weaponData.grade === 'Uncommon' || u.weaponData.grade === 'Rare';
       u.isCombinable = (counts[key] >= 4 && isLowGrade);
     });
   }
@@ -1012,9 +1012,12 @@ class App {
     if (!targetUnit || !targetUnit.isCombinable) return;
     
     try {
-        const cost = 200;
+        let cost = 200;
+        if (targetUnit.weaponData.grade === 'Rare') cost = 500;
+        else if (targetUnit.weaponData.grade === 'Uncommon') cost = 300;
+        
         if (this.state.researchPoints < cost) {
-            this.ui.addMiniNotification("연구 포인트가 부족합니다! (200 필요)", "failure");
+            this.ui.addMiniNotification(`연구 포인트가 부족합니다! (${cost} 필요)`, "failure");
             return;
         }
 
@@ -1044,20 +1047,41 @@ class App {
         this.state.researchPoints -= cost;
         
         // 4. 성패 판정
-        const successProb = (grade === 'Common') ? 0.8 : 0.7;
-        const isSuccess = Math.random() < successProb;
-
-        if (isSuccess) {
-            const result = GachaSystem.drawForCombination(grade, this.state.upgrades.artisan || 0);
-            if (result) {
-                // [Fix] 자동 생성이 아닌, 상점처럼 직접 배치 모드로 전환
-                SoundManager.playSFX('assets/audio/buy.mp3');
-                this.startPlacement(result);
-                this.ui.showNotification("조합 성공!", `${name} 4개를 합쳐 새로운 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
+        let isSuccess = false;
+        let resultGrade = "";
+        
+        if (grade === 'Rare') {
+            const roll = Math.random() * 100;
+            if (roll < 40) {
+                isSuccess = false;
             } else {
-                console.error("[Combine] Gacha result was null!");
+                isSuccess = true;
+                if (roll < 95) resultGrade = 'Epic';       // 40~94 (55%)
+                else if (roll < 99) resultGrade = 'Legendary'; // 95~98 (4%)
+                else resultGrade = 'Mythic';               // 99 (1%)
             }
         } else {
+            const successProb = (grade === 'Common') ? 0.8 : 0.7;
+            isSuccess = Math.random() < successProb;
+        }
+
+        if (isSuccess) {
+            const artisanLv = this.state.upgrades.artisan || 0;
+            let result = null;
+            
+            if (grade === 'Rare') {
+                result = GachaSystem.drawSpecificGrade(resultGrade, artisanLv);
+            } else {
+                result = GachaSystem.drawForCombination(grade, artisanLv);
+            }
+
+            if (result) {
+                SoundManager.playSFX('assets/audio/buy.mp3');
+                this.startPlacement(result);
+                this.ui.showNotification("조합 성공!", `새로운 ${result.weaponData.grade} 등급 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
+            }
+        } else {
+            SoundManager.playSFX('assets/audio/failure.mp3');
             this.ui.showNotification("조합 실패", `${name} 4개가 전부 파괴되었습니다...`, 'failure');
         }
 

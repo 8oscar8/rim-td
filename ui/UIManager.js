@@ -54,6 +54,7 @@ export class UIManager {
     this.sellUnitsBtn = document.getElementById('btn-sell-units');
     this.techUpBtn = document.getElementById('btn-tech-upgrade');
     this.combineUnitBtn = document.getElementById('btn-combine-unit');
+    this.combineUnitText = document.getElementById('btn-combine-text');
     this.craftBtns = document.querySelectorAll('.shop-btn.craft');
     
     this.upgradeMeleeBtn = document.getElementById('up-melee');
@@ -748,8 +749,15 @@ export class UIManager {
         if (tower.isCombinable) {
           this.combineUnitBtn.classList.remove('hidden');
           
+          // [New] 등급에 따른 가변 비용 적용
+          let cost = 200;
+          if (tower.weaponData.grade === 'Rare') cost = 500;
+          else if (tower.weaponData.grade === 'Uncommon') cost = 300;
+          
+          if (this.combineUnitText) this.combineUnitText.textContent = `조합 실행 (${cost})`;
+
           // 연구 포인트 부족 시 비활성화
-          const canAfford = (this.app.state.researchPoints >= 200);
+          const canAfford = (this.app.state.researchPoints >= cost);
           this.combineUnitBtn.style.opacity = canAfford ? "1" : "0.5";
           // disabled나 pointer-events: none을 제거하여 툴팁 호버가 작동하도록 함
 
