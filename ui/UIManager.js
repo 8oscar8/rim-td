@@ -1981,10 +1981,21 @@ export class UIManager {
     };
     document.getElementById('res-total-damage').textContent = formatNum(stats.totalDamageDealt || 0);
 
-    // [New] 정착지 위력 점수 계산식
+    // [New] 정착지 상세 데이터 기초 계산
+    const avgMood = stats.moodTicks > 0 ? Math.floor(stats.moodSum / stats.moodTicks) : 0;
+    const prodBonusVal = (state.upgrades.logging + state.upgrades.mining + state.upgrades.farming) * 5; 
     const elapsed = Math.floor((Date.now() - stats.startTime) / 1000); // 생존 초
+
+    // [V2] 통합 위력 점수 계산식
+    const baseScore = 10000;
     const waveScore = state.waveNumber * 2000;
-    const dmgScore = stats.maxDamage * 100;
+    const popScore = (stats.maxPopulationReached || 3) * 1000;
+    const researchScore = (stats.totalResearchCompleted || 0) * 500;
+    const towerScore = (stats.towersBuilt || 0) * 100;
+    const moodBonus = avgMood * 100;
+    const prodScore = prodBonusVal * 200;
+    
+    const dmgScore = (stats.maxDamage * 10) + ((stats.totalDamageDealt || 0) / 100);
     
     // 자원 가중치 합산
     const weights = { silver: 1, wood: 1, steel: 2, researchPoints: 5, component: 10, jade: 20, plasteel: 50, uranium: 100, food: 1 };
@@ -1994,7 +2005,7 @@ export class UIManager {
         resourceTotalScore += (Number(amt) || 0) * weight;
     });
 
-    const finalPowerScore = Math.max(0, waveScore + dmgScore + resourceTotalScore - (elapsed * 50) + 10000);
+    const finalPowerScore = Math.max(0, baseScore + waveScore + popScore + researchScore + towerScore + moodBonus + prodScore + dmgScore + resourceTotalScore - (elapsed * 50));
     this.lastCalculatedScore = finalPowerScore; // 등록 시 사용하기 위해 저장
 
     document.getElementById('res-total-score').textContent = Math.floor(finalPowerScore).toLocaleString();
