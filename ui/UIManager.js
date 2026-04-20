@@ -233,7 +233,7 @@ export class UIManager {
         if (e) e.stopPropagation(); // 캔버스 클릭 간섭 방지
         // 파업 체크
         if (this.app.encounterManager && this.app.encounterManager.isStrikeActive()) {
-          alert("정착민들이 파업 중입니다! 상점을 이용할 수 없습니다.");
+          this.addMiniNotification("정착민들이 파업 중입니다! 상점을 이용할 수 없습니다.", "failure");
           return;
         }
 
@@ -349,7 +349,7 @@ export class UIManager {
         const curLv = s.upgrades[type] || 0;
 
         if (curLv >= 5) {
-            alert("최대 레벨에 도달했습니다!");
+            this.addMiniNotification("이미 최대 레벨에 도달했습니다!", "info");
             return;
         }
 

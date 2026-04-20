@@ -408,7 +408,7 @@ class App {
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     } else {
-      alert("은화가 부족합니다! (1,000 은 필요)");
+      this.ui.addMiniNotification("은화가 부족합니다! (1,000 은 필요)", "failure");
     }
   }
 
@@ -422,7 +422,7 @@ class App {
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
     } else {
-      alert("은화가 부족합니다! (50 은 필요)");
+      this.ui.addMiniNotification("은화가 부족합니다! (50 은 필요)", "failure");
     }
   }
 
@@ -1113,8 +1113,13 @@ class App {
    */
   handleGameOver(reason) {
     this.loop.stop();
-    alert(`[GAME OVER]\n${reason}`);
-    location.reload(); // 간단한 재시작 로직
+    this.ui.addMiniNotification(`[GAME OVER] ${reason}`, "failure");
+    SoundManager.playSFX('assets/audio/failure.mp3'); 
+    
+    // 게임 오버 리다이렉트 전 3초 대기
+    setTimeout(() => {
+        location.reload();
+    }, 3000);
   }
 
   /**
