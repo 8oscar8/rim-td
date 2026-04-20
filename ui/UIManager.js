@@ -1976,7 +1976,7 @@ export class UIManager {
     const dmgScore = stats.maxDamage * 100;
     
     // 자원 가중치 합산
-    const weights = { silver: 1, wood: 1, steel: 2, researchPoints: 5, component: 10, jade: 20, plasteel: 50, uranium: 100, food: 10 };
+    const weights = { silver: 1, wood: 1, steel: 2, researchPoints: 5, component: 10, jade: 20, plasteel: 50, uranium: 100, food: 1 };
     let resourceTotalScore = (stats.totalSilverSpent || 0) * weights.silver;
     Object.entries(stats.totalResourcesSpent).forEach(([key, amt]) => {
         const weight = weights[key] || 0;
