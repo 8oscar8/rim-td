@@ -1981,23 +1981,22 @@ export class UIManager {
     };
     document.getElementById('res-total-damage').textContent = formatNum(stats.totalDamageDealt || 0);
 
-    // [New] 정착지 상세 데이터 기초 계산
+    // [New] 정착지 위력 점수 계산식 2.0 (모든 지표 반영)
+    const elapsed = Math.floor((Date.now() - stats.startTime) / 1000) || 0; // 생존 초
     const avgMood = stats.moodTicks > 0 ? Math.floor(stats.moodSum / stats.moodTicks) : 0;
-    const prodBonusVal = (state.upgrades.logging + state.upgrades.mining + state.upgrades.farming) * 5; 
-    const elapsed = Math.floor((Date.now() - stats.startTime) / 1000); // 생존 초
-
-    // [V2] 통합 위력 점수 계산식
-    const baseScore = 10000;
-    const waveScore = state.waveNumber * 2000;
+    
+    // 1. 전투 지표
+    const waveScore = (state.waveNumber || 1) * 2000;
+    const maxDmgScore = (stats.maxDamage || 0) * 50; 
+    const totalDmgScore = (stats.totalDamageDealt || 0) * 0.1; // 10딜당 1점
+    
+    // 2. 관리 및 발전 지표
     const popScore = (stats.maxPopulationReached || 3) * 1000;
     const researchScore = (stats.totalResearchCompleted || 0) * 500;
-    const towerScore = (stats.towersBuilt || 0) * 100;
-    const moodBonus = avgMood * 100;
-    const prodScore = prodBonusVal * 200;
+    const moodScore = avgMood * 100;
+    const constructionScore = (stats.towersBuilt || 0) * 200;
     
-    const dmgScore = (stats.maxDamage * 10) + ((stats.totalDamageDealt || 0) / 100);
-    
-    // 자원 가중치 합산
+    // 3. 자원 가중치 합산 (기존 로직 유지)
     const weights = { silver: 1, wood: 1, steel: 2, researchPoints: 5, component: 10, jade: 20, plasteel: 50, uranium: 100, food: 1 };
     let resourceTotalScore = (stats.totalSilverSpent || 0) * weights.silver;
     Object.entries(stats.totalResourcesSpent).forEach(([key, amt]) => {
@@ -2005,13 +2004,24 @@ export class UIManager {
         resourceTotalScore += (Number(amt) || 0) * weight;
     });
 
-    const finalPowerScore = Math.max(0, baseScore + waveScore + popScore + researchScore + towerScore + moodBonus + prodScore + dmgScore + resourceTotalScore - (elapsed * 50));
-    this.lastCalculatedScore = finalPowerScore; // 등록 시 사용하기 위해 저장
+    const finalPowerScore = Math.max(0, 
+        10000 + // 기본 점수
+        waveScore + 
+        maxDmgScore + 
+        totalDmgScore + 
+        popScore + 
+        researchScore + 
+        moodScore + 
+        constructionScore + 
+        resourceTotalScore - 
+        (elapsed * 50)
+    );
+    
+    this.lastCalculatedScore = Math.floor(finalPowerScore); // 등록 시 사용하기 위해 정수 저장
 
-    document.getElementById('res-total-score').textContent = Math.floor(finalPowerScore).toLocaleString();
+    document.getElementById('res-total-score').textContent = this.lastCalculatedScore.toLocaleString();
     
     // [New] 정착지 상세 데이터 출력
-    const avgMood = stats.moodTicks > 0 ? Math.floor(stats.moodSum / stats.moodTicks) : 0;
     const prodBonus = (state.upgrades.logging + state.upgrades.mining + state.upgrades.farming) * 5; // 레벨당 5% 가정
 
     console.log("정착지 리포트 생성:", { 
