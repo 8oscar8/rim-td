@@ -1208,6 +1208,7 @@ class App {
         const { data, error } = await supabase
             .from('leaderboard')
             .select('*')
+            .order('wave', { ascending: false })
             .order('score', { ascending: false })
             .limit(10);
 
