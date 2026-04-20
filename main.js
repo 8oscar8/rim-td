@@ -448,7 +448,6 @@ class App {
     window.gameCore = this;
     
     this.ui.updateDisplays(this.state);
-    this.waveManager.startNextWave();
     this.loop.start();
   }
 

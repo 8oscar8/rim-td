@@ -183,6 +183,13 @@
         <!-- 2. 중앙 메인: 게임 화면 -->
         <main id="game-main">
             <div class="canvas-container">
+                <!-- [New] 중앙 대형 카운트다운 오버레이 -->
+                <div id="wave-countdown-overlay" class="wave-countdown-hidden">
+                    <div class="countdown-content">
+                        <span id="countdown-label">다음 웨이브까지</span>
+                        <span id="countdown-number">10</span>
+                    </div>
+                </div>
                 <!-- [New] 활성 이벤트 표시기 (맵 좌측 하단으로 이동) -->
                 <div id="active-events-container" class="map-event-container"></div>
                 <canvas id="game-canvas"></canvas>

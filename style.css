@@ -1072,3 +1072,69 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .idle-alert.hidden {
     display: none !important;
 }
+
+/* [New] 중앙 대형 카운트다운 오버레이 */
+#wave-countdown-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    pointer-events: none;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.countdown-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+#countdown-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+#countdown-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 8rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    animation: countdown-pulse 1s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.wave-countdown-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0.8) !important;
+}
+
+@keyframes countdown-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; text-shadow: 0 0 40px rgba(255, 255, 255, 0.4); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 3초 이하일 때 긴장감 극대화 (JS에서 클래스 추가 예정) */
+#wave-countdown-overlay.critical #countdown-number {
+    color: var(--accent-red);
+    animation: countdown-shake 0.1s infinite;
+}
+
+#wave-countdown-overlay.critical #countdown-label {
+    color: var(--accent-red);
+}
+
+@keyframes countdown-shake {
+    0% { transform: translate(-2px, -2px) scale(1.1); }
+    50% { transform: translate(2px, 2px) scale(1.1); }
+    100% { transform: translate(-2px, 2px) scale(1.1); }
+}

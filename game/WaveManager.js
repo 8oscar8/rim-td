@@ -18,9 +18,9 @@ export class WaveManager {
     this.spawnTimer = 0;
     this.spawnInterval = 1.0; 
     
-    this.nextWaveTimer = 110; // 라운드 사이 대기 시간 (1분 50초)
-    this.isWaveActive = false;
-    this.isWaveCompleted = false;
+    this.nextWaveTimer = 10; // 초기 시작 대기 시간 10초
+    this.isWaveActive = true; 
+    this.isWaveCompleted = true; // 초기에는 완료 상태로 시작하여 카운트다운 유발
     this.gameFinished = false;
     
     this.baseEnemyHp = 50;

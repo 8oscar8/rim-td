@@ -872,6 +872,31 @@ export class UIManager {
       const mins = Math.floor(totalSeconds / 60);
       const secs = totalSeconds % 60;
       this.timerVal.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+      // [New] 중앙 대형 카운트다운 연동
+      const overlay = document.getElementById('wave-countdown-overlay');
+      const countdownNum = document.getElementById('countdown-number');
+      const countdownLabel = document.getElementById('countdown-label');
+      
+      if (overlay && countdownNum) {
+          const isWaiting = this.app.waveManager && this.app.waveManager.isWaveCompleted;
+          
+          // 웨이브 대기 중이며 10초 이하일 때만 중앙 UI 노출
+          if (isWaiting && totalSeconds <= 10 && totalSeconds > 0) {
+              overlay.classList.remove('wave-countdown-hidden');
+              countdownNum.textContent = totalSeconds;
+              
+              if (countdownLabel) {
+                  countdownLabel.textContent = (state.waveNumber === 0) ? "첫 습격 시작까지" : "다음 습격까지";
+              }
+
+              // 3초 이하일 때 위기 연출 (빨간색 + 진동)
+              if (totalSeconds <= 3) overlay.classList.add('critical');
+              else overlay.classList.remove('critical');
+          } else {
+              overlay.classList.add('wave-countdown-hidden');
+          }
+      }
     }
     if (this.popVal) this.popVal.textContent = `${state.population} / ${state.maxPopulation}`;
     if (this.silverVal) this.silverVal.textContent = this.formatNumber(state.silver);
