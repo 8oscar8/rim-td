@@ -1984,9 +1984,13 @@ export class UIManager {
     const resContainer = document.getElementById('res-resource-list');
     if (resContainer) {
         resContainer.innerHTML = '';
-        const koRes = { wood: '목재', steel: '강철', plasteel: '플라스틸', component: '부품', uranium: '우라늄', jade: '비취', researchPoints: '연구' };
+        const koRes = { silver: '은화', wood: '목재', steel: '강철', plasteel: '플라스틸', component: '부품', uranium: '우라늄', jade: '비취', researchPoints: '연구 포인트', food: '식량' };
         
-        Object.entries(stats.totalResourcesSpent).forEach(([key, amt]) => {
+        // 은화는 별도 통계가 있으므로 병합하여 표시
+        const combinedResources = { ...stats.totalResourcesSpent };
+        if (stats.totalSilverSpent > 0) combinedResources.silver = stats.totalSilverSpent;
+
+        Object.entries(combinedResources).forEach(([key, amt]) => {
             if (amt > 0) {
                 const tag = document.createElement('div');
                 tag.className = 'res-tag';
