@@ -602,6 +602,7 @@ export class UIManager {
       if (this.lblAtk) this.lblAtk.textContent = "공격력";
       if (this.lblSpd) this.lblSpd.textContent = "공속";
       if (this.rowAp) this.rowAp.classList.remove('hidden');
+      if (this.rowSpd) this.rowSpd.classList.remove('hidden'); 
       if (this.rowRange) this.rowRange.classList.remove('hidden');
       if (this.rowShred) this.rowShred.classList.add('hidden'); // 일단 숨김 후 체크
 
