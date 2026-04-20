@@ -606,12 +606,16 @@ export class UIManager {
           if (this.lblDps) this.lblDps.textContent = "공격력 증가";
           if (this.lblAtk) this.lblAtk.textContent = "공격속도 증가";
           if (this.lblSpd) {
-              this.lblSpd.textContent = "방어 방어력"; // 또는 사거리 등 다른 정보로 활용 가능하나 일단 유지
+              this.lblSpd.textContent = "-"; 
               this.detailSpd.textContent = "-";
           }
           
-          this.detailDps.textContent = "+50%";
-          this.detailAtk.textContent = "+50%";
+          // 배율을 퍼센트 문구로 변환 (1.32 -> +32%)
+          const bonusPct = Math.round((tower.auraMultiplier - 1) * 100);
+          const bonusText = `+${bonusPct}%`;
+
+          this.detailDps.textContent = bonusText;
+          this.detailAtk.textContent = bonusText;
           if (this.detailAtkBonus) this.detailAtkBonus.textContent = "";
           if (this.detailSpdBonus) this.detailSpdBonus.textContent = "";
           
@@ -619,8 +623,7 @@ export class UIManager {
           if (this.rowSpd) this.rowSpd.classList.add('hidden'); // 공속행 숨김
           
           this.detailRange.textContent = tower.range || 0;
-          this.detailGrade.textContent = `[MYTHIC]`;
-          this.detailGrade.style.color = "var(--accent-gold)";
+          this.detailGrade.textContent = ""; // [Grade Hidden] 등급 표시 제거
           this.detailType.textContent = "전략 도구";
           return; 
       }
