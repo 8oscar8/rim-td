@@ -2003,6 +2003,13 @@ export class UIManager {
     const avgMood = stats.moodTicks > 0 ? Math.floor(stats.moodSum / stats.moodTicks) : 0;
     const prodBonus = (state.upgrades.logging + state.upgrades.mining + state.upgrades.farming) * 5; // 레벨당 5% 가정
 
+    console.log("정착지 리포트 생성:", { 
+        연구: stats.totalResearchCompleted, 
+        최대인구: stats.maxPopulationReached, 
+        생산보너스: prodBonus, 
+        평균무드: avgMood 
+    });
+
     document.getElementById('res-total-research').textContent = `${stats.totalResearchCompleted || 0}건`;
     document.getElementById('res-max-pop').textContent = `${stats.maxPopulationReached || 3}명`;
     document.getElementById('res-prod-bonus').textContent = `+${prodBonus}%`;

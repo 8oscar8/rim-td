@@ -1189,7 +1189,10 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 
 /* 2-Column Result Modal Layout */
 #result-modal .result-content {
-    max-width: 900px; width: 95%; max-height: 90vh; overflow-y: auto;
+    width: 900px !important; 
+    max-width: 95vw;
+    max-height: 90vh; 
+    overflow-y: auto;
 }
 
 .result-columns {
@@ -1235,7 +1238,7 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 }
 
 /* Modal Responsiveness */
-@media (max-width: 800px) {
+@media (max-width: 600px) {
     .result-columns { grid-template-columns: 1fr; }
 }
 
