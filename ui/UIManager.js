@@ -2014,6 +2014,7 @@ export class UIManager {
     document.getElementById('res-max-pop').textContent = `${stats.maxPopulationReached || 3}명`;
     document.getElementById('res-prod-bonus').textContent = `+${prodBonus}%`;
     document.getElementById('res-avg-mood').textContent = `${avgMood}%`;
+    document.getElementById('res-towers-built').textContent = `${stats.towersBuilt || 0}회`;
 
     const maxDmgStr = stats.maxDamage > 0 ? `${stats.maxDamage.toLocaleString()} (${stats.maxDamageUnit})` : '0 (없음)';
     document.getElementById('res-max-dmg').textContent = maxDmgStr;
