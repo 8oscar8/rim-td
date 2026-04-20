@@ -166,7 +166,7 @@ export class GachaSystem {
     }
 
     // 2. 해당 등급 무기 추출 (산탄총 배제 해제)
-    const excludeEffects = ['emp', 'smoke', 'burn_fear', 'toxin', 'aura_persona'];
+    const excludeEffects = ['emp', 'smoke', 'burn_fear', 'toxin', 'aura_persona', 'max_hp_percent'];
     const availableWeapons = Object.entries(WEAPON_DB)
       .filter(([name, data]) => data.grade === selectedGrade && !excludeEffects.includes(data.effect))
       .map(([name, data]) => ({ name, ...data }));
