@@ -119,8 +119,9 @@ export class Tower {
     // [Hidden Reward] 근위대의 가호: 1.2배 공속
     const imperialMul = this.gameCore.state.imperialBuff ? 1.2 : 1.0;
     const personaSpdMul = (this.personaBuffTimer > 0) ? (this.personaBuffValue || 1.0) : 1.0; 
+    const moodMul = (this.gameCore.state.mood >= 85) ? 1.1 : 1.0;
     
-    return this.baseAttackSpeed * auraMul * goJuiceMul * globalMul * imperialMul * personaSpdMul;
+    return this.baseAttackSpeed * auraMul * goJuiceMul * globalMul * imperialMul * personaSpdMul * moodMul;
   }
 
   /**
