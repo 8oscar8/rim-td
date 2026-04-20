@@ -8,7 +8,7 @@ export class TutorialManager {
         this.currentStep = 0;
         this.tutorialData = [
             {
-                msg: "📡 [긴급 무전]\n반갑습니다, 관리자님. 이곳은 변방계의 척박한 정착지입니다. \n\n곧 대규모 습격이 시작될 예정입니다. 살아남기 위해 기지를 방어해야 합니다.",
+                msg: "📡 [긴급 무전]\n반갑습니다, 관리자님. 당신은 변방계의 척박한 행성에 불시착했습니다. \n\n우주선이 재가동되기까지 총 100번의 웨이브를 버텨내야 합니다. 곧 대규모 습격이 시작됩니다. 살아남기 위해 기지를 방어하십시오!",
                 mission: null,
                 canNext: true
             },
@@ -20,15 +20,15 @@ export class TutorialManager {
                 pointer: '#btn-buy-random'
             },
             {
-                msg: "성공적이군요. 이제 정착민들을 실제 작업에 투입해야 합니다.\n\n왼쪽 사이드바를 마우스 휠로 끝까지 내려서 [정착민 파견 관리] 구역을 찾아보세요.",
+                msg: "성공적이군요. 이제 정착민들을 실제 작업에 투입해야 합니다.\n\n오른쪽 사이드바를 마우스 휠로 끝까지 내려서 [정착민 파견 관리] 구역을 찾아보세요.",
                 mission: "휠을 내려 파견 관리 확인하기",
                 canNext: false,
                 trigger: 'view_dispatch',
                 pointer: '.work-management'
             },
             {
-                msg: "좋습니다. 이제 노는 정착민들을 모두 작업에 배정해 봅시다.\n\n각 항목의 [+] 버튼이나 단축키를 사용해 대기 중인 정착민을 0명으로 만들어보세요.",
-                mission: "대기 중인 정착민 모두 배정하기 (0명 만들기)",
+                msg: "좋습니다. 이곳에 정착민을 배정하면 식량, 연구 포인트, 목재, 강철 같은 생존 자원을 지속적으로 생산할 수 있습니다.\n\n각 항목의 [+] 버튼이나 단축키를 사용해 대기 중인 모든 정착민을 0명이 될 때까지 배정해 보세요.",
+                mission: "모든 정착민을 작업에 배정하기 (0명 만들기)",
                 canNext: false,
                 trigger: 'assign_all_workers',
                 pointer: '.btn-circle.plus'
@@ -48,7 +48,13 @@ export class TutorialManager {
                 pointer: '#up-ranged' 
             },
             {
-                msg: "훈련을 통해 기초 화력을 갖추셨군요. 아주 좋습니다!\n\n다음으로 상단 [제작] 탭으로 이동해 보세요.",
+                msg: "훈련을 통해 기초 화력을 갖추셨군요. 아주 좋습니다!\n\n무기 강화 아래쪽을 보시면 [생산 및 파견 강화] 항목들이 있습니다. \n\n이곳에서 파견 효율을 높여 자원 수급량을 늘릴 수 있다는 점도 잊지 마세요!",
+                mission: "생산 및 파견 강화 확인하기",
+                canNext: true,
+                pointer: '.prod-up' // 생산 강화 버튼들 중 하나 가리키기
+            },
+            {
+                msg: "자원도 넉넉히 모으셨다면 이제 상단 [제작] 탭으로 이동해 보세요.",
                 mission: "[제작] 탭 클릭하기",
                 canNext: false,
                 trigger: 'switch_tab_craft',
@@ -62,14 +68,26 @@ export class TutorialManager {
                 pointer: '.tab-btn[data-tab="special"]'
             },
             {
-                msg: "잘하셨습니다. 이제 왼쪽 사이드바를 마우스 휠로 아래로 내려보세요.\n\n이곳에서는 전투에 큰 도움을 주는 [특수 소모품]을 제작하여 사용할 수 있습니다.",
+                msg: "무사히 [특수] 탭에 도착하셨군요! 이곳은 전투의 향방을 결정지을 강력한 [특수 소모품]들을 제작하고 사용할 수 있는 공간입니다.",
+                mission: "특수 소모품 구역 살펴보기",
+                canNext: true,
+                pointer: '.tab-pane.active'
+            },
+            {
+                msg: "이제 왼쪽 사이드바를 마우스 휠로 아래로 내려보세요.\n\n이곳에 나열된 아이템들을 제작하여 비상시에 사용할 수 있습니다.",
                 mission: "휠을 내려 [특수 아이템] 확인하기",
                 canNext: false,
                 trigger: 'view_special_items',
                 pointer: '.item-section'
             },
             {
-                msg: "수고하셨습니다! 소모품은 위급한 순간에 전세를 역전시킬 강력한 수단입니다.\n\n[무전 종료] 모든 기초 지식을 습득하셨습니다. 관리자님의 정착지에 번영이 가득하기를!",
+                msg: "수고하셨습니다! 소모품은 위급한 순간에 전세를 역전시킬 강력한 수단입니다.\n\n정말 마지막으로, 왼쪽 상단의 [정착지 무드]를 확인해 보세요.",
+                mission: "정착민 무드 상태 확인하기",
+                canNext: true,
+                pointer: '.mood-card'
+            },
+            {
+                msg: "무드(기분)가 25% 이하로 떨어지면 정착민들이 파업을 하거나 정신 이상을 일으킬 수 있습니다.\n\n항상 무드가 관리되도록 신경 써주세요. \n\n[무전 종료] 기초 교육을 모두 마칩니다. 행운을 빌니다!",
                 mission: null,
                 canNext: true
             }
@@ -116,10 +134,13 @@ export class TutorialManager {
         if (step.mission) {
             this.missionEl.classList.remove('hidden');
             this.missionText.textContent = step.mission;
-            this.nextBtn.style.display = 'none'; // 미션이 있으면 '다음' 버튼 숨김
         } else {
             this.missionEl.classList.add('hidden');
-            this.nextBtn.style.display = 'block';
+        }
+
+        // '다음' 버튼 노출 여부는 canNext 속성에 따름
+        if (this.nextBtn) {
+            this.nextBtn.style.display = step.canNext ? 'block' : 'none';
         }
 
         // [New] 화살표 위치 업데이트
@@ -133,6 +154,19 @@ export class TutorialManager {
             s.steel = Math.max(s.steel, 1);
             s.plasteel = Math.max(s.plasteel, 1);
             this.app.ui.updateDisplays(s);
+        }
+
+        // 버튼 노출 및 텍스트 정밀 제어
+        const isLastStep = this.currentStep === this.tutorialData.length - 1;
+
+        // '다음' 버튼: 마지막 단계가 아니고 canNext가 true일 때만 표시
+        if (this.nextBtn) {
+            this.nextBtn.style.display = (step.canNext && !isLastStep) ? 'block' : 'none';
+        }
+
+        // '건너뛰기/완료' 버튼: 마지막 단계에서만 '완료'로 변경
+        if (this.skipBtn) {
+            this.skipBtn.textContent = isLastStep ? "튜토리얼 완료" : "튜토리얼 건너뛰기";
         }
     }
 
