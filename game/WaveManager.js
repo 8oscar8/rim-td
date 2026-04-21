@@ -270,9 +270,11 @@ export class WaveManager {
     
     switch(type) {
         case 'ImperialGuard':
-            boss = new Enemy(this.waypoints, baseHp, 1000, 'mech', true, armor, 'special_제국근위대장.webp');
+            // [Balance] 100라운드 기준 실드 포함 2000만이 되도록 하향 (7배 + 3배 = 10배)
+            boss = new Enemy(this.waypoints, baseHp * 0.35, 1000, 'mech', true, armor, 'special_제국근위대장.webp');
             boss.name = '제국 근위대장';
-            boss.shield = baseHp * 0.5;
+            boss.shield = baseHp * 0.15;
+            boss.shieldMax = baseHp * 0.15; // 실드 재생을 위해 최대치 설정
             break;
         case 'AlphaThrumbo':
             // [Balance] 100라운드 기준 체력이 약 2500만이 되도록 계수 조정 (baseHp * 0.625 = 12.5배)
@@ -312,9 +314,10 @@ export class WaveManager {
       const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 30);
       
       // 1. 근위대장 (보스) 스폰
-      const boss = new Enemy(this.waypoints, baseHp * 1.5, 1000, 'mech', true, armor * 1.2, 'special_제국근위대장.webp');
+      // [Balance] 100라운드 기준 합계 2000만이 되도록 하향 (baseHp * 0.35 = 7배 / 실드 0.15 = 3배)
+      const boss = new Enemy(this.waypoints, baseHp * 0.35, 1000, 'mech', true, armor * 1.2, 'special_제국근위대장.webp');
       boss.name = '제국 근위대장';
-      boss.shieldMax = baseHp * 0.5;
+      boss.shieldMax = baseHp * 0.15;
       boss.shield = boss.shieldMax;
       
       const originalDeath = boss.takeDamage.bind(boss);
@@ -331,10 +334,11 @@ export class WaveManager {
       // 2. 근위병 (정예) 12개체 스폰
       let spawned = 0;
       const interval = setInterval(() => {
-          const guard = new Enemy(this.waypoints, baseHp * 0.3, 150, 'mech', false, armor * 0.8, 'special_제국정예병.webp');
+          // [Balance] 100라운드 기준 합계 600만이 되도록 하향 (baseHp * 0.1 = 2배 / 실드 0.05 = 1배)
+          const guard = new Enemy(this.waypoints, baseHp * 0.1, 150, 'mech', false, armor * 0.8, 'special_제국정예병.webp');
           guard.name = '제국 근위병';
           guard.speed *= 1.3; // 정예병이므로 빠름
-          guard.shieldMax = baseHp * 0.1;
+          guard.shieldMax = baseHp * 0.05;
           guard.shield = guard.shieldMax;
           
           const gDeath = guard.takeDamage.bind(guard);
