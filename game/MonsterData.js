@@ -52,5 +52,55 @@ export const FIXED_MONSTER_LIST = [
     { name: "중무장용병", type: "organic", img: "47.중무장용병.webp" },     // 47
     { name: "엘리트용병", type: "organic", img: "48.엘리트용병.webp" },     // 48
     { name: "정예용병", type: "organic", img: "49.정예용병.webp" },       // 49
-    { name: "용병대장", type: "organic", boss: true, img: "50.용병대장.webp" } // 50
+    { name: "용병대장", type: "organic", boss: true, img: "50.용병대장.webp" }, // 50
+    { name: "밀리터", type: "mech", img: "51.밀리터.webp" },            // 51
+    { name: "리저너리", type: "mech", img: "52.리저너리.webp" },         // 52
+    { name: "테서론", type: "mech", img: "53.테서론.webp" },           // 53
+    { name: "스코처", type: "mech", img: "54.스코처.webp" },           // 54
+    { name: "사이더", type: "mech", img: "55.사이더.webp" },           // 55
+    { name: "랜서", type: "mech", img: "56.랜서.webp" },             // 56
+    { name: "파이크맨", type: "mech", img: "57.파이크맨.webp" },           // 57
+    { name: "센티피드", type: "mech", img: "58.센티피드.webp" },         // 58
+    { name: "터마이트", type: "mech", img: "59.터마이트.webp" },         // 59
+    { name: "워퀸", type: "mech", boss: true, img: "60.워퀸.webp" },    // 60
+    { name: "터널러", type: "mech", img: "61.터널러.webp" },           // 61
+    { name: "센츄리온", type: "mech", img: "62.센츄리온.webp" },         // 62
+    { name: "사이클롭스", type: "mech", img: "63.사이클롭스.webp" },         // 63
+    { name: "디아볼루스", type: "mech", img: "64.디아볼루스.webp" },         // 64
+    { name: "아포크리톤", type: "mech", img: "65.아포크리톤.webp" },         // 65
+    { name: "돌격병", type: "organic", img: "66.돌격병.webp" },         // 66
+    { name: "제국척탄병", type: "organic", img: "67.제국척탄병.webp" },       // 67
+    { name: "제국친위대", type: "organic", img: "68.제국친위대.webp" },       // 68
+    { name: "용사", type: "organic", img: "69.용사.webp" },            // 69
+    { name: "수여자", type: "organic", boss: true, img: "70.수여자.webp" }, // 70
+    { name: "중무장병", type: "organic", img: "71.중무장병.webp" },         // 71
+    { name: "종사", type: "organic", img: "72.종사.webp" },            // 72
+    { name: "수련생", type: "organic", img: "73.수련생.webp" },           // 73
+    { name: "기사", type: "organic", img: "74.기사.webp" },            // 74
+    { name: "법무관", type: "organic", img: "75.법무관.webp" },           // 75
+    { name: "남작", type: "organic", img: "76.남작.webp" },            // 76
+    { name: "공작", type: "organic", img: "77.공작.webp" },            // 77
+    { name: "별의감시자", type: "organic", img: "78.별의감시자.webp" },       // 78
+    { name: "별의수호자", type: "organic", img: "79.별의수호자.webp" },       // 79
+    { name: "항성군주", type: "organic", boss: true, img: "80.항성군주.webp" }, // 80
+    { name: "상급하수인", type: "organic", img: "81.상급하수인.webp" },       // 81
+    { name: "쐐기촉수", type: "organic", img: "82.쐐기촉수.webp" },         // 82
+    { name: "삼발촉수", type: "organic", img: "83.삼발촉수.webp" },         // 83
+    { name: "갑옷촉수", type: "organic", img: "84.갑옷촉수.webp" },         // 84
+    { name: "살종양", type: "organic", img: "85.살종양.webp" },          // 85
+    { name: "살덩이심장", type: "organic", img: "86.살덩이심장.webp" },       // 86
+    { name: "암귀", type: "organic", img: "87.암귀.webp" },            // 87
+    { name: "구울", type: "organic", img: "88.구울.webp" },            // 88
+    { name: "휘청이는자", type: "organic", img: "89.휘청이는자.webp" },       // 89
+    { name: "고통구체", type: "organic", boss: true, img: "90.고통구체.webp" }, // 90
+    { name: "키메라", type: "organic", img: "91.키메라.webp" },           // 91
+    { name: "걸신", type: "organic", img: "92.걸신.webp" },            // 92
+    { name: "가시괴인", type: "organic", img: "93.가시괴인.webp" },         // 93
+    { name: "메탈호러", type: "organic", img: "94.메탈호러.webp" },         // 94
+    { name: "죽음안개", type: "organic", img: "95.죽음안개.webp" },         // 95
+    { name: "피의비", type: "organic", img: "96.피의비.webp" },           // 96
+    { name: "뒤틀린오벨리스크", type: "organic", img: "97.뒤틀린오벨리스크.webp" }, // 97
+    { name: "타락한오벨리스크", type: "organic", img: "98.타락한오벨리스크.webp" }, // 98
+    { name: "비뚤어진오벨리스크", type: "organic", img: "99.비뚤어진오벨리스크.webp" }, // 99
+    { name: "타이난", type: "organic", boss: true, img: "100.타이난.webp" } // 100
 ];
