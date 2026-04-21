@@ -1309,7 +1309,7 @@ class App {
             .select('*')
             .order('wave', { ascending: false })
             .order('score', { ascending: false })
-            .limit(10);
+            .limit(30);
 
         if (error) throw error;
 

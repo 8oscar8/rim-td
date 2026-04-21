@@ -1230,6 +1230,7 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
 .result-section {
     text-align: left; padding: 15px; 
     background: #0a0b0c; border-radius: 12px; border: 1px solid #1c1e21;
+    max-height: 300px; overflow-y: auto; /* [New] 30위까지 표시할 수 있도록 스크롤 추가 */
 }
 .result-section h4 { 
     font-size: 11px; color: var(--text-muted); margin-bottom: 10px; 
