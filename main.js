@@ -10,6 +10,7 @@ import { GachaSystem } from './game/GachaSystem.js';
 
 import { EncounterManager } from './game/EncounterManager.js';
 import { HiddenEventManager } from './game/HiddenEventManager.js';
+import { bgmManager } from './engine/BGMManager.js';
 import { ITEM_DB } from './game/WeaponData.js';
 import { TutorialManager } from './core/TutorialManager.js';
 
@@ -86,8 +87,10 @@ class App {
     // [New] 게임 설정 로드
     this.loadSettings();
 
-    // 불러온 설정을 사운드 매니저에 즉시 반영
+    // 불러온 설정을 사운드 매니저 및 BGM 매니저에 즉시 반영
     SoundManager.updateVolumes(this.state.settings);
+    const initialBgmVol = (this.state.settings.masterVolume || 1.0) * (this.state.settings.bgmVolume || 0.5);
+    bgmManager.init(initialBgmVol);
 
     this.init();
   }
@@ -737,6 +740,9 @@ class App {
   handleWaveStart(num) {
     this.state.waveNumber = num;
     SoundManager.playSFX('assets/audio/raid_alert.mp3');
+    
+    // [New] BGM 98라운드 전환 체크
+    bgmManager.checkWave(num);
   }
 
   /**
@@ -1993,8 +1999,10 @@ class App {
     const key = `${category}Volume`;
     this.state.settings[key] = parseFloat(value);
     
-    // 사운드 매니저에 즉시 반영
+    // 사운드 매니저 및 BGM 매니저에 즉시 반영
     SoundManager.updateVolumes(this.state.settings);
+    const finalBgmVol = (this.state.settings.masterVolume || 1.0) * (this.state.settings.bgmVolume || 0.5);
+    bgmManager.setVolume(finalBgmVol);
     
     // 설정 저장 (디바운싱 없이 바로 저장해도 사운드 설정은 가벼움)
     this.saveSettings();
