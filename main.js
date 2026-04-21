@@ -1669,7 +1669,12 @@ class App {
     this.ui.updateDisplays(this.state);
     
     // 이펙트 레이어 등에 연출 추가 가능
-    SoundManager.playSFX('assets/audio/BuyThing.ogg'); // 던지는 소리 등으로 대체 가능
+    // [Sound] 아이템 종류별 사용 사운드 재생
+    if (type.includes('grenade')) {
+        SoundManager.playSFX('assets/audio/특수무기사용시/수류탄사용사운드.ogg');
+    } else {
+        SoundManager.playSFX('assets/audio/BuyThing.ogg');
+    }
   }
 
   /**
