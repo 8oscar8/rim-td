@@ -388,15 +388,19 @@ export class Enemy {
     }
 
     // [New] 초재생/재생 효과 연출 (초록색 펄스 오오라)
+    // [New] 초재생/재생 효과 연출 (몬스터 크기에 맞춘 오오라)
     if (this.hpRegen > 0 && this.hp < this.maxHp && this.active) {
       ctx.save();
-      const pulse = Math.sin(Date.now() * 0.01) * 3;
-      ctx.strokeStyle = `rgba(0, 255, 120, ${0.4 + pulse/10})`;
-      ctx.lineWidth = 3;
-      ctx.setLineDash([5, 5]);
-      ctx.lineDashOffset = -Date.now() * 0.05;
+      const pulse = Math.sin(Date.now() * 0.005) * 5; // 애니메이션 속도 완화
+      const auraRadius = this.isBoss ? this.radius * 3.2 : this.radius + 4; // 보스는 몸집에 맞게 크게
+      
+      ctx.strokeStyle = `rgba(0, 255, 120, ${0.2 + (pulse+5)/40})`; // 더 은은한 투명도
+      ctx.lineWidth = this.isBoss ? 2 : 1.5; // 더 얇은 선
+      ctx.setLineDash([8, 10]); // 더 긴 간격의 점선
+      ctx.lineDashOffset = -Date.now() * 0.02;
+      
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.radius + 4 + pulse, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, auraRadius + pulse, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }

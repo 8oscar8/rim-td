@@ -892,6 +892,17 @@ export class UIManager {
       this.detailRange.textContent = "-";
       this.detailSpd.textContent = enemy.speed;
 
+      // [New] 몬스터 특수 효과 표시 (재생 등)
+      if (enemy.hpRegen > 0 && this.rowEffect && this.detailEffect) {
+          const regenPct = (enemy.hpRegen / enemy.maxHp * 100).toFixed(1);
+          this.rowEffect.classList.remove('hidden');
+          this.detailEffect.textContent = `초재생 (초당 ${regenPct}%)`;
+          this.detailEffect.style.color = "var(--accent-green)"; // 초록색 강조
+      } else if (this.rowEffect) {
+          this.rowEffect.classList.add('hidden');
+          this.detailEffect.style.color = "";
+      }
+
       // 조합 버튼 숨기기
       if (this.combineUnitBtn) this.combineUnitBtn.classList.add('hidden');
       
