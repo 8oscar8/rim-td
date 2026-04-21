@@ -1194,7 +1194,7 @@ class App {
             }
 
             if (result) {
-                SoundManager.playSFX('assets/audio/BuyThing.ogg');
+                SoundManager.playSFX('assets/audio/제작.ogg');
                 this.startPlacement(result);
                 this.ui.showNotification("조합 성공!", `새로운 ${result.weaponData.grade} 등급 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
             }
