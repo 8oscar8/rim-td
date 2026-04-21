@@ -46,7 +46,10 @@ export class SpriteManager {
       '결속 단분자검': 'assets/rimworld/단분자검.webp',
       '인공자아핵': 'assets/인공자아핵.webp',
       '신경석궁': 'assets/신경석궁.webp',
-      '시원한 은행가는 길': 'assets/시원한은행가는길.webp'
+      '시원한 은행가는 길': 'assets/시원한은행가는길.webp',
+      '궤도 폭격': 'assets/궤도폭격기.webp',
+      '정신충격창': 'assets/정신충격창.webp',
+      '고주스': 'assets/고주스.webp'
     };
 
     // 무기/아이템 로드
@@ -68,7 +71,11 @@ export class SpriteManager {
     });
 
     // [New] 특수 인카운터 몬스터 이미지 로드
-    const specialMonsters = ['메가스카라브.webp', '메가스파이더.webp', '스펠로피드.webp', '알파트럼보.webp'];
+    const specialMonsters = [
+        '메가스카라브.webp', '메가스파이더.webp', '스펠로피드.webp', 
+        '알파트럼보.webp', '암흑모노리스.webp', '제국근위대장.webp', 
+        '제국정예병.webp', '상단경호원.webp'
+    ];
     specialMonsters.forEach(filename => {
         const img = new Image();
         img.src = `assets/specialmonster/${filename}`;

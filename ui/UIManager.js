@@ -640,8 +640,27 @@ export class UIManager {
           this.detailType.textContent = "전략 도구";
 
           // [New] 원시 능력치 표시
-          if (this.detailBaseAtk) this.detailBaseAtk.textContent = tower.baseDamage || 0;
-          if (this.detailBaseSpd) this.detailBaseSpd.textContent = `${(tower.baseAttackSpeed || 0).toFixed(2)}/s`;
+          if (this.detailBaseAtk) {
+              this.detailBaseAtk.textContent = tower.baseDamage || 0;
+              this.detailBaseAtk.closest('div')?.classList.remove('hidden');
+          }
+          if (this.detailBaseSpd) {
+              this.detailBaseSpd.textContent = `${(tower.baseAttackSpeed || 0).toFixed(2)}/s`;
+              this.detailBaseSpd.closest('div')?.classList.remove('hidden');
+          }
+          if (this.lblAp) this.lblAp.textContent = "방관";
+          if (this.lblDps) this.lblDps.textContent = "DPS";
+          if (this.lblAtk) this.lblAtk.textContent = "공격력";
+          if (this.lblRange) this.lblRange.textContent = "사거리";
+          if (this.lblSpd) this.lblSpd.textContent = "공속";
+          
+          if (this.rowRange) this.rowRange.classList.remove('hidden');
+          if (this.rowSpd) this.rowSpd.classList.remove('hidden');
+          
+          if (this.detailAp) {
+              this.detailAp.style.color = "";
+              this.detailAp.style.animation = "none";
+          }
 
           return; 
       }
@@ -683,10 +702,33 @@ export class UIManager {
       
       this.detailRange.textContent = tower.range || 0;
 
-      // [New] 원시 능력치 표시
-      if (this.detailBaseAtk) this.detailBaseAtk.textContent = tower.baseDamage || 0;
-      if (this.detailBaseSpd) this.detailBaseSpd.textContent = `${(tower.baseAttackSpeed || 0).toFixed(2)}/s`;
+      // [New] 원시 능력치 표시 (몬스터 창에서 숨겼을 수 있으므로 복구)
+      if (this.detailBaseAtk) {
+          this.detailBaseAtk.textContent = tower.baseDamage || 0;
+          this.detailBaseAtk.closest('div')?.classList.remove('hidden');
+      }
+      if (this.detailBaseSpd) {
+          this.detailBaseSpd.textContent = `${(tower.baseAttackSpeed || 0).toFixed(2)}/s`;
+          this.detailBaseSpd.closest('div')?.classList.remove('hidden');
+      }
+      
       this.detailSpd.textContent = `${spd.toFixed(2)}/s`;
+      
+      // 레이블 및 행 복구 (몬스터 창에서 변경했을 수 있으므로)
+      if (this.lblDps) this.lblDps.textContent = "DPS";
+      if (this.lblAtk) this.lblAtk.textContent = "공격력";
+      if (this.lblRange) this.lblRange.textContent = "사거리";
+      if (this.lblSpd) this.lblSpd.textContent = "공속";
+      
+      if (this.rowRange) this.rowRange.classList.remove('hidden');
+      if (this.rowSpd) this.rowSpd.classList.remove('hidden');
+
+      // 방관 레이블 및 효과 초기화 (보스 타이머 잔재 제거)
+      if (this.lblAp) this.lblAp.textContent = "방관";
+      if (this.detailAp) {
+          this.detailAp.style.color = "";
+          this.detailAp.style.animation = "none";
+      }
       
       // 공속 보너스 계산 및 표시
       const baseAttackSpd = tower.baseAttackSpeed || 1;
@@ -807,20 +849,39 @@ export class UIManager {
       const typeNames = { organic: '생체', mech: '기계' };
       this.detailType.textContent = typeNames[enemy.type] || enemy.type;
       
-      // 레이블 변경
+      // 레이블 정정 및 불필요한 행 숨김
       if (this.lblDps) this.lblDps.textContent = "체력";
       if (this.lblAtk) this.lblAtk.textContent = "방어력";
-      if (this.lblSpd) this.lblSpd.textContent = "속도";
+      if (this.lblSpd) this.lblSpd.textContent = "이속"; // 공속 대신 이속으로 표시
       
       // 불필요한 행 숨기기 (사거리, 방관)
-      if (this.rowAp) this.rowAp.classList.add('hidden');
       if (this.rowRange) this.rowRange.classList.add('hidden');
-      if (this.rowShred) this.rowShred.classList.add('hidden'); // 몬스터는 방깎 표시 안 함
-
-      // HP 정보 (DPS 위치에 표시)
-      const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
+      if (this.rowSpd) this.rowSpd.classList.remove('hidden'); // 이속은 보여야 함
+      if (this.rowAp) this.rowAp.classList.add('hidden');
+      if (this.rowShred) this.rowShred.classList.add('hidden');
+      
+      // HP 정보 (쉼표 적용 및 폰트 조절)
+      const hpVal = Math.floor(enemy.hp).toLocaleString();
+      const maxHpVal = Math.floor(enemy.maxHp).toLocaleString();
+      const hpText = `${hpVal} / ${maxHpVal}`;
       this.detailDps.textContent = hpText;
       this.detailDps.classList.remove('buff-text');
+      this.detailDps.style.fontSize = (hpText.length > 20) ? "0.8rem" : "0.9rem";
+      
+      // 보너스 및 기본 정보 숨기기 (공통 레이아웃 잔재 제거)
+      if (this.detailAtkBonus) this.detailAtkBonus.textContent = ""; 
+      if (this.detailSpdBonus) this.detailSpdBonus.textContent = "";
+      if (this.detailBaseAtk) this.detailBaseAtk.closest('div')?.classList.add('hidden');
+      if (this.detailBaseSpd) this.detailBaseSpd.closest('div')?.classList.add('hidden');
+      
+      // [New] 보스 전용 타이머 표시 (AP 행 재활용)
+      if (enemy.isBoss && enemy.bossTimerMax > 0 && this.rowAp && this.lblAp && this.detailAp) {
+          this.rowAp.classList.remove('hidden');
+          this.lblAp.textContent = "처치 제한";
+          this.detailAp.textContent = Math.ceil(enemy.bossTimer) + "초";
+          this.detailAp.style.color = "var(--accent-red)";
+          this.detailAp.style.fontWeight = "bold";
+      }
       
       // 방어력 정보 (공격력 위치에 표시)
       this.detailAtk.textContent = Math.floor(enemy.armor);
@@ -848,13 +909,26 @@ export class UIManager {
       return;
     }
 
-    // 1. HP 정보 갱신
-    const hpText = `${Math.floor(enemy.hp)} / ${Math.floor(enemy.maxHp)}`;
-    let finalHpText = hpText;
+    // 1. HP 정보 갱신 (쉼표 적용)
+    const hpVal = Math.floor(enemy.hp).toLocaleString();
+    const maxHpVal = Math.floor(enemy.maxHp).toLocaleString();
+    let finalHpText = `${hpVal} / ${maxHpVal}`;
+    
     if (enemy.shield > 0) {
-      finalHpText += ` (+${Math.floor(enemy.shield)} SHIELD)`;
+      finalHpText += ` (+${Math.floor(enemy.shield).toLocaleString()} SHIELD)`;
     }
     if (this.detailDps) this.detailDps.textContent = finalHpText;
+
+    // 2. 보스 타이머 실시간 갱신
+    if (enemy.isBoss && this.detailAp) {
+        this.detailAp.textContent = Math.ceil(enemy.bossTimer) + "초";
+        // 10초 미만일 시 빨간색 깜빡임 효과
+        if (enemy.bossTimer < 10) {
+            this.detailAp.style.animation = "pulse 0.5s infinite";
+        } else {
+            this.detailAp.style.animation = "none";
+        }
+    }
 
     // 2. 방어력 실시간 갱신 (방깎 반영)
     if (this.detailAtk) {

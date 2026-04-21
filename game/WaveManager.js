@@ -172,6 +172,13 @@ export class WaveManager {
       }
       return died;
     };
+    
+    // [New] 제국군 구간 (66~81라운드) 보호막 부여
+    if (this.waveNumber >= 66 && this.waveNumber <= 81) {
+        enemy.shieldMax = enemy.maxHp * 0.2; // 일반 제국군 20%
+        enemy.shield = enemy.shieldMax;
+    }
+    
     enemiesList.push(enemy);
   }
 
@@ -209,6 +216,13 @@ export class WaveManager {
       }
       return died;
     };
+
+    // [New] 제국군 구간 (66~81라운드) 보스 보호막 부여
+    if (this.waveNumber >= 66 && this.waveNumber <= 81) {
+        enemy.shieldMax = enemy.maxHp * 0.5; // 제국 보스 50%
+        enemy.shield = enemy.shieldMax;
+    }
+
     enemiesList.push(enemy);
   }
 
@@ -224,7 +238,7 @@ export class WaveManager {
     const caravanCount = 5;
     const armor = Math.floor(this.waveNumber * 0.5); // 상단은 방어력이 낮음
     for (let i = 0; i < caravanCount; i++) {
-        const muffalo = new Enemy(this.waypoints, 500, 200, 'organic', false, armor);
+        const muffalo = new Enemy(this.waypoints, 500, 200, 'organic', false, armor, '21.머팔로.webp');
         muffalo.name = '짐 실은 머팔로';
         muffalo.speed *= 0.6;
         
@@ -252,18 +266,19 @@ export class WaveManager {
     
     switch(type) {
         case 'ImperialGuard':
-            boss = new Enemy(this.waypoints, baseHp, 1000, 'mech', true, armor);
+            boss = new Enemy(this.waypoints, baseHp, 1000, 'mech', true, armor, 'special_제국근위대장.webp');
             boss.name = '제국 근위대장';
             boss.shield = baseHp * 0.5;
             break;
         case 'AlphaThrumbo':
-            boss = new Enemy(this.waypoints, baseHp * 2, 2000, 'organic', true, armor * 0.5);
+            // [Image Matching] 특수 몬스터 전용 스프라이트 적용
+            boss = new Enemy(this.waypoints, baseHp * 2, 2000, 'organic', true, armor * 0.5, 'special_알파트럼보.webp');
             boss.name = '알파 트럼보';
             boss.hpRegen = boss.maxHp * 0.025; // 초재생 능력: 초당 최대 체력의 2.5% 회복
             break;
         case 'DarkMonolith':
             // 저등급 유닛만 데미지를 줄 수 있으므로 체력을 대폭 하향 (기존 보스의 60% 수준)
-            boss = new Enemy(this.waypoints, baseHp * 0.6, 0, 'none', true, armor * 1.5);
+            boss = new Enemy(this.waypoints, baseHp * 0.6, 0, 'none', true, armor * 1.5, 'special_암흑모노리스.webp');
             boss.name = '암흑 모노리스';
             boss.gradeFilter = { mode: 'below', grade: 'Epic' }; // Epic 등급 이하만 피격 가능 (= Special 이상 면역)
             break;
@@ -293,7 +308,7 @@ export class WaveManager {
       const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 30);
       
       // 1. 근위대장 (보스) 스폰
-      const boss = new Enemy(this.waypoints, baseHp * 1.5, 1000, 'mech', true, armor * 1.2);
+      const boss = new Enemy(this.waypoints, baseHp * 1.5, 1000, 'mech', true, armor * 1.2, 'special_제국근위대장.webp');
       boss.name = '제국 근위대장';
       boss.shieldMax = baseHp * 0.5;
       boss.shield = boss.shieldMax;
@@ -312,7 +327,7 @@ export class WaveManager {
       // 2. 근위병 (정예) 12개체 스폰
       let spawned = 0;
       const interval = setInterval(() => {
-          const guard = new Enemy(this.waypoints, baseHp * 0.3, 150, 'mech', false, armor * 0.8);
+          const guard = new Enemy(this.waypoints, baseHp * 0.3, 150, 'mech', false, armor * 0.8, 'special_제국정예병.webp');
           guard.name = '제국 근위병';
           guard.speed *= 1.3; // 정예병이므로 빠름
           guard.shieldMax = baseHp * 0.1;
@@ -335,7 +350,9 @@ export class WaveManager {
    * [New] 상단 습격 (Caravan Raid)
    */
   spawnCaravanRaid() {
-    const baseHp = this.currentEnemyHp * 25;
+    // [Fix] currentEnemyHp가 없을 경우를 대비한 안전한 기본값 계산
+    const baseEnemyHp = this.currentEnemyHp || (Math.pow(1.15, this.waveNumber) * 100);
+    const baseHp = baseEnemyHp * 25;
     const trumboCount = 3;
     let trumbosLeft = trumboCount;
     let anyEscaped = false;
@@ -344,7 +361,7 @@ export class WaveManager {
     const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 20);
     let spawnedTrumbo = 0;
     const tInterval = setInterval(() => {
-        const trumbo = new Enemy(this.waypoints, baseHp * 2.5, 500, 'organic', true, armor);
+        const trumbo = new Enemy(this.waypoints, baseHp * 2.5, 500, 'organic', true, armor, '21.머팔로.webp');
         trumbo.name = `보물 머팔로 (#${spawnedTrumbo + 1})`;
         trumbo.speed *= 0.7; // 짐이 많아 느림
         trumbo.raidTimerMax = 180; // 180초(3분) 내에 잡아야 함
@@ -379,7 +396,7 @@ export class WaveManager {
     // 2. 용병 경호원 스폰 (15명)
     let spawnedGuard = 0;
     const gInterval = setInterval(() => {
-        const guard = new Enemy(this.waypoints, baseHp * 0.4, 200, 'organic', false, armor * 0.6);
+        const guard = new Enemy(this.waypoints, baseHp * 0.4, 200, 'organic', false, armor * 0.6, 'special_상단경호원.webp');
         guard.name = '상단 경호원';
         guard.speed *= 1.4;
         guard.armor += 50;

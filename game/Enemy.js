@@ -33,6 +33,8 @@ export class Enemy {
     this.stunTimer = 0;
     this.slowTimer = 0;
     this.fearTimer = 0;
+    this.hpRegen = 0;
+    this.toxinRegenBlock = 0; // [New] 독소 효과에 의한 체력 재생 억제 타이머
     this.activeDots = []; // { damagePerSec, duration }
     this.distanceTraveled = 0;
     this.lastX = this.x; // 진행 방향 판단용
@@ -71,15 +73,17 @@ export class Enemy {
 
     if (this.flashTimer > 0) this.flashTimer -= dt;
 
-    // 재생 로직 처리
-    if (this.hpRegen > 0 && this.hp < this.maxHp) {
+    // 재생 로직 처리 (독소 효과에 의해 억제될 수 있음)
+    if (this.hpRegen > 0 && this.hp < this.maxHp && this.toxinRegenBlock <= 0) {
       this.hp = Math.min(this.maxHp, this.hp + this.hpRegen * dt);
     }
+    
+    if (this.toxinRegenBlock > 0) this.toxinRegenBlock -= dt;
 
     if (this.shieldMax > 0 && this.shield < this.shieldMax) {
       this.shieldRegenTimer -= dt;
       if (this.shieldRegenTimer <= 0) {
-        this.shield = Math.min(this.shieldMax, this.shield + (this.shieldMax * 0.1 * dt));
+        this.shield = Math.min(this.shieldMax, this.shield + (this.shieldMax * 0.03 * dt));
       }
     }
     
@@ -95,6 +99,13 @@ export class Enemy {
     // [New] 상단 습격 타이머 업데이트
     if (this.raidTimer > 0) {
       this.raidTimer -= dt;
+      
+      // [New] 보스 UI 타이머와 남은 탈출 시간 동기화
+      if (this.isBoss) {
+          this.bossTimer = this.raidTimer;
+          this.bossTimerMax = this.raidTimerMax;
+      }
+      
       if (this.raidTimer <= 0) {
           if (this.onRaidTimeout) this.onRaidTimeout(this);
           this.active = false; // 탈출하여 맵에서 사라짐
@@ -250,7 +261,8 @@ export class Enemy {
   handleStatusEffect(effect, shred = 0, amount = 0) {
     // 1. 방어력 깎기 (무기 효과와 상관없이 shred 수치가 있으면 발동)
     if (shred > 0) {
-      const minArmor = Math.floor(this.initialArmor * 0.5);
+      // [Balance Up] 방어력은 원래 수치의 최대 15%까지만 보존 가능 (85%까지 파쇄 가능)
+      const minArmor = Math.floor(this.initialArmor * 0.15);
       this.armor = Math.max(minArmor, this.armor - shred);
     }
 
@@ -283,17 +295,24 @@ export class Enemy {
     }
   }
 
-  applyEffect(effect, duration = 1.0) {
+  applyEffect(effect, duration = 1.0, dt = 1/60) {
     if (!this.active) return;
     if (effect === 'stun') {
       this.stunTimer = Math.max(this.stunTimer, duration);
     } else if (effect === 'smoke') {
       this.slowTimer = Math.max(this.slowTimer, 0.5); // 장판 안에 있는 동안 지속 갱신
     } else if (effect === 'toxin') {
-      // 독성 장판: 매 프레임 방어력 고정 부식 + 미세 도트뎀
-      const minArmor = Math.max(0, Math.floor(this.initialArmor * 0.3));
-      this.armor = Math.max(minArmor, this.armor - 0.15); // 방어력 하한선 보장
-      this.hp -= 0.1; // 아주 미세한 체력 감소
+      // 독성 장판: 매 프레임 원래 방어력의 5%씩 부식 (초당 5%) + 재생 억제
+      this.toxinRegenBlock = 0.5; // 지속적으로 갱신
+      const minArmor = Math.floor(this.initialArmor * 0.15); // 한계치 15%
+      this.armor = Math.max(minArmor, this.armor - (this.initialArmor * 0.05 * dt)); 
+      this.hp -= (this.isBoss ? 10 : 5) * dt; // 미세한 중독 데미지
+    } else if (effect === 'molotov') {
+      // 화염병: 보스 포함 모든 적에게 초당 고정 400 데미지 (밸런스 고려하여 비율뎀 삭제)
+      const dotDmg = 400; 
+      this.hp -= dotDmg * dt;
+      this.fearTimer = Math.max(this.fearTimer, 0.3); // 패닉 유발
+      this.flashTimer = 0.1;
     } else if (effect === 'fear' || effect === 'burn_fear') {
       // 패닉(공포) 효과는 유기체에게만 적용되며, 확률적으로만 발동하도록 하향 (무한 역주행 방지)
       if (this.type === 'organic') {

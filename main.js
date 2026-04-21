@@ -797,16 +797,16 @@ class App {
       // 범위 내의 적들에게 효과 적용
       this.enemies.forEach(en => {
         if (en.active && Math.hypot(en.x - f.x, en.y - f.y) <= (f.radius || 60)) {
-          if (f.type === 'smoke') en.applyEffect('smoke', 0.5);
-          if (f.type === 'toxin') en.applyEffect('toxin', 0.5);
-          if (f.type === 'molotov') en.applyEffect('burn_fear', 0.5);
+          if (f.type === 'smoke') en.applyEffect('smoke', 0.5, scaledDt);
+          if (f.type === 'toxin') en.applyEffect('toxin', 0.5, scaledDt);
+          if (f.type === 'molotov') en.applyEffect('molotov', 0.5, scaledDt);
         }
       });
 
       // 범위 내의 타워들에게 효과 적용 (고주스 등)
       this.units.forEach(u => {
           if (!u.isBlueprint && Math.hypot(u.x - f.x, u.y - f.y) <= (f.radius || 60)) {
-              if (f.type === 'go_juice') u.applyEffect('go_juice', 0.5);
+              if (f.type === 'go_juice') u.applyEffect('go_juice', 0.5, scaledDt);
           }
       });
 
@@ -1541,7 +1541,9 @@ class App {
         en.flashTimer = 0.3;
         switch (type) {
             case 'frag_grenade':
-                en.takeDamage(250, 0.2, 'frag_stun', 'Common', 0, false, '파편 수류탄', true);
+                // [Balance Up] 기본 250 + (웨이브 * 100) 데미지로 후반부 화력 보장
+                const fragDmg = 250 + (this.state.waveNumber * 100);
+                en.takeDamage(fragDmg, 0.2, 'frag_stun', 'Common', 0, false, '파쇄 수류탄', true);
                 break;
             case 'pulse_grenade':
                 en.takeDamage(50, 0.5, 'emp', 'Uncommon', 0, false, '펄스 수류탄', true);
