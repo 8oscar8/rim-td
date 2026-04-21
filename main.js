@@ -34,6 +34,7 @@ class App {
     // 1. 매니저 클래스 초기화
     SpriteManager.init();
     SoundManager.init();
+    window.SoundManager = SoundManager; // 콘솔 디버깅용 전역 바인딩
     
     // 2. 경로(Waypoints) 초기화 (나중에 init에서 정교화)
     this.waypoints = [];
