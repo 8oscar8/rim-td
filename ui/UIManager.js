@@ -137,8 +137,14 @@ export class UIManager {
 
         this.speedBtns.forEach(b => { if(b.id !== 'btn-pause') b.classList.remove('active'); });
         btn.classList.add('active');
-        const speed = parseFloat(btn.textContent.replace('x', ''));
+        const speedText = btn.textContent.replace('x', '');
+        const speed = parseFloat(speedText);
         if (this.app.state) this.app.state.timeScale = speed;
+
+        // [Sound] 배속 설정 소리 추가
+        if (speed === 1) SoundManager.playSFX('assets/audio/ClockTickingNormal.ogg');
+        else if (speed === 2) SoundManager.playSFX('assets/audio/ClockTickingFast.ogg');
+        else if (speed === 4) SoundManager.playSFX('assets/audio/ClockTickingSuperFast.ogg');
       };
     });
 
