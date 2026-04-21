@@ -2,6 +2,8 @@ export class SoundManager {
   static init() {
     this.bgm = null;
     this.sfx = {};
+    this.activeSFX = new Map(); // [New] 현재 재생 중인 효과음 추적 (보이스 리밋용)
+    this.MAX_POLYPHONY = 5;    // [New] 동일 사운드 최대 동시 재생 수
     
     // [New] 카테고리별 볼륨 설정 (기본값)
     this.volumes = {
@@ -63,6 +65,13 @@ export class SoundManager {
         item.obj.volume = Math.max(0, Math.min(1, item.mul * sfxMult));
       }
     });
+
+    // 3. 현재 재생 중인 활성 효과음들 동기화
+    this.activeSFX.forEach((list) => {
+        list.forEach(sound => {
+            sound.volume = Math.max(0, Math.min(1, 0.8 * sfxMult));
+        });
+    });
   }
 
   // 배경음악 재생 (루프 지원, 중복 생성 방지)
@@ -95,31 +104,37 @@ export class SoundManager {
     }
   }
 
-  // 효과음 재생
+  // 효과음 재생 (보이스 리밋 적용)
   static playSFX(src, baseVol = 0.6) {
     try {
       const finalVol = baseVol * this.volumes.master * this.volumes.sfx;
-      let sound;
       
-      // 사전 로드된 사운드 체크
-      if (src.includes('raid_alert')) sound = this.raidAlert;
-      else if (src.includes('bad_alert')) sound = this.badAlert;
-      else if (src.includes('encounter_success.mp3')) sound = this.encounterSuccessSound;
-      else if (src.includes('coin.mp3')) sound = this.coinSound;
-      else if (src.includes('buy.mp3')) sound = this.buySound;
+      // 1. 해당 소리의 재생 중인 리스트 가져오기
+      if (!this.activeSFX.has(src)) {
+          this.activeSFX.set(src, []);
+      }
+      const playingList = this.activeSFX.get(src);
 
-      if (!sound) {
-        sound = new Audio(src);
+      // 2. 이미 끝난 소리 리스트에서 제거 (정리)
+      const filteredList = playingList.filter(s => !s.ended && !s.paused);
+      this.activeSFX.set(src, filteredList);
+
+      // 3. 보이스 리밋 체크 (이미 5개 재생 중이면 새로 재생 안함)
+      if (filteredList.length >= this.MAX_POLYPHONY) {
+          return; 
       }
 
-      if (sound) {
-        sound.currentTime = 0;
-        sound.volume = Math.max(0, Math.min(1, finalVol));
-        const playPromise = sound.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(error => { /* 자동재생 오류 무시 */ });
-        }
+      // 4. 새로운 오디오 객체 생성 및 재생
+      const sound = new Audio(src);
+      sound.volume = Math.max(0, Math.min(1, finalVol));
+      
+      const playPromise = sound.play();
+      if (playPromise !== undefined) {
+          playPromise.then(() => {
+              filteredList.push(sound);
+          }).catch(error => { /* 자동재생 오류 무시 */ });
       }
+
     } catch (err) {
       console.error("[Sound] playSFX Error:", err);
     }
