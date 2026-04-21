@@ -109,12 +109,16 @@ export class UIManager {
     this.settingsCloseBtn = document.getElementById('settings-close-btn');
     this.settingMasterVol = document.getElementById('setting-master-vol');
     this.settingBgmVol = document.getElementById('setting-bgm-vol');
-    this.settingSfxVol = document.getElementById('setting-sfx-vol');
+    this.settingWeaponVol = document.getElementById('setting-weapon-vol');
+    this.settingUiVol = document.getElementById('setting-ui-vol');
+    this.settingEnemyVol = document.getElementById('setting-enemy-vol');
     this.settingShowNotif = document.getElementById('setting-show-notif');
     
     this.valMasterVol = document.getElementById('val-master-vol');
     this.valBgmVol = document.getElementById('val-bgm-vol');
-    this.valSfxVol = document.getElementById('val-sfx-vol');
+    this.valWeaponVol = document.getElementById('val-weapon-vol');
+    this.valUiVol = document.getElementById('val-ui-vol');
+    this.valEnemyVol = document.getElementById('val-enemy-vol');
   }
 
   initEvents() {
@@ -172,15 +176,20 @@ export class UIManager {
         }
     };
 
-    [this.settingMasterVol, this.settingBgmVol, this.settingSfxVol].forEach((slider, idx) => {
-        if (slider) {
-            const categories = ['master', 'bgm', 'sfx'];
-            const spans = [this.valMasterVol, this.valBgmVol, this.valSfxVol];
-            slider.oninput = () => {
-                updateVolText(slider, spans[idx]);
-                // [New] 즉시 볼륨 반영 및 저장 호출
+    const volumeConfigs = [
+        { slider: this.settingMasterVol, category: 'master', span: this.valMasterVol },
+        { slider: this.settingBgmVol, category: 'bgm', span: this.valBgmVol },
+        { slider: this.settingWeaponVol, category: 'weapon', span: this.valWeaponVol },
+        { slider: this.settingUiVol, category: 'ui', span: this.valUiVol },
+        { slider: this.settingEnemyVol, category: 'enemy', span: this.valEnemyVol }
+    ];
+
+    volumeConfigs.forEach(cfg => {
+        if (cfg.slider) {
+            cfg.slider.oninput = () => {
+                updateVolText(cfg.slider, cfg.span);
                 if (this.app.updateVolume) {
-                    this.app.updateVolume(categories[idx], slider.value);
+                    this.app.updateVolume(cfg.category, cfg.slider.value);
                 }
             };
         }
@@ -1109,17 +1118,7 @@ export class UIManager {
       this.techLevelVal.textContent = names[state.techLevel] || state.techLevel;
       
       // [New] 설정 창 UI 동기화
-      if (this.settingShowNotif) {
-          this.settingShowNotif.checked = state.settings.showNotifications;
-      }
-      // 볼륨 수치 및 슬라이더 위치 동기화
-      if (this.settingMasterVol) this.settingMasterVol.value = state.settings.masterVolume;
-      if (this.settingBgmVol) this.settingBgmVol.value = state.settings.bgmVolume;
-      if (this.settingSfxVol) this.settingSfxVol.value = state.settings.sfxVolume;
-
-      if (this.valMasterVol) this.valMasterVol.textContent = Math.round(state.settings.masterVolume * 100) + '%';
-      if (this.valBgmVol) this.valBgmVol.textContent = Math.round(state.settings.bgmVolume * 100) + '%';
-      if (this.valSfxVol) this.valSfxVol.textContent = Math.round(state.settings.sfxVolume * 100) + '%';
+      this.syncSettingsToUI(state.settings);
 
       const box = this.techLevelVal.closest('.tech-level-box');
       if (box) {
@@ -2384,5 +2383,31 @@ export class UIManager {
   getJobName(type) {
     const names = { farming: '농사', mining: '채광', logging: '벌목', research: '연구', trading: '교역' };
     return names[type] || type;
+  }
+
+  /**
+   * [New] 저장된 설정을 UI 슬라이더 및 텍스트에 반영
+   */
+  syncSettingsToUI(settings) {
+    if (!settings) return;
+    
+    const mapping = [
+      { slider: this.settingMasterVol, val: settings.masterVolume, span: this.valMasterVol },
+      { slider: this.settingBgmVol, val: settings.bgmVolume, span: this.valBgmVol },
+      { slider: this.settingWeaponVol, val: settings.weaponVolume, span: this.valWeaponVol },
+      { slider: this.settingUiVol, val: settings.uiVolume, span: this.valUiVol },
+      { slider: this.settingEnemyVol, val: settings.enemyVolume, span: this.valEnemyVol }
+    ];
+
+    mapping.forEach(m => {
+      if (m.slider && m.val !== undefined) {
+        m.slider.value = m.val;
+        if (m.span) m.span.textContent = Math.round(m.val * 100) + '%';
+      }
+    });
+
+    if (this.settingShowNotif && settings.showNotifications !== undefined) {
+      this.settingShowNotif.checked = settings.showNotifications;
+    }
   }
 }

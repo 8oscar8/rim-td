@@ -113,7 +113,9 @@ export class GameState {
     this.settings = {
         masterVolume: 1.0,
         bgmVolume: 0.5,
-        sfxVolume: 0.5,
+        weaponVolume: 0.5,
+        uiVolume: 0.5,
+        enemyVolume: 0.5,
         showNotifications: true
     };
   }

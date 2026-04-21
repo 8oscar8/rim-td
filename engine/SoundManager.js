@@ -18,7 +18,9 @@ export class SoundManager {
     this.volumes = {
         master: 1.0,
         bgm: 0.5,
-        sfx: 0.5
+        weapon: 0.5,
+        ui: 0.5,
+        enemy: 0.5
     };
     
     const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
@@ -43,10 +45,11 @@ export class SoundManager {
     if (!settings) return;
     if (settings.masterVolume !== undefined) this.volumes.master = parseFloat(settings.masterVolume);
     if (settings.bgmVolume !== undefined) this.volumes.bgm = parseFloat(settings.bgmVolume);
-    if (settings.sfxVolume !== undefined) this.volumes.sfx = parseFloat(settings.sfxVolume);
+    if (settings.weaponVolume !== undefined) this.volumes.weapon = parseFloat(settings.weaponVolume);
+    if (settings.uiVolume !== undefined) this.volumes.ui = parseFloat(settings.uiVolume);
+    if (settings.enemyVolume !== undefined) this.volumes.enemy = parseFloat(settings.enemyVolume);
     
     this.syncActiveSounds();
-    console.log(`[Sound] 볼륨 동기화 완료 (M:${this.volumes.master.toFixed(1)}, B:${this.volumes.bgm.toFixed(1)}, S:${this.volumes.sfx.toFixed(1)})`);
   }
 
   /**
@@ -55,7 +58,9 @@ export class SoundManager {
   static syncActiveSounds() {
     const master = this.volumes.master;
     const bgmMult = master * this.volumes.bgm;
-    const sfxMult = master * this.volumes.sfx;
+    const weaponMult = master * this.volumes.weapon;
+    const uiMult = master * this.volumes.ui;
+    const enemyMult = master * this.volumes.enemy;
 
     if (this.bgm) {
       this.bgm.volume = Math.max(0, Math.min(1, 0.4 * bgmMult));
@@ -64,13 +69,17 @@ export class SoundManager {
     this.activeVoices.forEach(voice => {
       if (voice.audio) {
         const base = voice.baseVol || 0.6;
-        voice.audio.volume = Math.max(0, Math.min(1, base * sfxMult));
+        let mult = uiMult;
+        if (voice.category === 'weapon') mult = weaponMult;
+        else if (voice.category === 'enemy') mult = enemyMult;
+        
+        voice.audio.volume = Math.max(0, Math.min(1, base * mult));
       }
     });
 
-    // 사전 로드 객체들도 업데이트
+    // 사전 로드된 UI 객체들은 UI 볼륨 적용
     [this.raidAlert, this.badAlert, this.encounterSuccessSound, this.coinSound, this.buySound, this.upgradeSound, this.clickSound].forEach(obj => {
-      if (obj) obj.volume = Math.max(0, Math.min(1, 0.8 * sfxMult));
+      if (obj) obj.volume = Math.max(0, Math.min(1, 0.8 * uiMult));
     });
   }
 
@@ -103,7 +112,7 @@ export class SoundManager {
   /**
    * 우선순위 기반 효과음 재생 핵심 로직
    */
-  static playSFX(src, baseVol = 0.6, priority = this.PRIORITY.LOW) {
+  static playSFX(src, baseVol = 0.6, priority = this.PRIORITY.LOW, category = 'ui') {
     try {
       // 1. 끝난 소리 정리
       this.activeVoices = this.activeVoices.filter(v => !v.audio.ended && !v.audio.paused);
@@ -117,6 +126,15 @@ export class SoundManager {
       // 중요 효과음 매핑 (src 기반 자동 우선순위 격상)
       if (src.includes('coin.mp3') || src.includes('BuyThing.ogg') || src.includes('upgrade.mp3') || src.includes('제작.ogg')) {
           priority = this.PRIORITY.MEDIUM;
+          category = 'ui';
+      }
+      
+      // 자동 카테고리 분류 (기존 코드와의 호환성을 위함)
+      if (src.includes('죽음소리') || src.includes('사망사운드') || src.includes('몹피격음')) {
+          category = 'enemy';
+      } else if (src.includes('weaponsound') || src.includes('.ogg') && !src.includes('긍정적') && !priority === this.PRIORITY.MEDIUM) {
+          // .ogg 중 무기 폴더에 있거나 UI가 아닌 소리들은 무기로 추정
+          if (!category || category === 'ui') category = 'weapon';
       }
 
       // 3. 동일 사운드 중첩(Per-Src Limit) 체크
@@ -153,12 +171,18 @@ export class SoundManager {
       // 6. 실제 재생
       const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
       const audio = new Audio(encodePath(src));
-      audio.volume = Math.max(0, Math.min(1, baseVol * this.volumes.master * this.volumes.sfx));
+      
+      let mult = this.volumes.ui;
+      if (category === 'weapon') mult = this.volumes.weapon;
+      else if (category === 'enemy') mult = this.volumes.enemy;
+      
+      audio.volume = Math.max(0, Math.min(1, baseVol * this.volumes.master * mult));
       
       const voice = {
           audio,
           src,
           priority,
+          category,
           baseVol,
           startTime: Date.now()
       };
@@ -189,7 +213,7 @@ export class SoundManager {
   static playHighPriorityStatic(audioObj, baseVol = 0.8) {
       if (!audioObj) return;
       audioObj.currentTime = 0;
-      audioObj.volume = Math.max(0, Math.min(1, baseVol * this.volumes.master * this.volumes.sfx));
+      audioObj.volume = Math.max(0, Math.min(1, baseVol * this.volumes.master * this.volumes.ui));
       audioObj.play().catch(() => {});
   }
 

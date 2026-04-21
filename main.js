@@ -1982,6 +1982,7 @@ class App {
         const parsed = JSON.parse(saved);
         // 기존 기본값에 덮어쓰기 (새로 추가된 설정 항목이 누락되지 않도록 함)
         this.state.settings = { ...this.state.settings, ...parsed };
+        this.ui.syncSettingsToUI(this.state.settings);
         console.log("[Settings] 브라우저에서 설정을 성공적으로 불러왔습니다.");
       } catch (e) {
         console.error("[Settings] 설정 로드 중 오류 발생:", e);
@@ -1995,7 +1996,7 @@ class App {
   updateVolume(category, value) {
     if (!this.state.settings) return;
     
-    // category: masterVolume, bgmVolume, sfxVolume
+    // category: master, bgm, weapon, ui, enemy
     const key = `${category}Volume`;
     this.state.settings[key] = parseFloat(value);
     
