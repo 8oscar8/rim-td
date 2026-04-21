@@ -2338,7 +2338,9 @@ export class UIManager {
             this.addMiniNotification(`${this.getJobName(type)}에 정착민 1명을 배정했습니다.`, "info");
             
             // [Sound] 작업별 전용 사운드 재생
-            if (type === 'farming') {
+            if (type === 'logging') {
+                SoundManager.playSFX('assets/audio/벌목.ogg', 0.6);
+            } else if (type === 'farming') {
                 SoundManager.playSFX('assets/audio/농사.ogg', 0.6);
             } else if (type === 'mining') {
                 SoundManager.playSFX('assets/audio/DrillB.ogg', 0.6);
