@@ -114,7 +114,7 @@ export class Enemy {
     }
     
     if (this.hp <= 0 && this.flashTimer <= 0) {
-      this.active = false;
+      this.die();
       return;
     }
 
@@ -203,7 +203,7 @@ export class Enemy {
     if (effect === 'instakill' && !this.isBoss) {
       if (Math.random() < 0.1) {
          this.hp = 0;
-         this.active = false;
+         this.die();
          return true;
       }
     }
@@ -249,10 +249,26 @@ export class Enemy {
     this.handleStatusEffect(effect, shred, amount);
 
     if (this.hp <= 0) {
-      this.active = false;
+      this.die();
       return true;
     }
     return false;
+  }
+
+  /**
+   * 사망 처리 및 사운드 재생
+   */
+  die() {
+    if (!this.active) return;
+    this.active = false;
+
+    // 종족별 사망 사운드 분기
+    if (this.type === 'mech') {
+      SoundManager.playSFX('assets/audio/기계사망사운드.ogg');
+    } else {
+      // 'organic', 'none' 등은 유기체 사망 사운드 재생
+      SoundManager.playSFX('assets/audio/유기체사망사운드.ogg');
+    }
   }
 
   /**
