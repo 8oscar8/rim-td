@@ -34,6 +34,18 @@ export class BGMManager {
     init(initialVolume) {
         this.volume = initialVolume;
         this.shufflePlaylist();
+        
+        // 브라우저 자동재생 정책 대응: 첫 상호작용 시 오디오 컨텍스트 재개/재생 시도
+        const resumeAudio = () => {
+            if (this.currentAudio && this.currentAudio.paused) {
+                this.currentAudio.play().catch(() => {});
+            }
+            window.removeEventListener('click', resumeAudio);
+            window.removeEventListener('keydown', resumeAudio);
+        };
+        window.addEventListener('click', resumeAudio);
+        window.addEventListener('keydown', resumeAudio);
+
         this.playNext(this.startSong); // 처음에 무조건 게임스타트 재생
     }
 
@@ -66,7 +78,9 @@ export class BGMManager {
 
         console.log(`[BGM] Now Playing: ${nextSong}`);
         
-        this.currentAudio = new Audio(this.basePath + nextSong);
+        // [Fix] 파일명에 한글이나 특수문자(# 등)가 있을 경우를 위해 개별 파일명만 인코딩
+        const encodedSong = encodeURIComponent(nextSong);
+        this.currentAudio = new Audio(this.basePath + encodedSong);
         this.currentAudio.volume = this.volume;
         
         // 곡이 끝나면 다음 곡 재생 (최종장 중이 아니라면)
@@ -79,7 +93,13 @@ export class BGMManager {
             }
         };
 
-        this.currentAudio.play().catch(e => console.warn("[BGM] Play failed (User interaction needed):", e));
+        const playPromise = this.currentAudio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(e => {
+                console.warn("[BGM] Play failed (User interaction needed):", e);
+                // 자동재생 차단 시, 다음 클릭 등에 의해 재생되도록 대기 (init에서 리스너 등록됨)
+            });
+        }
     }
 
     /**

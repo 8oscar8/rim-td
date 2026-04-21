@@ -12,13 +12,16 @@ export class SoundManager {
         sfx: 0.5
     };
     
+    // [Helper] 경로 인코딩 (한글 및 특수문자 대응)
+    const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
+
     // 습격 및 배드 이벤트 사운드 사전 로딩
-    this.raidAlert = new Audio('assets/audio/raid_alert.mp3');
-    this.badAlert = new Audio('assets/audio/bad_alert.mp3');
-    this.encounterSuccessSound = new Audio('assets/audio/긍정적랜덤인카운터.ogg');
-    this.coinSound = new Audio('assets/audio/coin.mp3');
-    this.buySound = new Audio('assets/audio/BuyThing.ogg');
-    this.upgradeSound = new Audio('assets/audio/upgrade.mp3');
+    this.raidAlert = new Audio(encodePath('assets/audio/raid_alert.mp3'));
+    this.badAlert = new Audio(encodePath('assets/audio/bad_alert.mp3'));
+    this.encounterSuccessSound = new Audio(encodePath('assets/audio/긍정적랜덤인카운터.ogg'));
+    this.coinSound = new Audio(encodePath('assets/audio/coin.mp3'));
+    this.buySound = new Audio(encodePath('assets/audio/BuyThing.ogg'));
+    this.upgradeSound = new Audio(encodePath('assets/audio/upgrade.mp3'));
     
     const preloads = [this.raidAlert, this.badAlert, this.encounterSuccessSound, this.coinSound, this.buySound, this.upgradeSound];
     preloads.forEach(a => { if (a) a.preload = 'auto'; });
@@ -91,7 +94,8 @@ export class SoundManager {
       this.bgm = null;
     }
 
-    this.bgm = new Audio(src);
+    const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
+    this.bgm = new Audio(encodePath(src));
     this.bgm.loop = true;
     this.bgm.volume = Math.max(0, Math.min(1, finalVol));
     this.bgm.preload = 'metadata';
@@ -125,7 +129,8 @@ export class SoundManager {
       }
 
       // 4. 새로운 오디오 객체 생성 및 재생
-      const sound = new Audio(src);
+      const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
+      const sound = new Audio(encodePath(src));
       sound.volume = Math.max(0, Math.min(1, finalVol));
       
       const playPromise = sound.play();

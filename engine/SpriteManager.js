@@ -52,10 +52,13 @@ export class SpriteManager {
       '고주스': 'assets/고주스.webp'
     };
 
+    // [Helper] 경로 인코딩 (한글 및 특수문자 대응)
+    const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
+
     // 무기/아이템 로드
     for (const [name, src] of Object.entries(weaponImages)) {
       const img = new Image();
-      img.src = src;
+      img.src = encodePath(src);
       img.onerror = () => this.handleError(img);
       this.images[name] = img;
     }
@@ -64,7 +67,8 @@ export class SpriteManager {
     FIXED_MONSTER_LIST.forEach(mon => {
       if (mon.img) {
           const img = new Image();
-          img.src = `assets/monster/${mon.img}`;
+          const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
+          img.src = encodePath(`assets/monster/${mon.img}`);
           img.onerror = () => this.handleError(img);
           this.images[`monster_${mon.img}`] = img;
       }
@@ -78,7 +82,8 @@ export class SpriteManager {
     ];
     specialMonsters.forEach(filename => {
         const img = new Image();
-        img.src = `assets/specialmonster/${filename}`;
+        const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
+        img.src = encodePath(`assets/specialmonster/${filename}`);
         img.onerror = () => this.handleError(img);
         this.images[`special_${filename}`] = img;
     });
