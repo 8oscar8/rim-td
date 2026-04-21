@@ -199,7 +199,7 @@ export class EncounterManager {
     const selected = breakEvents[Math.floor(Math.random() * breakEvents.length)];
     
     // 효과음 및 모달 표시
-    SoundManager.playSFX('assets/audio/LetterArrive.ogg', 0.8, SoundManager.PRIORITY.MEDIUM);
+    SoundManager.playSFX('assets/audio/LetterArrive.ogg', 1.0, SoundManager.PRIORITY.MEDIUM);
     setTimeout(() => {
         this.showEventModal({ name: selected.name, desc: selected.desc, type: 'negative' });
         this.executeEvent({ id: selected.id, desc: selected.desc, isMentalBreak: true });
