@@ -2337,9 +2337,11 @@ export class UIManager {
             s.idlePopulation--;
             this.addMiniNotification(`${this.getJobName(type)}에 정착민 1명을 배정했습니다.`, "info");
             
-            // [Sound] 농사 배정 시 전용 사운드 재생
+            // [Sound] 작업별 전용 사운드 재생
             if (type === 'farming') {
                 SoundManager.playSFX('assets/audio/농사.ogg', 0.6);
+            } else if (type === 'mining') {
+                SoundManager.playSFX('assets/audio/채광.ogg', 0.6);
             }
         } else {
             this.addMiniNotification("대기 중인 정착민이 없습니다!", "failure");
