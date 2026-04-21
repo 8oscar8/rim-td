@@ -264,10 +264,10 @@ export class Enemy {
 
     // 종족별 사망 사운드 분기
     if (this.type === 'mech') {
-      SoundManager.playSFX('assets/audio/기계사망사운드.ogg');
+      SoundManager.playSFX('assets/audio/기계 사망사운드.ogg');
     } else {
       // 'organic', 'none' 등은 유기체 사망 사운드 재생
-      SoundManager.playSFX('assets/audio/유기체사망사운드.ogg');
+      SoundManager.playSFX('assets/audio/유기체 사망사운드.ogg');
     }
   }
 
