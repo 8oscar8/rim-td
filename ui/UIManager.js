@@ -467,7 +467,7 @@ export class UIManager {
             // [Fix] 인공자아핵은 타워이므로 즉시 배치 모드로 진입
             if (weaponName === '인공자아핵') {
                 const result = GachaSystem.createSpecificWeapon('인공자아핵', 'normal', 'None');
-                SoundManager.playSFX('assets/audio/제작.ogg');
+                SoundManager.playSFX('assets/audio/특수제작.ogg');
                 setTimeout(() => {
                     this.app.startPlacement(result);
                 }, 50);
@@ -476,7 +476,7 @@ export class UIManager {
                 if (itemKey) {
                     s.items[itemKey] = (s.items[itemKey] || 0) + 1;
                     this.addMiniNotification(`${weaponName} 획득! (사용: 우측 아이템 카드 클릭)`);
-                    SoundManager.playSFX('assets/audio/제작.ogg');
+                    SoundManager.playSFX('assets/audio/특수제작.ogg');
                 }
             }
             
