@@ -658,13 +658,48 @@ class App {
     // 4. 무드 회복 (처치당 0.75)
     s.mood = Math.min(100, (s.mood || 0) + 0.75);
     
-    // 보스 전용 보상
+    // 보스 전용 보상 (10라운드 단위 종합 전리품)
     if (isBoss) {
-      s.addResource('steel', 10);
-      s.addResource('component', 1);
-      s.mood = Math.min(100, s.mood + 14); // 보스 처치 시 대폭 상승 (14%)
-      this.ui.addMiniNotification(`[처치] 보스 제거! 강철+10, 부품+1, 무드+14%`, "info");
-      SoundManager.playSFX('assets/audio/encounter_success.mp3'); // 보스 처치 쾌감 부여
+      const curWave = this.state.waveNumber;
+      let bossLoot = "";
+      
+      // 라운드별 보상 정의 (v4 밸런스 안)
+      const rewards = {
+          10: { silver: 200, research: 50, food: 50, wood: 100, steel: 50, jade: 1, component: 5 },
+          20: { silver: 400, research: 80, food: 80, wood: 150, steel: 100, jade: 2, component: 10 },
+          30: { silver: 600, research: 120, food: 120, steel: 200, plasteel: 30, jade: 3, component: 20 },
+          40: { silver: 850, research: 180, food: 150, steel: 300, plasteel: 50, jade: 5, component: 30 },
+          50: { silver: 1200, research: 250, food: 200, steel: 400, plasteel: 100, uranium: 20, jade: 8, component: 50 },
+          60: { silver: 1600, research: 400, food: 250, steel: 500, plasteel: 150, uranium: 40, jade: 12, component: 65 },
+          70: { silver: 2200, research: 600, food: 300, wood: 200, steel: 200, plasteel: 200, uranium: 200, jade: 15, component: 80 },
+          80: { silver: 3000, research: 800, food: 400, wood: 300, steel: 300, plasteel: 300, uranium: 300, jade: 20, component: 100 },
+          90: { silver: 5000, research: 1200, food: 500, wood: 500, steel: 500, plasteel: 500, uranium: 500, jade: 30, component: 150 }
+      };
+
+      // 해당 라운드 보상이 존재하면 지급
+      const loot = rewards[curWave];
+      if (loot) {
+          if (loot.silver) s.silver += loot.silver;
+          if (loot.research) s.researchPoints += loot.research;
+          if (loot.food) s.addResource('food', loot.food);
+          if (loot.wood) s.addResource('wood', loot.wood);
+          if (loot.steel) s.addResource('steel', loot.steel);
+          if (loot.plasteel) s.addResource('plasteel', loot.plasteel);
+          if (loot.uranium) s.addResource('uranium', loot.uranium);
+          if (loot.jade) s.addResource('jade', loot.jade);
+          if (loot.component) s.addResource('component', loot.component);
+
+          bossLoot = `은화+${loot.silver}, 연구+${loot.research}, 부품+${loot.component} 외 자원 세트`;
+      } else {
+          // 정의되지 않은 라운드 보스일 경우 (기본 보상)
+          s.addResource('steel', 20);
+          s.addResource('component', 2);
+          bossLoot = `강철+20, 부품+2`;
+      }
+
+      s.mood = Math.min(100, s.mood + 15); // 보스 처치 무드 회복 상향
+      this.ui.addMiniNotification(`[처치] 보스 전리품: ${bossLoot}`, "jackpot");
+      SoundManager.playSFX('assets/audio/encounter_success.mp3');
     } else if (lootMsg) {
       // 모든 전리품 획득 시 [전리품] 태그와 함께 알림
       this.ui.addMiniNotification(`[전리품] ${lootMsg}`);

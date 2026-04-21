@@ -11,9 +11,9 @@ export class HiddenEventManager {
     this.pityBonus = 0; // 발생 실패 시마다 증가하는 보정 확률
   }
 
-  // 20~30분 (1200~1800초) 사이의 무작위 간격
+  // 30~50분 (1800~3000초) 사이의 무작위 간격
   getRandomInterval() {
-    return 1200 + Math.random() * 600;
+    return 1800 + Math.random() * 1200;
   }
 
   update(dt) {
@@ -31,8 +31,8 @@ export class HiddenEventManager {
 
     // 2. 경고 공지 처리 (발생 10초 전)
     if (!this.isWarningActive && this.nextEventTimer <= 10) {
-        // 발생 조건 체크 (최소 20분 경과 및 30웨이브 이상)
-        if (s.gameTime >= 1200 && s.waveNumber >= 30) {
+        // 발생 조건 체크 (최소 30분 경과 및 30웨이브 이상)
+        if (s.gameTime >= 1800 && s.waveNumber >= 30) {
             // [Fix] 예고 발생 전 미리 확률 체크 (기본 35% + 피티 보너스)
             const chance = 0.35 + this.pityBonus;
             if (Math.random() < chance || s.gameTime > 2700) {
