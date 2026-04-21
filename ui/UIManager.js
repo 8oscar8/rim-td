@@ -492,6 +492,16 @@ export class UIManager {
         }
       };
     });
+    
+    // [New] 글로벌 UI 클릭 효과음 (탭 전환 및 튜토리얼 다음 버튼 전용)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.tab-btn, #tutorial-next-btn');
+      if (btn && !btn.disabled) {
+        // 단, 이미 개별 효과음이 지정된 경우는 중복 재생을 피하고 싶다면 체크할 수 있으나, 
+        // 사용자 요청은 "모든 버튼 클릭 시" 효과음이므로 통일감을 위해 전체 적용합니다.
+        SoundManager.playClick();
+      }
+    });
   }
 
   switchTab(tabId) {

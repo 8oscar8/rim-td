@@ -22,8 +22,9 @@ export class SoundManager {
     this.coinSound = new Audio(encodePath('assets/audio/coin.mp3'));
     this.buySound = new Audio(encodePath('assets/audio/BuyThing.ogg'));
     this.upgradeSound = new Audio(encodePath('assets/audio/upgrade.mp3'));
+    this.clickSound = new Audio(encodePath('assets/audio/click.mp3'));
     
-    const preloads = [this.raidAlert, this.badAlert, this.encounterSuccessSound, this.coinSound, this.buySound, this.upgradeSound];
+    const preloads = [this.raidAlert, this.badAlert, this.encounterSuccessSound, this.coinSound, this.buySound, this.upgradeSound, this.clickSound];
     preloads.forEach(a => { if (a) a.preload = 'auto'; });
   }
 
@@ -60,7 +61,8 @@ export class SoundManager {
       { obj: this.encounterSuccessSound, mul: 0.8 },
       { obj: this.coinSound, mul: 0.8 },
       { obj: this.buySound, mul: 0.8 },
-      { obj: this.upgradeSound, mul: 1.0 }
+      { obj: this.upgradeSound, mul: 1.0 },
+      { obj: this.clickSound, mul: 1.5 } // 클릭음은 조금 더 선명하게
     ];
 
     sfxObjects.forEach(item => {
@@ -142,6 +144,16 @@ export class SoundManager {
 
     } catch (err) {
       console.error("[Sound] playSFX Error:", err);
+    }
+  }
+
+  // [New] 표준 클릭 효과음 재생
+  static playClick() {
+    if (this.clickSound) {
+      this.clickSound.currentTime = 0;
+      this.clickSound.play().catch(e => {});
+    } else {
+        this.playSFX('assets/audio/click.mp3', 1.0);
     }
   }
 
