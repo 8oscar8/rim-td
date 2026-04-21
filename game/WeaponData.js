@@ -9,7 +9,7 @@ export const WEAPON_DB = {
   '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'melee_aoe', range: 60 },
   '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None' },
   '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Mythic', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
-  '999강 나무몽둥이': { type: 'blunt', tech: 'primitive', grade: 'Hidden', dmg: 9999, spd: 2.0, ap: 1.0, range: 180, effect: 'knockback', fixedMaterial: 'Wood' },
+  '999강 나무몽둥이': { type: 'blunt', tech: 'primitive', grade: 'Hidden', dmg: 9999, spd: 2.0, ap: 1.0, range: 180, effect: 'knockback', fixedMaterial: 'Wood', attackSound: 'assets/audio/weaponsound/맨손주먹.ogg' },
 
   // 날붙이 (Sharp)
   '단검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 12, spd: 1.0, ap: 0, effect: null },
