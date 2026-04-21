@@ -1447,6 +1447,7 @@ class App {
             if (died) this.handleEnemyDeath(en);
         });
         this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
+        SoundManager.playSFX('assets/audio/특수무기사용시/궤도폭격.ogg');
         this.state.items[type]--;
         this.state.itemCooldowns[type] = ITEM_DB[type].cooldown || 60;
         this.ui.updateDisplays(this.state);
@@ -1670,7 +1671,15 @@ class App {
     
     // 이펙트 레이어 등에 연출 추가 가능
     // [Sound] 아이템 종류별 사용 사운드 재생
-    if (type.includes('grenade')) {
+    if (type === 'toxin_grenade') {
+        SoundManager.playSFX('assets/audio/독소수류탄.ogg');
+    } else if (type === 'molotov') {
+        SoundManager.playSFX('assets/audio/특수무기사용시/화염병.ogg');
+    } else if (type === 'smoke_launcher') {
+        SoundManager.playSFX('assets/audio/연막탄소리.ogg');
+    } else if (type === 'go_juice') {
+        SoundManager.playSFX('assets/audio/특수무기사용시/고주스.ogg');
+    } else if (type.includes('grenade')) {
         SoundManager.playSFX('assets/audio/특수무기사용시/수류탄사용사운드.ogg');
     } else {
         SoundManager.playSFX('assets/audio/BuyThing.ogg');
