@@ -96,11 +96,11 @@ export const FIXED_MONSTER_LIST = [
     { name: "키메라", type: "organic", img: "91.키메라.webp" },           // 91
     { name: "걸신", type: "organic", img: "92.걸신.webp" },            // 92
     { name: "가시괴인", type: "organic", img: "93.가시괴인.webp" },         // 93
-    { name: "메탈호러", type: "organic", img: "94.메탈호러.webp" },         // 94
-    { name: "죽음안개", type: "organic", img: "95.죽음안개.webp" },         // 95
-    { name: "피의비", type: "organic", img: "96.피의비.webp" },           // 96
-    { name: "뒤틀린오벨리스크", type: "organic", img: "97.뒤틀린오벨리스크.webp" }, // 97
-    { name: "타락한오벨리스크", type: "organic", img: "98.타락한오벨리스크.webp" }, // 98
-    { name: "비뚤어진오벨리스크", type: "organic", img: "99.비뚤어진오벨리스크.webp" }, // 99
-    { name: "타이난", type: "organic", boss: true, img: "100.타이난.webp" } // 100
+    { name: "메탈호러", type: "none", img: "94.메탈호러.webp" },         // 94
+    { name: "죽음안개", type: "none", img: "95.죽음안개.webp" },         // 95
+    { name: "피의비", type: "none", img: "96.피의비.webp" },           // 96
+    { name: "뒤틀린오벨리스크", type: "none", img: "97.뒤틀린오벨리스크.webp" }, // 97
+    { name: "타락한오벨리스크", type: "none", img: "98.타락한오벨리스크.webp" }, // 98
+    { name: "비뚤어진오벨리스크", type: "none", img: "99.비뚤어진오벨리스크.webp" }, // 99
+    { name: "타이난", type: "none", boss: true, img: "100.타이난.webp" } // 100
 ];
