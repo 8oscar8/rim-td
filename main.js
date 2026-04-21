@@ -1675,6 +1675,8 @@ class App {
         SoundManager.playSFX('assets/audio/독소수류탄.ogg');
     } else if (type === 'pulse_grenade') {
         SoundManager.playSFX('assets/audio/펄스폭탄.ogg');
+    } else if (type === 'psychic_shock_lance') {
+        SoundManager.playSFX('assets/audio/정신충격창.ogg');
     } else if (type === 'molotov') {
         SoundManager.playSFX('assets/audio/특수무기사용시/화염병.ogg');
     } else if (type === 'smoke_launcher') {
