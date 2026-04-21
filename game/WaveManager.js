@@ -178,7 +178,7 @@ export class WaveManager {
     
     // [New] 제국군 구간 (66~81라운드) 보호막 부여
     if (this.waveNumber >= 66 && this.waveNumber <= 81) {
-        enemy.shieldMax = enemy.maxHp * 0.2; // 일반 제국군 20%
+        enemy.shieldMax = enemy.maxHp * 0.1; // 일반 제국군 10%로 하향
         enemy.shield = enemy.shieldMax;
     }
     
@@ -222,7 +222,7 @@ export class WaveManager {
 
     // [New] 제국군 구간 (66~81라운드) 보스 보호막 부여
     if (this.waveNumber >= 66 && this.waveNumber <= 81) {
-        enemy.shieldMax = enemy.maxHp * 0.5; // 제국 보스 50%
+        enemy.shieldMax = enemy.maxHp * 0.25; // 제국 보스 25%로 하향
         enemy.shield = enemy.shieldMax;
     }
 
