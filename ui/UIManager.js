@@ -892,15 +892,21 @@ export class UIManager {
       this.detailRange.textContent = "-";
       this.detailSpd.textContent = enemy.speed;
 
-      // [New] 몬스터 특수 효과 표시 (재생 등)
-      if (enemy.hpRegen > 0 && this.rowEffect && this.detailEffect) {
-          const regenPct = (enemy.hpRegen / enemy.maxHp * 100).toFixed(1);
-          this.rowEffect.classList.remove('hidden');
-          this.detailEffect.textContent = `초재생 (초당 ${regenPct}%)`;
-          this.detailEffect.style.color = "var(--accent-green)"; // 초록색 강조
-      } else if (this.rowEffect) {
-          this.rowEffect.classList.add('hidden');
-          this.detailEffect.style.color = "";
+      // [New] 몬스터 특수 효과 표시 (재생, 등급 제한 등)
+      if (this.rowEffect && this.detailEffect) {
+          if (enemy.gradeFilter) {
+              this.rowEffect.classList.remove('hidden');
+              this.detailEffect.textContent = `공허 보호막 (${enemy.gradeFilter.grade} 이하만 피격)`;
+              this.detailEffect.style.color = "#bf61ff"; // 공허 보라색
+          } else if (enemy.hpRegen > 0) {
+              const regenPct = (enemy.hpRegen / enemy.maxHp * 100).toFixed(1);
+              this.rowEffect.classList.remove('hidden');
+              this.detailEffect.textContent = `초재생 (초당 ${regenPct}%)`;
+              this.detailEffect.style.color = "var(--accent-green)"; 
+          } else {
+              this.rowEffect.classList.add('hidden');
+              this.detailEffect.style.color = "";
+          }
       }
 
       // 조합 버튼 숨기기
