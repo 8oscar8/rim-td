@@ -26,16 +26,16 @@ export const WEAPON_DB = {
   '전설의 꽁치검': { type: 'sharp', tech: 'advanced', grade: 'Hidden', dmg: 333, spd: 1.2, ap: 0.4, range: 200, effect: 'stun_long', fixedMaterial: 'None' },
 
   // 원거리 (Ranged)
-  '단궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 11, spd: 0.33, ap: 0.1, effect: 'arrow', range: 230 },
-  '곡궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.32, ap: 0.1, effect: 'arrow', range: 260 },
+  '단궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 11, spd: 0.33, ap: 0.1, effect: 'arrow', range: 230, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
+  '곡궁': { type: 'ranged', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.32, ap: 0.1, effect: 'arrow', range: 260, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
   '자동권총': { type: 'ranged', tech: 'advanced', grade: 'Common', dmg: 10, spd: 1.0, ap: 0.1, effect: null, range: 240 },
   '인공자아핵': { type: 'special', tech: 'ultra', grade: 'Mythic', dmg: 0, spd: 0, ap: 0, range: 200, effect: 'aura_persona', fixedMaterial: 'None' },
   '시원한 은행가는 길': { type: 'ranged', tech: 'advanced', grade: 'Hidden', dmg: 350, spd: 0.15, ap: 0.5, effect: 'capitalist_rocket', range: 280 },
 
-  '장궁': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 17, spd: 0.28, ap: 0.2, effect: 'arrow', range: 300 },
+  '장궁': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 17, spd: 0.28, ap: 0.2, effect: 'arrow', range: 300, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
   '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260 },
   '볼트액션 소총': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 24, spd: 0.3, ap: 0.3, effect: null, range: 370 },
-  '투창 다발': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 25, spd: 0.2, ap: 0.3, effect: 'arrow', range: 200 },
+  '투창 다발': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 25, spd: 0.2, ap: 0.3, effect: 'arrow', range: 200, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
 
   '기관단총(SMG)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 20, burst: 3, spd: 0.45, ap: 0.15, range: 240 },
   '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310 },
@@ -48,7 +48,7 @@ export const WEAPON_DB = {
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.8, ap: 0.3, effect: null, range: 310 },
   '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 30, spd: 0.25, ap: 0.6, effect: 'multi_bullet', isTrueDamage: true, range: 9999 },
   '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'instant_multi', isTrueDamage: true, range: 9999 },
-  '신경석궁': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 120, spd: 0.4, ap: 0.4, effect: 'toxic_stun', range: 190 }
+  '신경석궁': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 120, spd: 0.4, ap: 0.4, effect: 'toxic_stun', range: 190, attackSound: 'assets/audio/weaponsound/BowA.ogg' }
 };
 
 // 소모성 아이템 DB (타워로 건설 불가, 인벤토리에서 사용)

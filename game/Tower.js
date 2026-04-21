@@ -1,6 +1,7 @@
 import { Projectile } from './Projectile.js';
 import { SpriteManager } from '../engine/SpriteManager.js';
 import { WEAPON_DB, MATERIAL_DB, QUALITY_COEFFS } from './WeaponData.js';
+import { SoundManager } from '../engine/SoundManager.js';
 
 /**
  * Tower.js
@@ -278,6 +279,11 @@ export class Tower {
     const isRanged = this.weaponType && String(this.weaponType).toLowerCase().trim() === 'ranged';
     const burstCount = this.weaponData.burst || 1;
     const effect = this.weaponData.effect;
+
+    // [Sound] 무기별 공격 사운드 재생
+    if (this.weaponData.attackSound) {
+      SoundManager.playSFX(this.weaponData.attackSound, 0.4);
+    }
 
     if (isRanged) {
       const targetList = Array.isArray(target) ? target : [target];
