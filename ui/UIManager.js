@@ -119,6 +119,10 @@ export class UIManager {
     this.valWeaponVol = document.getElementById('val-weapon-vol');
     this.valUiVol = document.getElementById('val-ui-vol');
     this.valEnemyVol = document.getElementById('val-enemy-vol');
+
+    this.lbModal = document.getElementById('leaderboard-modal');
+    this.lbCloseBtn = document.getElementById('lb-modal-close-btn');
+    this.settingLbBtn = document.getElementById('settings-lb-btn');
   }
 
   initEvents() {
@@ -167,6 +171,19 @@ export class UIManager {
       this.settingsCloseBtn.onclick = () => {
         if (this.app.toggleSettings) this.app.toggleSettings();
       };
+    }
+
+    // [New] 설정 내 리더보드 버튼 
+    if (this.settingLbBtn) {
+        this.settingLbBtn.onclick = () => {
+            this.app.toggleSettings(); // 설정 창 닫기
+            this.showLeaderboardOnly();
+        };
+    }
+    if (this.lbCloseBtn) {
+        this.lbCloseBtn.onclick = () => {
+            if (this.lbModal) this.lbModal.classList.add('hidden');
+        };
     }
 
     // 슬라이더 변경 시 시각적 수치 업데이트 (%)
@@ -2409,5 +2426,18 @@ export class UIManager {
     if (this.settingShowNotif && settings.showNotifications !== undefined) {
       this.settingShowNotif.checked = settings.showNotifications;
     }
+  }
+
+  /**
+   * [New] 게임 중 독립적으로 리더보드 순위표 표시
+   */
+  showLeaderboardOnly() {
+      if (this.lbModal) {
+          this.lbModal.classList.remove('hidden');
+          this.app.renderLeaderboard('lb-list-main');
+          
+          // [Sound] 리더보드 열 때 효과음
+          SoundManager.playSFX('assets/audio/click.mp3', 0.8, SoundManager.PRIORITY.MEDIUM);
+      }
   }
 }

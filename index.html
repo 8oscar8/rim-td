@@ -712,6 +712,7 @@
             </div>
 
             <div class="settings-actions">
+                <button id="settings-lb-btn" class="secondary-btn">🏆 리더보드 순위표</button>
                 <button id="settings-close-btn">닫기 (ESC)</button>
             </div>
         </div>
@@ -742,5 +743,21 @@
     </div>
 
     <script type="module" src="main.js"></script>
+    <!-- [New] 독립형 리더보드 모달 (Leaderboard Only) -->
+    <div id="leaderboard-modal" class="hidden">
+        <div class="lb-modal-content">
+            <div class="lb-header">
+                <h2>전 세계 정착지 랭킹 (Top 30)</h2>
+            </div>
+            <div class="lb-body">
+                <div id="lb-list-main" class="result-section">
+                    <div class="loading-msg">데이터 불러오는 중...</div>
+                </div>
+            </div>
+            <div class="lb-footer">
+                <button id="lb-modal-close-btn">돌아가기</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

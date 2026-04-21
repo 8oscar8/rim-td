@@ -1468,3 +1468,76 @@ input[type=range] {
     background: #ffd571;
 }
 
+/* ==========================================
+   [New] 독립형 리더보드 모달 스타일
+   ========================================== */
+#leaderboard-modal {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 20000;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(15px) saturate(180%);
+}
+#leaderboard-modal.hidden { display: none !important; }
+
+.lb-modal-content {
+    background: #141517;
+    border: 1px solid #2d2f33;
+    padding: 35px;
+    border-radius: 16px;
+    width: 500px;
+    max-width: 90vw;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9);
+    animation: modal-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lb-header h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+#lb-list-main {
+    max-height: 50vh;
+    overflow-y: auto;
+    background: #0a0b0c;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.lb-footer {
+    display: flex;
+    justify-content: center;
+}
+
+#lb-modal-close-btn {
+    background: #2d2f33;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 12px 50px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+#lb-modal-close-btn:hover {
+    background: #3d4044;
+    border-color: #888;
+    transform: translateY(-2px);
+}
+
+.secondary-btn {
+    background: rgba(155, 89, 182, 0.2) !important;
+    border: 1px solid rgba(155, 89, 182, 0.4) !important;
+    color: #d7bde2 !important;
+    margin-right: 15px;
+}
+
+.secondary-btn:hover {
+    background: rgba(155, 89, 182, 0.4) !important;
+    border-color: rgba(155, 89, 182, 0.8) !important;
+}

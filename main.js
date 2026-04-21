@@ -1303,8 +1303,8 @@ class App {
   /**
    * Supabase 리더보드 조회
    */
-  async renderLeaderboard() {
-    const listContainer = document.getElementById('leaderboard-list');
+  async renderLeaderboard(containerId = 'leaderboard-list') {
+    const listContainer = document.getElementById(containerId);
     if (!listContainer || !supabase) return;
 
     listContainer.innerHTML = '<div class="loading-msg">데이터 불러오는 중...</div>';
