@@ -696,6 +696,7 @@ export class EncounterManager {
   // 16. 곤충 군락 (다양한 곤충형 적 스폰)
   handleInfestation() {
     if (this.app.waveManager) {
+        SoundManager.playSFX('assets/audio/곤충군락소리.ogg', 0.8);
         this.app.waveManager.spawnInfestation();
     }
   }
