@@ -2171,9 +2171,7 @@ export class UIManager {
       s.upgrades[type]++;
       s.stats.totalResearchCompleted++; // [New] 전투 연구 건수 카운트
       
-      const audio = new Audio('assets/audio/upgrade.mp3');
-      audio.volume = 0.4;
-      audio.play().catch(err => console.error("Audio play failed:", err));
+      SoundManager.playUpgrade();
 
       const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
       this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
