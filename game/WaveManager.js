@@ -32,6 +32,9 @@ export class WaveManager {
     // 보스 구성 정보
     this.bossToSpawn = 0;
     this.bossNames = ['CENTIPEDE', 'WARQUEEN', 'DIABOLUS', 'APOLLYON', 'MECHASILISK', 'SCYTHER PRINCE', 'BRAYER'];
+    
+    // [Fix] 초기 체력 설정 (첫 웨이브 시작 전 소환 시 NaN 방지)
+    this.currentEnemyHp = 100;
   }
 
   reset() {
@@ -260,7 +263,8 @@ export class WaveManager {
    */
   spawnSpecialBoss(type) {
     let boss;
-    const baseHp = this.currentEnemyHp * 20;
+    // [Fix] currentEnemyHp가 없을 경우 기본값 50 사용 (NaN 방지)
+    const baseHp = (this.currentEnemyHp || 50) * 20;
     // 특수 보스 방어력 보정
     const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 35); 
     
@@ -271,10 +275,10 @@ export class WaveManager {
             boss.shield = baseHp * 0.5;
             break;
         case 'AlphaThrumbo':
-            // [Image Matching] 특수 몬스터 전용 스프라이트 적용
-            boss = new Enemy(this.waypoints, baseHp * 2, 2000, 'organic', true, armor * 0.5, 'special_알파트럼보.webp');
+            // [Balance] 100라운드 기준 체력이 약 2500만이 되도록 계수 조정 (baseHp * 0.625 = 12.5배)
+            boss = new Enemy(this.waypoints, baseHp * 0.625, 2000, 'organic', true, armor * 0.5, 'special_알파트럼보.webp');
             boss.name = '알파 트럼보';
-            boss.hpRegen = boss.maxHp * 0.025; // 초재생 능력: 초당 최대 체력의 2.5% 회복
+            boss.hpRegen = boss.maxHp * 0.001; // 초당 최대 체력의 0.1% 회복으로 하향 (기존 2.5%)
             break;
         case 'DarkMonolith':
             // 저등급 유닛만 데미지를 줄 수 있으므로 체력을 대폭 하향 (기존 보스의 60% 수준)
