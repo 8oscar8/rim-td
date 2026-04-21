@@ -493,13 +493,14 @@ export class UIManager {
       };
     });
     
-    // [New] 글로벌 UI 클릭 효과음 (탭 전환 및 튜토리얼 다음 버튼 전용)
+    // [New] 글로벌 UI 클릭 효과음 (튜토리얼 진행 중에만 작동)
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('.tab-btn, #tutorial-next-btn');
       if (btn && !btn.disabled) {
-        // 단, 이미 개별 효과음이 지정된 경우는 중복 재생을 피하고 싶다면 체크할 수 있으나, 
-        // 사용자 요청은 "모든 버튼 클릭 시" 효과음이므로 통일감을 위해 전체 적용합니다.
-        SoundManager.playClick();
+        // 튜토리얼 오버레이가 활성화된 상태일 때만 소리 재생
+        if (this.app.tutorial && !this.app.tutorial.overlay.classList.contains('hidden')) {
+          SoundManager.playClick();
+        }
       }
     });
   }
