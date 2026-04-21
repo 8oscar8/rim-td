@@ -81,6 +81,22 @@ export class WaveManager {
     if (this.onWaveStart) this.onWaveStart(this.waveNumber);
   }
 
+  /**
+   * [New] 다음 웨이브 정보 미리보기 반환
+   */
+  getNextWavePreview() {
+      const nextWave = this.waveNumber + 1;
+      if (nextWave > this.maxWaves) return null;
+
+      const fixedData = FIXED_MONSTER_LIST[nextWave - 1];
+      const isBossWave = (nextWave % 10 === 0);
+      
+      let name = fixedData ? fixedData.name : (isBossWave ? "보스" : "정체불명");
+      let count = isBossWave ? 1 : Math.min(10 + Math.floor(nextWave * 1.5), 24);
+      
+      return { name, count, isBossWave };
+  }
+
   update(dt, enemiesList) {
     if (this.gameFinished) return;
 

@@ -992,6 +992,16 @@ export class UIManager {
               overlay.classList.remove('wave-countdown-hidden');
               countdownNum.textContent = totalSeconds;
               
+              // [New] 다음 웨이브 미리보기 정보 표시
+              const nextInfo = document.getElementById('countdown-next-info');
+              if (nextInfo && this.app.waveManager) {
+                  const preview = this.app.waveManager.getNextWavePreview();
+                  if (preview) {
+                      const gradeSpan = preview.isBossWave ? '<span style="color:var(--accent-red); font-weight:bold;">[BOSS]</span> ' : '';
+                      nextInfo.innerHTML = `${gradeSpan}다음: ${preview.name} x ${preview.count}`;
+                  }
+              }
+              
               if (countdownLabel) {
                   countdownLabel.textContent = (state.waveNumber === 0) ? "첫 습격 시작까지" : "다음 습격까지";
               }

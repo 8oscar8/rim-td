@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --bg-darker: #0c0d0e;
     --bg-panel: #141517;
     --bg-card: #1c1e21;
@@ -1089,6 +1089,15 @@ body { font-family: 'Inter', sans-serif; background-color: #000; color: var(--te
     align-items: center;
     gap: 10px;
     text-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+}
+
+#countdown-next-info {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    color: var(--accent-cyan);
+    font-weight: 700;
+    text-shadow: 0 0 15px rgba(0, 242, 255, 0.6);
+    margin-bottom: 5px;
 }
 
 #countdown-label {
