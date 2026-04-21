@@ -374,6 +374,12 @@ export class WaveManager {
    * [New] 상단 습격 (Caravan Raid)
    */
   spawnCaravanRaid() {
+    console.log("[Caravan] Attempting to spawn caravan raid...");
+    try {
+      if (!this.waypoints || this.waypoints.length === 0) {
+        console.error("[Caravan] Error: Waypoints are missing!");
+        return;
+      }
     // [Fix] currentEnemyHp가 없을 경우를 대비한 안전한 기본값 계산
     const baseEnemyHp = this.currentEnemyHp || (Math.pow(1.15, this.waveNumber) * 100);
     // [Balance] 100라운드 기준 머팔로 1500만, 경호원 500만이 되도록 하향 조정
@@ -439,6 +445,9 @@ export class WaveManager {
         spawnedGuard++;
         if (spawnedGuard >= 15) clearInterval(gInterval);
     }, 800);
+    } catch (e) {
+      console.error("[Caravan] Fatal error during spawn:", e);
+    }
   }
 
   /**

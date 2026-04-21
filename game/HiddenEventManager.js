@@ -1,3 +1,4 @@
+import { SoundManager } from '../engine/SoundManager.js';
 /**
  * HiddenEventManager.js
  * 게임당 1~2회만 발생하는 전설적인 '히든 인카운터' 시스템을 관리합니다.
