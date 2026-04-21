@@ -38,7 +38,7 @@ export const WEAPON_DB = {
   '투창 다발': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 25, spd: 0.2, ap: 0.3, effect: 'arrow', range: 200, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
 
   '기관단총(SMG)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 20, burst: 3, spd: 0.45, ap: 0.15, range: 240 },
-  '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310 },
+  '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310, attackSound: 'assets/audio/돌격소총.ogg' },
   '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 180, spd: 0.4, ap: 0.3, effect: 'aoe_knockback', range: 100 },
 
   '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: 'armor_break', shred: 20, range: 480 },
