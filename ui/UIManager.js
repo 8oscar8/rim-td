@@ -2341,7 +2341,7 @@ export class UIManager {
             if (type === 'farming') {
                 SoundManager.playSFX('assets/audio/농사.ogg', 0.6);
             } else if (type === 'mining') {
-                SoundManager.playSFX('assets/audio/채광.ogg', 0.6);
+                SoundManager.playSFX('assets/audio/DrillB.ogg', 0.6);
             } else if (type === 'research') {
                 SoundManager.playSFX('assets/audio/특수무기사용시/연구.ogg', 0.6);
             } else if (type === 'trading') {
