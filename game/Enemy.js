@@ -60,6 +60,7 @@ export class Enemy {
 
     this.selected = false;
     this.flashTimer = 0;
+    this.bossHitCount = 0; // [New] 보스 피격 사운드 제어용 카운터
   }
 
   update(dt) {
@@ -247,6 +248,18 @@ export class Enemy {
 
     // 상태 이상 적용
     this.handleStatusEffect(effect, shred, amount);
+
+    // [New] 보스 전용 피격 사운드 로직 (실행 오류 방지를 위해 데미지 처리 후 별도 수행)
+    if (this.isBoss && this.active) {
+      this.bossHitCount++;
+      if (this.bossHitCount >= 10) { // 10회 피격 시 1번 재생
+        const soundPath = (this.type === 'mech') 
+          ? 'assets/audio/몹피격음/기계원거리피격시.ogg' 
+          : 'assets/audio/몹피격음/유기체원거리피격시.ogg';
+        SoundManager.playSFX(soundPath, 0.4); // 볼륨 0.4로 적절하게 설정
+        this.bossHitCount = 0;
+      }
+    }
 
     if (this.hp <= 0) {
       this.die();
