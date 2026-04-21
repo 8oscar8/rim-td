@@ -1673,6 +1673,8 @@ class App {
     // [Sound] 아이템 종류별 사용 사운드 재생
     if (type === 'toxin_grenade') {
         SoundManager.playSFX('assets/audio/독소수류탄.ogg');
+    } else if (type === 'pulse_grenade') {
+        SoundManager.playSFX('assets/audio/펄스폭탄.ogg');
     } else if (type === 'molotov') {
         SoundManager.playSFX('assets/audio/특수무기사용시/화염병.ogg');
     } else if (type === 'smoke_launcher') {
