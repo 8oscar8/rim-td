@@ -177,7 +177,7 @@ export class EncounterManager {
   applyCatharsis() {
     this.app.state.mood = Math.min(100, (this.app.state.mood || 0) + 60);
     this.app.ui.addMiniNotification("정신을 차렸습니다! 카타르시스 효과로 무드가 대폭 상승합니다. (+60%)", "jackpot");
-    SoundManager.playSFX('assets/audio/encounter_success.mp3', 0.8);
+    SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg', 0.8);
   }
 
   // [New] 정신 이상 이벤트 강제 발생 로직 (무드 25% 이하 시 체크)
@@ -304,7 +304,7 @@ export class EncounterManager {
     if (selected.type === 'negative') {
         SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.8);
     } else {
-        SoundManager.playSFX('assets/audio/encounter_success.mp3', 0.8);
+        SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg', 0.8);
     }
 
     // 소리가 먼저 나고 약간(500ms) 뒤에 팝업 표시 및 게임 일시정지

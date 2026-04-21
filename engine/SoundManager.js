@@ -15,7 +15,7 @@ export class SoundManager {
     // 습격 및 배드 이벤트 사운드 사전 로딩
     this.raidAlert = new Audio('assets/audio/raid_alert.mp3');
     this.badAlert = new Audio('assets/audio/bad_alert.mp3');
-    this.encounterSuccessSound = new Audio('assets/audio/encounter_success.mp3');
+    this.encounterSuccessSound = new Audio('assets/audio/긍정적랜덤인카운터.ogg');
     this.coinSound = new Audio('assets/audio/coin.mp3');
     this.buySound = new Audio('assets/audio/buy.mp3');
     this.upgradeSound = new Audio('assets/audio/upgrade.mp3');
