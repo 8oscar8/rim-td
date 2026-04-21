@@ -12,8 +12,8 @@ export const WEAPON_DB = {
   '999강 나무몽둥이': { type: 'blunt', tech: 'primitive', grade: 'Hidden', dmg: 9999, spd: 2.0, ap: 1.0, range: 180, effect: 'knockback', fixedMaterial: 'Wood', attackSound: 'assets/audio/weaponsound/맨손주먹.ogg' },
 
   // 날붙이 (Sharp)
-  '단검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 12, spd: 1.0, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/단검날붙이소리.ogg' },
-  '단창': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 18, spd: 0.8, ap: 0.2, effect: null, attackSound: 'assets/audio/weaponsound/단검날붙이소리.ogg' },
+  '단검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 12, spd: 1.0, ap: 0, effect: null, attackSound: 'assets/audio/단검날붙이소리.ogg' },
+  '단창': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 18, spd: 0.8, ap: 0.2, effect: null, attackSound: 'assets/audio/단검날붙이소리.ogg' },
   '검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 16, spd: 0.8, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/칼소리.ogg' },
   '창': { type: 'sharp', tech: 'primitive', grade: 'Uncommon', dmg: 23, spd: 0.6, ap: 0.3, effect: null, attackSound: 'assets/audio/창.ogg' },
   '장검': { type: 'sharp', tech: 'primitive', grade: 'Rare', dmg: 40, spd: 0.7, ap: 0, effect: 'melee_aoe', range: 70, attackSound: 'assets/audio/weaponsound/칼소리.ogg' },
