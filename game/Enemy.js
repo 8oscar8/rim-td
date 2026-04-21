@@ -301,7 +301,9 @@ export class Enemy {
     if (effect === 'stun') {
       this.stunTimer = 0.5;
     } else if (effect === 'stun_long') {
-      this.stunTimer = 5.0;
+      if (Math.random() < 0.3) { // 30% 확률로 스턴 발생
+        this.stunTimer = 5.0;
+      }
     } else if (effect === 'emp' && this.type === 'mech') {
       this.stunTimer = 6.0; // 기계류 전용 기절 상향
     } else if (effect === 'frag_stun' && this.type === 'organic') {
