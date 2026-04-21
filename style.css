@@ -1541,3 +1541,20 @@ input[type=range] {
     background: rgba(155, 89, 182, 0.4) !important;
     border-color: rgba(155, 89, 182, 0.8) !important;
 }
+/* ==========================================
+   리더보드 전용 커스텀 스크롤바 
+   ========================================== */
+#lb-list-main::-webkit-scrollbar {
+    width: 6px;
+}
+#lb-list-main::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+#lb-list-main::-webkit-scrollbar-thumb {
+    background: #3b82f6; /* 메인 테마 파란색 */
+    border-radius: 10px;
+}
+#lb-list-main::-webkit-scrollbar-thumb:hover {
+    background: #60a5fa; /* 호버 시 더 밝은 파랑 */
+}
