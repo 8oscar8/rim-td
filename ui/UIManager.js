@@ -2344,6 +2344,8 @@ export class UIManager {
                 SoundManager.playSFX('assets/audio/채광.ogg', 0.6);
             } else if (type === 'research') {
                 SoundManager.playSFX('assets/audio/특수무기사용시/연구.ogg', 0.6);
+            } else if (type === 'trading') {
+                SoundManager.playSFX('assets/audio/BuyThing.ogg', 0.6);
             }
         } else {
             this.addMiniNotification("대기 중인 정착민이 없습니다!", "failure");
