@@ -75,6 +75,14 @@ class App {
     // [New] 키보드 입력 이벤트 핸들러 등록
     window.addEventListener('keydown', (e) => this.handleKeyDown(e));
 
+    // [New] 특수 인카운터 소환 이벤트 리스너
+    document.addEventListener('spawnSpecial', (e) => {
+        const enemy = e.detail;
+        if (enemy) {
+            this.enemies.push(enemy);
+        }
+    });
+
     // [New] 게임 설정 로드
     this.loadSettings();
 

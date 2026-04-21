@@ -1,3 +1,5 @@
+import { FIXED_MONSTER_LIST } from '../game/MonsterData.js';
+
 export class SpriteManager {
   static init() {
     this.images = {};
@@ -47,22 +49,23 @@ export class SpriteManager {
       '시원한 은행가는 길': 'assets/시원한은행가는길.webp'
     };
 
+    // 무기/아이템 로드
     for (const [name, src] of Object.entries(weaponImages)) {
       const img = new Image();
       img.src = src;
-      // 로딩 실패 시 확장자 교환 폴백 (.webp <-> .png)
-      img.onerror = () => {
-        if (!img.dataset.triedFallback) {
-          img.dataset.triedFallback = 'true';
-          if (img.src.endsWith('.webp')) {
-            img.src = img.src.replace('.webp', '.png');
-          } else if (img.src.endsWith('.png')) {
-            img.src = img.src.replace('.png', '.webp');
-          }
-        }
-      };
+      img.onerror = () => this.handleError(img);
       this.images[name] = img;
     }
+
+    // [New] 몬스터 이미지 로드
+    FIXED_MONSTER_LIST.forEach(mon => {
+      if (mon.img) {
+          const img = new Image();
+          img.src = `assets/monster/${mon.img}`;
+          img.onerror = () => this.handleError(img);
+          this.images[`monster_${mon.img}`] = img;
+      }
+    });
 
     this.colors = {
       awful: '#808080',
@@ -70,8 +73,16 @@ export class SpriteManager {
       excellent: '#9b59b6',
       legendary: '#f1c40f',
       enemy: '#e74c3c',
-      slate: '#7f8c8d' // 전설의 암석색 (Slate)
+      slate: '#7f8c8d'
     };
+  }
+
+  static handleError(img) {
+    if (!img.dataset.triedFallback) {
+        img.dataset.triedFallback = 'true';
+        if (img.src.endsWith('.webp')) img.src = img.src.replace('.webp', '.png');
+        else if (img.src.endsWith('.png')) img.src = img.src.replace('.png', '.webp');
+    }
   }
 
   static getColor(gradeOrMaterial) {
@@ -79,7 +90,7 @@ export class SpriteManager {
     return this.colors[key] || this.colors[gradeOrMaterial] || '#ffffff';
   }
 
-  static getImage(weaponName) {
-    return this.images[weaponName] || null;
+  static getImage(key) {
+    return this.images[key] || null;
   }
 }

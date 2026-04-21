@@ -1,5 +1,6 @@
 import { Enemy } from './Enemy.js';
 import { WAVE_HP_DATA } from './WaveHPData.js';
+import { FIXED_MONSTER_LIST } from './MonsterData.js';
 
 /**
  * WaveManager.js
@@ -138,7 +139,16 @@ export class WaveManager {
    */
   spawnStandardEnemy(enemiesList) {
     let type = 'organic';
-    if (this.waveNumber >= 10) {
+    let name = '';
+    let img = null;
+    
+    // [New] 고정 몬스터 데이터 적용 (1~50라운드)
+    const fixedData = FIXED_MONSTER_LIST[this.waveNumber - 1];
+    if (fixedData && !fixedData.boss) {
+        type = fixedData.type;
+        name = fixedData.name;
+        img = fixedData.img;
+    } else if (this.waveNumber >= 10) {
       if (this.waveNumber % 5 === 0 || Math.random() < 0.2) type = 'mech';
     }
     
@@ -150,7 +160,8 @@ export class WaveManager {
         armor = Math.floor(50 + (this.waveNumber - 50) * 3);
     }
     
-    const enemy = new Enemy(this.waypoints, this.currentEnemyHp, this.currentReward, type, false, armor);
+    const enemy = new Enemy(this.waypoints, this.currentEnemyHp, this.currentReward, type, false, armor, img);
+    if (name) enemy.name = name;
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName) => {
       // 7번째 인자인 shooterName이 정확히 전달되도록 수정
@@ -170,13 +181,23 @@ export class WaveManager {
   spawnBossEnemy(enemiesList) {
     const bossHp = this.currentEnemyHp * 15;
     const bossReward = this.currentReward * 50;
-    const bossName = this.bossNames[(this.waveNumber / 10 - 1) % this.bossNames.length];
-    const type = (this.waveNumber >= 20) ? 'mech' : 'organic';
+    
+    let bossName = this.bossNames[(this.waveNumber / 10 - 1) % this.bossNames.length];
+    let type = (this.waveNumber >= 20) ? 'mech' : 'organic';
+    let img = null;
+
+    // [New] 고정 보스 데이터 적용 (1~50라운드)
+    const fixedData = FIXED_MONSTER_LIST[this.waveNumber - 1];
+    if (fixedData && fixedData.boss) {
+        bossName = fixedData.name;
+        type = fixedData.type;
+        img = fixedData.img;
+    }
 
     // [New] 보스 전용 방어력 공식: Floor(Wave / 10)^1.5 * 30
     const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 30);
 
-    const enemy = new Enemy(this.waypoints, bossHp, bossReward, type, true, armor);
+    const enemy = new Enemy(this.waypoints, bossHp, bossReward, type, true, armor, img);
     enemy.name = bossName;
 
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
@@ -381,14 +402,27 @@ export class WaveManager {
    */
   spawnManhunterPack() {
     const animalCount = 15 + Math.floor(this.waveNumber / 5);
-    const animalHp = this.currentEnemyHp * 0.6; // 다람쥐/쥐 컨셉이라 체력은 낮음
-    const animalReward = 1 + Math.floor(this.waveNumber / 20); // 보상은 미미함
+    const animalHp = (this.currentEnemyHp || 50) * 0.6; 
+    const animalReward = 1 + Math.floor(this.waveNumber / 20); 
+    
+    // [New] 1~20라운드 동물 명단 중 무작위 하나 선택
+    const randomIdx = Math.floor(Math.random() * 20);
+    const randomAnimal = FIXED_MONSTER_LIST[randomIdx];
     
     let spawnCount = 0;
-    const armor = Math.floor(this.waveNumber * 0.3); // 동물 무리는 방어력이 매우 낮음
+    const armor = Math.floor(this.waveNumber * 0.3);
     const interval = setInterval(() => {
-        const animal = new Enemy(this.waypoints, animalHp, animalReward, 'organic', false, armor);
-        animal.name = Math.random() < 0.5 ? '식인 다람쥐' : '식인 멧돼지';
+        const animal = new Enemy(
+            this.waypoints, 
+            animalHp, 
+            animalReward, 
+            'organic', 
+            false, 
+            armor,
+            randomAnimal ? randomAnimal.img : null // 이미지 적용
+        );
+        animal.name = randomAnimal ? `식인 ${randomAnimal.name}` : '식인 동물';
+        animal.level = this.waveNumber; // 레벨 정보 추가
         animal.speed *= 1.6; // 매우 빠름
         
         const originalDeath = animal.takeDamage.bind(animal);
@@ -441,13 +475,15 @@ export class WaveManager {
             this.currentReward || 1,
             'organic',
             false,
-            armor
+            armor,
+            null
         );
+        insect.level = this.waveNumber; // 레벨 정보 추가
         
         // 곤충 개별 커스텀
         insect.name = config.name;
         insect.speed *= config.spdMul;
-        insect.size = config.size;
+        insect.radius = config.size; // size 대신 radius를 직접 설정해야 화면에 보입니다.
         insect.color = config.color;
 
         const originalDeath = insect.takeDamage.bind(insect);

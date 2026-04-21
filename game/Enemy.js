@@ -9,8 +9,9 @@ export class Enemy {
   // 전역 보스 피해 배율 (훈련 등에 의해 변동 가능)
   static bossBonus = 1.0; 
 
-  constructor(waypoints, hp, reward, type = 'organic', isBoss = false, armor = 0) {
+  constructor(waypoints, hp, reward, type = 'organic', isBoss = false, armor = 0, img = null) {
     this.waypoints = waypoints;
+    this.img = img;
     this.currentWaypointIndex = 0;
     
     this.x = waypoints[0].x;
@@ -34,6 +35,8 @@ export class Enemy {
     this.fearTimer = 0;
     this.activeDots = []; // { damagePerSec, duration }
     this.distanceTraveled = 0;
+    this.lastX = this.x; // 진행 방향 판단용
+    this.movingRight = false;
     
     // 특수 기믹 변수
     this.shield = 0;
@@ -59,6 +62,13 @@ export class Enemy {
 
   update(dt) {
     if (!this.active) return;
+    
+    // 진행 방향 업데이트
+    if (this.x !== this.lastX) {
+        this.movingRight = this.x > this.lastX;
+    }
+    this.lastX = this.x;
+
     if (this.flashTimer > 0) this.flashTimer -= dt;
 
     // 재생 로직 처리
@@ -309,16 +319,38 @@ export class Enemy {
         ctx.restore();
     }
 
-    ctx.fillStyle = this.type === 'mech' ? '#7f8c8d' : SpriteManager.getColor('enemy');
-    
-    if (this.isBoss) {
-      ctx.save();
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = 'red';
-      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    } else {
-      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
+    // 몬스터 본체 렌더링 (이미지가 있으면 이미지, 없으면 도형)
+    let renderedImage = false;
+    if (this.img) {
+      const imgObj = SpriteManager.getImage(`monster_${this.img}`);
+      if (imgObj && imgObj.complete && imgObj.naturalHeight !== 0) {
+        ctx.save();
+        const size = this.radius * (this.isBoss ? 7.0 : 5.5);
+        
+        // [Flip] 오른쪽으로 이동 중이라면 이미지 좌우 반전
+        if (this.movingRight) {
+            ctx.translate(this.x, this.y);
+            ctx.scale(-1, 1);
+            ctx.drawImage(imgObj, -size/2, -size/2, size, size);
+        } else {
+            ctx.drawImage(imgObj, this.x - size/2, this.y - size/2, size, size);
+        }
+        ctx.restore();
+        renderedImage = true;
+      }
+    }
+
+    if (!renderedImage) {
+      ctx.fillStyle = this.type === 'mech' ? '#7f8c8d' : SpriteManager.getColor('enemy');
+      if (this.isBoss) {
+        ctx.save();
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'red';
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      } else {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
+      }
     }
 
     // [New] 선택된 상태 표시 (선택 링)
@@ -351,19 +383,20 @@ export class Enemy {
     // 체력 및 보호막바 렌더링
     this.drawHealthBar(ctx);
 
-    if (this.isBoss) {
+    // 몬스터 이름 표시
+    if (this.name) {
+      ctx.save();
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 12px Arial';
       ctx.textAlign = 'center';
-      ctx.fillText(this.name, this.x, (this.y - 40));
       
-      if (this.type === 'mech' && Math.random() < 0.1) {
-        ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(this.x + (Math.random()-0.5)*40, this.y + (Math.random()-0.5)*40);
-        ctx.lineTo(this.x + (Math.random()-0.5)*20, this.y + (Math.random()-0.5)*20);
-        ctx.stroke();
+      if (this.isBoss) {
+        ctx.font = 'bold 12px Arial';
+        ctx.fillText(this.name, this.x, (this.y - 85));
+      } else {
+        ctx.font = '10px Arial';
+        ctx.fillText(this.name, this.x, (this.y - 35));
       }
+      ctx.restore();
     }
   }
 
@@ -371,7 +404,7 @@ export class Enemy {
     const hpPercent = Math.max(this.hp / this.maxHp, 0);
     const barWidth = this.isBoss ? 60 : 20;
     const barHeight = this.isBoss ? 8 : 4;
-    const barY = this.y - (this.isBoss ? 35 : 20);
+    const barY = this.y - (this.isBoss ? 75 : 30);
     
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
     ctx.fillRect(this.x - barWidth / 2, barY, barWidth, barHeight);
