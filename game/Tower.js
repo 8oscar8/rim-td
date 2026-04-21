@@ -282,10 +282,12 @@ export class Tower {
 
     // [Sound] 무기별 공격 사운드 재생
     if (this.weaponData.attackSound) {
-      // [Volume Balance] 작은둔기휘두르는소리가 작게 녹음되어 볼륨을 개별적으로 증폭 (0.4 -> 0.85)
+      // [Volume Balance] 특정 사운드들이 작게 녹음되어 볼륨을 개별적으로 증폭
       let fireVol = 0.4;
       if (this.weaponData.attackSound.includes('작은둔기휘두르는소리.ogg')) {
         fireVol = 0.85;
+      } else if (this.weaponData.attackSound.includes('GunShotA.ogg')) {
+        fireVol = 0.8;
       }
       SoundManager.playSFX(this.weaponData.attackSound, fireVol);
     }
