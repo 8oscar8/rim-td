@@ -411,7 +411,7 @@ class App {
           SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
       }
 
-      SoundManager.playSFX('assets/audio/buy.mp3');
+      SoundManager.playSFX('assets/audio/BuyThing.ogg');
       this.ui.addMiniNotification(`${u.weaponName} 판매 완료 (+${price} 은) [누적 ${this.state.totalSellCount}회]`);
       this.ui.updateDisplays(this.state);
       return true;
@@ -425,7 +425,7 @@ class App {
       this.state.spendResource('silver', 1000);
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.drawAdvanced(artisanLv);
-      SoundManager.playSFX('assets/audio/buy.mp3');
+      SoundManager.playSFX('assets/audio/BuyThing.ogg');
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
       if (this.tutorial) this.tutorial.trigger('buy_unit');
@@ -440,7 +440,7 @@ class App {
       this.state.spendResource('silver', 50);
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.draw(artisanLv);
-      SoundManager.playSFX('assets/audio/buy.mp3');
+      SoundManager.playSFX('assets/audio/BuyThing.ogg');
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
       if (this.tutorial) this.tutorial.trigger('buy_unit');
@@ -458,7 +458,7 @@ class App {
         this.state.spendResource('jade', 1);
         this.state.silver += 250;
         this.ui.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
-        SoundManager.playSFX('assets/audio/buy.mp3');
+        SoundManager.playSFX('assets/audio/BuyThing.ogg');
         this.ui.updateDisplays(this.state);
     } else {
         this.ui.addMiniNotification("환전할 비취옥이 부족합니다!", 'failure');
@@ -1194,7 +1194,7 @@ class App {
             }
 
             if (result) {
-                SoundManager.playSFX('assets/audio/buy.mp3');
+                SoundManager.playSFX('assets/audio/BuyThing.ogg');
                 this.startPlacement(result);
                 this.ui.showNotification("조합 성공!", `새로운 ${result.weaponData.grade} 등급 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
             }
@@ -1506,7 +1506,7 @@ class App {
     this.ui.showNotification(title, result.msg, displayGrade);
     
     this.ui.updateDisplays(s);
-    if (isSuccess) SoundManager.playSFX('assets/audio/buy.mp3');
+    if (isSuccess) SoundManager.playSFX('assets/audio/BuyThing.ogg');
   }
 
   /**
@@ -1668,7 +1668,7 @@ class App {
     this.ui.updateDisplays(this.state);
     
     // 이펙트 레이어 등에 연출 추가 가능
-    SoundManager.playSFX('assets/audio/buy.mp3'); // 던지는 소리 등으로 대체 가능
+    SoundManager.playSFX('assets/audio/BuyThing.ogg'); // 던지는 소리 등으로 대체 가능
   }
 
   /**
@@ -1896,7 +1896,7 @@ class App {
         // 쿨타임 설정 (15초)
         s.itemCooldowns.herbal_care = 15;
 
-        SoundManager.playSFX('assets/audio/buy.mp3'); 
+        SoundManager.playSFX('assets/audio/BuyThing.ogg'); 
         this.ui.addMiniNotification("약초 30개를 사용하여 무드를 25 회복했습니다!", "jackpot");
         this.ui.updateDisplays(s);
         
@@ -1931,7 +1931,7 @@ class App {
         // 쿨타임 설정 (60초)
         s.itemCooldowns.financial_care = 60;
 
-        SoundManager.playSFX('assets/audio/buy.mp3'); 
+        SoundManager.playSFX('assets/audio/BuyThing.ogg'); 
         this.ui.addMiniNotification("금융치료 완료! 은화 300개를 사용하여 무드를 20 회복했습니다.", "jackpot");
         this.ui.updateDisplays(s);
         

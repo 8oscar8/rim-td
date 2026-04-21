@@ -320,7 +320,7 @@ export class UIManager {
                state.spendResource('plasteel', 50); state.spendResource('uranium', 30); state.spendResource('researchPoints', 300); state.spendResource('component', 20);
              }
 
-             SoundManager.playSFX('assets/audio/buy.mp3');
+             SoundManager.playSFX('assets/audio/BuyThing.ogg');
              
              // [CRITICAL FIX] 클릭 이벤트가 모두 종료된 후에 배치 모드 진입 (캔버스 클릭 간섭 방지)
              setTimeout(() => {
@@ -467,7 +467,7 @@ export class UIManager {
             // [Fix] 인공자아핵은 타워이므로 즉시 배치 모드로 진입
             if (weaponName === '인공자아핵') {
                 const result = GachaSystem.createSpecificWeapon('인공자아핵', 'normal', 'None');
-                SoundManager.playSFX('assets/audio/buy.mp3');
+                SoundManager.playSFX('assets/audio/BuyThing.ogg');
                 setTimeout(() => {
                     this.app.startPlacement(result);
                 }, 50);
@@ -476,7 +476,7 @@ export class UIManager {
                 if (itemKey) {
                     s.items[itemKey] = (s.items[itemKey] || 0) + 1;
                     this.addMiniNotification(`${weaponName} 획득! (사용: 우측 아이템 카드 클릭)`);
-                    SoundManager.playSFX('assets/audio/buy.mp3');
+                    SoundManager.playSFX('assets/audio/BuyThing.ogg');
                 }
             }
             

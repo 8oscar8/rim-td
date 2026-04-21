@@ -17,7 +17,7 @@ export class SoundManager {
     this.badAlert = new Audio('assets/audio/bad_alert.mp3');
     this.encounterSuccessSound = new Audio('assets/audio/긍정적랜덤인카운터.ogg');
     this.coinSound = new Audio('assets/audio/coin.mp3');
-    this.buySound = new Audio('assets/audio/buy.mp3');
+    this.buySound = new Audio('assets/audio/BuyThing.ogg');
     this.upgradeSound = new Audio('assets/audio/upgrade.mp3');
     
     const preloads = [this.raidAlert, this.badAlert, this.encounterSuccessSound, this.coinSound, this.buySound, this.upgradeSound];
