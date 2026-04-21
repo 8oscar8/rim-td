@@ -17,7 +17,7 @@ export const WEAPON_DB = {
   '검': { type: 'sharp', tech: 'primitive', grade: 'Common', dmg: 16, spd: 0.8, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/칼소리.ogg' },
   '창': { type: 'sharp', tech: 'primitive', grade: 'Uncommon', dmg: 23, spd: 0.6, ap: 0.3, effect: null },
   '장검': { type: 'sharp', tech: 'primitive', grade: 'Rare', dmg: 40, spd: 0.7, ap: 0, effect: 'melee_aoe', range: 70, attackSound: 'assets/audio/weaponsound/칼소리.ogg' },
-  '파괴용 도끼': { type: 'sharp', tech: 'advanced', grade: 'Rare', dmg: 85, spd: 0.45, ap: 0.5, effect: 'armor_break', shred: 6 },
+  '파괴용 도끼': { type: 'sharp', tech: 'advanced', grade: 'Rare', dmg: 85, spd: 0.45, ap: 0.5, effect: 'armor_break', shred: 6, attackSound: 'assets/audio/weaponsound/칼소리.ogg' },
   '트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Epic', dmg: 110, spd: 0.6, ap: 0.3, effect: 'knockback', fixedMaterial: 'None' },
   '플라즈마검': { type: 'sharp', tech: 'advanced', grade: 'Legendary', dmg: 95, spd: 0.7, ap: 0.3, effect: null, shred: 15, fixedMaterial: 'None' },
   '단분자검': { type: 'sharp', tech: 'advanced', grade: 'Mythic', dmg: 135, spd: 0.9, ap: 0.95, effect: null, fixedMaterial: 'None' },
