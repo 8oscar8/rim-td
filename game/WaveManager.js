@@ -356,7 +356,8 @@ export class WaveManager {
   spawnCaravanRaid() {
     // [Fix] currentEnemyHp가 없을 경우를 대비한 안전한 기본값 계산
     const baseEnemyHp = this.currentEnemyHp || (Math.pow(1.15, this.waveNumber) * 100);
-    const baseHp = baseEnemyHp * 25;
+    // [Balance] 100라운드 기준 머팔로 1500만, 경호원 500만이 되도록 하향 조정
+    const baseHp = baseEnemyHp * 5;
     const trumboCount = 3;
     let trumbosLeft = trumboCount;
     let anyEscaped = false;
@@ -365,7 +366,8 @@ export class WaveManager {
     const armor = Math.floor(Math.pow(Math.floor(this.waveNumber / 10), 1.5) * 20);
     let spawnedTrumbo = 0;
     const tInterval = setInterval(() => {
-        const trumbo = new Enemy(this.waypoints, baseHp * 2.5, 500, 'organic', true, armor, '21.머팔로.webp');
+        // [Balance] HP 계수 조정: baseHp(5배) * 1.5 = 7.5배
+        const trumbo = new Enemy(this.waypoints, baseHp * 1.5, 500, 'organic', true, armor, '21.머팔로.webp');
         trumbo.name = `보물 머팔로 (#${spawnedTrumbo + 1})`;
         trumbo.speed *= 0.7; // 짐이 많아 느림
         trumbo.raidTimerMax = 180; // 180초(3분) 내에 잡아야 함
@@ -400,7 +402,8 @@ export class WaveManager {
     // 2. 용병 경호원 스폰 (15명)
     let spawnedGuard = 0;
     const gInterval = setInterval(() => {
-        const guard = new Enemy(this.waypoints, baseHp * 0.4, 200, 'organic', false, armor * 0.6, 'special_상단경호원.webp');
+        // [Balance] HP 계수 조정: baseHp(5배) * 0.5 = 2.5배 (100라 500만)
+        const guard = new Enemy(this.waypoints, baseHp * 0.5, 200, 'organic', false, armor * 0.6, 'special_상단경호원.webp');
         guard.name = '상단 경호원';
         guard.speed *= 1.4;
         guard.armor += 50;
