@@ -262,9 +262,7 @@ export class UIManager {
           this.app.state.techLevel = levels[currIdx + 1];
           this.app.state.stats.totalResearchCompleted++; // [New] 기술 발전도 연구로 카운트
           // [Sound] 기술 업그레이드 효과음
-          const audio = new Audio('assets/audio/upgrade.mp3');
-          audio.volume = 0.4;
-          audio.play().catch(e => console.log("Audio play deferred"));
+          SoundManager.playUpgrade();
 
           this.addMiniNotification(`기술 업그레이드 완료: ${this.app.state.techLevel}`);
         } else {
@@ -417,9 +415,7 @@ export class UIManager {
             s.stats.totalResearchCompleted++; // [New] 생산 연구 건수 카운트
             
             // [Critical Fix] 가장 직접적인 방식으로 사운드 재생 강제 시도
-            const audio = new Audio('assets/audio/upgrade.mp3');
-            audio.volume = 0.4;
-            audio.play().catch(err => console.error("Audio play failed:", err));
+            SoundManager.playUpgrade();
 
             const name = btn.querySelector('.up-name').textContent;
             this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
@@ -473,7 +469,7 @@ export class UIManager {
             // [Fix] 인공자아핵은 타워이므로 즉시 배치 모드로 진입
             if (weaponName === '인공자아핵') {
                 const result = GachaSystem.createSpecificWeapon('인공자아핵', 'normal', 'None');
-                SoundManager.playSFX('assets/audio/제작.ogg');
+                SoundManager.playCraft();
                 setTimeout(() => {
                     this.app.startPlacement(result);
                 }, 50);
@@ -482,7 +478,7 @@ export class UIManager {
                 if (itemKey) {
                     s.items[itemKey] = (s.items[itemKey] || 0) + 1;
                     this.addMiniNotification(`${weaponName} 획득! (사용: 우측 아이템 카드 클릭)`);
-                    SoundManager.playSFX('assets/audio/특수제작.ogg');
+                    SoundManager.playSFX('assets/audio/특수제작.ogg', 0.8, SoundManager.PRIORITY.MEDIUM);
                 }
             }
             

@@ -1,21 +1,29 @@
 export class SoundManager {
+  // 우선순위 정의
+  static PRIORITY = {
+    HIGH: 0,    // BGM, 레이드 알림, 배드 이벤트 (절대 끊기면 안 됨)
+    MEDIUM: 1,  // UI 클릭, 보상 획득, 건물 건설 (중요도가 높음)
+    LOW: 2      // 전투 사운드 (발사음, 명중음, 사망음 - 가장 낮음)
+  };
+
   static init() {
     this.bgm = null;
-    this.sfx = {};
-    this.activeSFX = new Map(); // [New] 현재 재생 중인 효과음 추적 (보이스 리밋용)
-    this.MAX_POLYPHONY = 5;    // [New] 동일 사운드 최대 동시 재생 수
+    this.activeVoices = []; // 현재 재생 중인 모든 오디오 객체 추적
     
-    // [New] 카테고리별 볼륨 설정 (기본값)
+    // 환경 설정
+    this.MAX_TOTAL_VOICES = 32;   // 브라우저 채널 한계를 고려한 전체 최대 동시 재생 수
+    this.MAX_PER_SRC = 3;         // 동일한 사운드 파일의 최대 중첩 재생 제한 (스팸 방지)
+    this.LOW_PRIORITY_CAP = 20;   // LOW 우선순위 사운드들이 점유할 수 있는 최대 슬롯 (HIGH/MEDIUM 자리 보존)
+
     this.volumes = {
         master: 1.0,
         bgm: 0.5,
         sfx: 0.5
     };
     
-    // [Helper] 경로 인코딩 (한글 및 특수문자 대응)
     const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
 
-    // 습격 및 배드 이벤트 사운드 사전 로딩
+    // 중요 알림 사운드 사전 로딩
     this.raidAlert = new Audio(encodePath('assets/audio/raid_alert.mp3'));
     this.badAlert = new Audio(encodePath('assets/audio/bad_alert.mp3'));
     this.encounterSuccessSound = new Audio(encodePath('assets/audio/긍정적랜덤인카운터.ogg'));
@@ -29,7 +37,7 @@ export class SoundManager {
   }
 
   /**
-   * [New] 통합 볼륨 업데이트 및 실시간 동기화
+   * 볼륨 설정 업데이트
    */
   static updateVolumes(settings) {
     if (!settings) return;
@@ -38,55 +46,44 @@ export class SoundManager {
     if (settings.sfxVolume !== undefined) this.volumes.sfx = parseFloat(settings.sfxVolume);
     
     this.syncActiveSounds();
-    console.log(`[Sound] 볼륨 동기화 완료 (M:${this.volumes.master}, B:${this.volumes.bgm}, S:${this.volumes.sfx})`);
+    console.log(`[Sound] 볼륨 동기화 완료 (M:${this.volumes.master.toFixed(1)}, B:${this.volumes.bgm.toFixed(1)}, S:${this.volumes.sfx.toFixed(1)})`);
   }
 
   /**
-   * 현재 재생 중이거나 사전 로드된 모든 소리의 볼륨을 현재 설정에 맞게 재계산
+   * 재생 중인 모든 소리의 볼륨 동기화
    */
   static syncActiveSounds() {
     const master = this.volumes.master;
     const bgmMult = master * this.volumes.bgm;
     const sfxMult = master * this.volumes.sfx;
 
-    // 1. 배경음악 동기화
     if (this.bgm) {
       this.bgm.volume = Math.max(0, Math.min(1, 0.4 * bgmMult));
     }
     
-    // 2. 사전 로드된 효과음 객체들 동기화
-    const sfxObjects = [
-      { obj: this.raidAlert, mul: 0.8 },
-      { obj: this.badAlert, mul: 0.8 },
-      { obj: this.encounterSuccessSound, mul: 0.8 },
-      { obj: this.coinSound, mul: 0.8 },
-      { obj: this.buySound, mul: 0.8 },
-      { obj: this.upgradeSound, mul: 1.0 },
-      { obj: this.clickSound, mul: 1.5 } // 클릭음은 조금 더 선명하게
-    ];
-
-    sfxObjects.forEach(item => {
-      if (item.obj) {
-        item.obj.volume = Math.max(0, Math.min(1, item.mul * sfxMult));
+    this.activeVoices.forEach(voice => {
+      if (voice.audio) {
+        const base = voice.baseVol || 0.6;
+        voice.audio.volume = Math.max(0, Math.min(1, base * sfxMult));
       }
     });
 
-    // 3. 현재 재생 중인 활성 효과음들 동기화
-    this.activeSFX.forEach((list) => {
-        list.forEach(sound => {
-            sound.volume = Math.max(0, Math.min(1, 0.8 * sfxMult));
-        });
+    // 사전 로드 객체들도 업데이트
+    [this.raidAlert, this.badAlert, this.encounterSuccessSound, this.coinSound, this.buySound, this.upgradeSound, this.clickSound].forEach(obj => {
+      if (obj) obj.volume = Math.max(0, Math.min(1, 0.8 * sfxMult));
     });
   }
 
-  // 배경음악 재생 (루프 지원, 중복 생성 방지)
+  /**
+   * 배경음악 재생
+   */
   static playBGM(src, baseVol = 0.4) {
     const finalVol = baseVol * this.volumes.master * this.volumes.bgm;
 
     if (this.bgm && this.bgm.src.includes(src)) {
       if (this.bgm.paused) {
         this.bgm.volume = Math.max(0, Math.min(1, finalVol));
-        this.bgm.play().catch(e => console.log("BGM Resume Wait..."));
+        this.bgm.play().catch(() => {});
       }
       return;
     }
@@ -100,61 +97,135 @@ export class SoundManager {
     this.bgm = new Audio(encodePath(src));
     this.bgm.loop = true;
     this.bgm.volume = Math.max(0, Math.min(1, finalVol));
-    this.bgm.preload = 'metadata';
-    
-    const playPromise = this.bgm.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(error => {
-        console.warn("BGM 자동재생 차단됨:", error);
-      });
-    }
+    this.bgm.play().catch(e => console.warn("BGM 자동재생 대기:", e));
   }
 
-  // 효과음 재생 (보이스 리밋 적용)
-  static playSFX(src, baseVol = 0.6) {
+  /**
+   * 우선순위 기반 효과음 재생 핵심 로직
+   */
+  static playSFX(src, baseVol = 0.6, priority = this.PRIORITY.LOW) {
     try {
-      const finalVol = baseVol * this.volumes.master * this.volumes.sfx;
-      
-      // 1. 해당 소리의 재생 중인 리스트 가져오기
-      if (!this.activeSFX.has(src)) {
-          this.activeSFX.set(src, []);
-      }
-      const playingList = this.activeSFX.get(src);
+      // 1. 끝난 소리 정리
+      this.activeVoices = this.activeVoices.filter(v => !v.audio.ended && !v.audio.paused);
 
-      // 2. 이미 끝난 소리 리스트에서 제거 (정리)
-      const filteredList = playingList.filter(s => !s.ended && !s.paused);
-      this.activeSFX.set(src, filteredList);
-
-      // 3. 보이스 리밋 체크 (이미 5개 재생 중이면 새로 재생 안함)
-      if (filteredList.length >= this.MAX_POLYPHONY) {
-          return; 
+      // 2. 중요 알림 예외 처리 (별도 객체 사용)
+      if (src.includes('raid_alert') || src.includes('bad_alert')) {
+        this.playHighPriorityStatic(src.includes('raid_alert') ? this.raidAlert : this.badAlert, baseVol);
+        return;
       }
 
-      // 4. 새로운 오디오 객체 생성 및 재생
+      // 중요 효과음 매핑 (src 기반 자동 우선순위 격상)
+      if (src.includes('coin.mp3') || src.includes('BuyThing.ogg') || src.includes('upgrade.mp3') || src.includes('제작.ogg')) {
+          priority = this.PRIORITY.MEDIUM;
+      }
+
+      // 3. 동일 사운드 중첩(Per-Src Limit) 체크
+      const sameSrcCount = this.activeVoices.filter(v => v.src === src).length;
+      if (sameSrcCount >= this.MAX_PER_SRC) {
+          if (priority === this.PRIORITY.LOW) return; // 낮은 순위면 그냥 무시
+          // 높은 순위면 가장 오래된 같은 소리를 중지하고 진행
+          const oldestSame = this.activeVoices.find(v => v.src === src);
+          if (oldestSame) this.stopVoice(oldestSame);
+      }
+
+      // 4. 글로벌 보이스 제한 체크 및 슬롯 확보
+      if (this.activeVoices.length >= this.MAX_TOTAL_VOICES) {
+          // 낮은 우선순위 사운드 중 가장 오래된 것을 찾아 제거
+          const lowPriorityVoices = this.activeVoices.filter(v => v.priority === this.PRIORITY.LOW);
+          if (lowPriorityVoices.length > 0) {
+              this.stopVoice(lowPriorityVoices[0]);
+          } else if (priority === this.PRIORITY.LOW) {
+              // 모든 슬롯이 HIGH/MEDIUM인데 새로 들어온 게 LOW면 재생 안함
+              return;
+          } else {
+              // 최후의 수단: 가장 오래된 MEDIUM이라도 제거
+              const mediumVoices = this.activeVoices.filter(v => v.priority === this.PRIORITY.MEDIUM);
+              if (mediumVoices.length > 0) this.stopVoice(mediumVoices[0]);
+          }
+      }
+
+      // 5. LOW 우선순위 전용 캡 적용 (HIGH/MEDIUM을 위해 자리 비워둠)
+      if (priority === this.PRIORITY.LOW) {
+          const currentLowCount = this.activeVoices.filter(v => v.priority === this.PRIORITY.LOW).length;
+          if (currentLowCount >= this.LOW_PRIORITY_CAP) return;
+      }
+
+      // 6. 실제 재생
       const encodePath = (p) => p.split('/').map(s => encodeURIComponent(s)).join('/').replace(/%3A/g, ':');
-      const sound = new Audio(encodePath(src));
-      sound.volume = Math.max(0, Math.min(1, finalVol));
+      const audio = new Audio(encodePath(src));
+      audio.volume = Math.max(0, Math.min(1, baseVol * this.volumes.master * this.volumes.sfx));
       
-      const playPromise = sound.play();
-      if (playPromise !== undefined) {
-          playPromise.then(() => {
-              filteredList.push(sound);
-          }).catch(error => { /* 자동재생 오류 무시 */ });
-      }
+      const voice = {
+          audio,
+          src,
+          priority,
+          baseVol,
+          startTime: Date.now()
+      };
+
+      audio.play().then(() => {
+          this.activeVoices.push(voice);
+      }).catch(() => { /* 재생 차단 무시 */ });
 
     } catch (err) {
       console.error("[Sound] playSFX Error:", err);
     }
   }
 
-  // [New] 표준 클릭 효과음 재생
+  /**
+   * 특정 보이스 강제 종료 및 리스트 제거
+   */
+  static stopVoice(voice) {
+      try {
+          voice.audio.pause();
+          voice.audio.currentTime = 0;
+          this.activeVoices = this.activeVoices.filter(v => v !== voice);
+      } catch (e) {}
+  }
+
+  /**
+   * 레이드 알림 등 단일 인스턴스 중요 사운드 재생
+   */
+  static playHighPriorityStatic(audioObj, baseVol = 0.8) {
+      if (!audioObj) return;
+      audioObj.currentTime = 0;
+      audioObj.volume = Math.max(0, Math.min(1, baseVol * this.volumes.master * this.volumes.sfx));
+      audioObj.play().catch(() => {});
+  }
+
+  /**
+   * 주요 사운드 재생 편의 메서드 (우선순위 자동 지정)
+   */
   static playClick() {
-    if (this.clickSound) {
-      this.clickSound.currentTime = 0;
-      this.clickSound.play().catch(e => {});
-    } else {
-        this.playSFX('assets/audio/click.mp3', 1.0);
-    }
+    this.playSFX('assets/audio/click.mp3', 1.0, this.PRIORITY.MEDIUM);
+  }
+
+  static playReward() {
+    this.playSFX('assets/audio/coin.mp3', 0.8, this.PRIORITY.MEDIUM);
+  }
+
+  static playSuccess() {
+    this.playSFX('assets/audio/긍정적랜덤인카운터.ogg', 0.8, this.PRIORITY.MEDIUM);
+  }
+
+  static playRaidAlert() {
+    this.playHighPriorityStatic(this.raidAlert, 0.9);
+  }
+
+  static playBadAlert() {
+    this.playHighPriorityStatic(this.badAlert, 0.9);
+  }
+
+  static playBuy() {
+    this.playSFX('assets/audio/BuyThing.ogg', 0.8, this.PRIORITY.MEDIUM);
+  }
+
+  static playUpgrade() {
+    this.playSFX('assets/audio/upgrade.mp3', 0.8, this.PRIORITY.MEDIUM);
+  }
+
+  static playCraft() {
+    this.playSFX('assets/audio/제작.ogg', 0.8, this.PRIORITY.MEDIUM);
   }
 
   static stopBGM() {
@@ -163,3 +234,4 @@ export class SoundManager {
     }
   }
 }
+

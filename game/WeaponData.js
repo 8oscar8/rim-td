@@ -6,8 +6,8 @@ export const WEAPON_DB = {
   '맨손/목재': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 10, spd: 0.5, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/맨손주먹.ogg', attackVolume: 0.7 },
   '곤봉': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.5, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/작은둔기휘두르는소리.ogg', attackVolume: 0.7 },
   '철퇴': { type: 'blunt', tech: 'primitive', grade: 'Uncommon', dmg: 35, spd: 0.5, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/작은둔기휘두르는소리.ogg', attackVolume: 0.7 },
-  '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'melee_aoe', range: 60, attackSound: 'assets/audio/weaponsound/둔기휘두르는소리.ogg' },
-  '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None', attackSound: 'assets/audio/weaponsound/둔기휘두르는소리.ogg' },
+  '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'melee_aoe', range: 60, attackSound: 'assets/audio/둔기휘두르는소리.ogg' },
+  '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None', attackSound: 'assets/audio/둔기휘두르는소리.ogg' },
   '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Mythic', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
   '999강 나무몽둥이': { type: 'blunt', tech: 'primitive', grade: 'Hidden', dmg: 9999, spd: 2.0, ap: 1.0, range: 180, effect: 'knockback', fixedMaterial: 'Wood', attackSound: 'assets/audio/weaponsound/맨손주먹.ogg' },
 
@@ -33,7 +33,7 @@ export const WEAPON_DB = {
   '시원한 은행가는 길': { type: 'ranged', tech: 'advanced', grade: 'Hidden', dmg: 350, spd: 0.15, ap: 0.5, effect: 'capitalist_rocket', range: 280, attackSound: 'assets/audio/시원한 은행가는길 공격소리.ogg' },
 
   '장궁': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 17, spd: 0.28, ap: 0.2, effect: 'arrow', range: 300, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
-  '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260, attackSound: 'assets/audio/Revolver_a.ogg' },
+  '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260, attackSound: 'assets/audio/revolver_a.ogg' },
   '볼트액션 소총': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 24, spd: 0.3, ap: 0.3, effect: null, range: 370, attackSound: 'assets/audio/weaponsound/GunShotA.ogg' },
   '투창 다발': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 25, spd: 0.2, ap: 0.3, effect: 'arrow', range: 200, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
 

@@ -411,10 +411,10 @@ class App {
           };
           if (this.encounterManager) this.encounterManager.showEventModal(event);
           this.startPlacement(result);
-          SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
+          SoundManager.playSuccess();
       }
 
-      SoundManager.playSFX('assets/audio/BuyThing.ogg');
+      SoundManager.playBuy();
       this.ui.addMiniNotification(`${u.weaponName} 판매 완료 (+${price} 은) [누적 ${this.state.totalSellCount}회]`);
       this.ui.updateDisplays(this.state);
       return true;
@@ -428,7 +428,7 @@ class App {
       this.state.spendResource('silver', 1000);
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.drawAdvanced(artisanLv);
-      SoundManager.playSFX('assets/audio/BuyThing.ogg');
+      SoundManager.playBuy();
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
       if (this.tutorial) this.tutorial.trigger('buy_unit');
@@ -443,7 +443,7 @@ class App {
       this.state.spendResource('silver', 50);
       const artisanLv = this.state.upgrades.artisan || 0;
       const result = GachaSystem.draw(artisanLv);
-      SoundManager.playSFX('assets/audio/BuyThing.ogg');
+      SoundManager.playBuy();
       this.startPlacement(result);
       this.ui.updateDisplays(this.state);
       if (this.tutorial) this.tutorial.trigger('buy_unit');
@@ -461,7 +461,7 @@ class App {
         this.state.spendResource('jade', 1);
         this.state.silver += 250;
         this.ui.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
-        SoundManager.playSFX('assets/audio/BuyThing.ogg');
+        SoundManager.playBuy();
         this.ui.updateDisplays(this.state);
     } else {
         this.ui.addMiniNotification("환전할 비취옥이 부족합니다!", 'failure');
@@ -581,7 +581,7 @@ class App {
     // [New] 에픽 이상 등급은 배치 완료 시 coin 효과음 재생
     const highGrades = ['Epic', 'Special', 'Legendary', 'Mythic', 'Hidden'];
     if (highGrades.includes(grade)) {
-        SoundManager.playSFX('assets/audio/coin.mp3');
+        SoundManager.playReward();
     }
 
     this.pendingGachaResult = null;
@@ -702,7 +702,7 @@ class App {
 
       s.mood = Math.min(100, s.mood + 15); // 보스 처치 무드 회복 상향
       this.ui.addMiniNotification(`[처치] 보스 전리품: ${bossLoot}`, "jackpot");
-      SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
+      SoundManager.playSuccess();
     } else if (lootMsg) {
       // 모든 전리품 획득 시 [전리품] 태그와 함께 알림
       this.ui.addMiniNotification(`[전리품] ${lootMsg}`);
@@ -732,14 +732,14 @@ class App {
                 this.handleGameOver("정착지 방어 성공! 모든 위협으로부터 살아남았습니다.", true);
             });
             
-            SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
+            SoundManager.playSuccess();
         }, 2000); // 2초 뒤 여운을 주며 표시
     }
   }
 
   handleWaveStart(num) {
     this.state.waveNumber = num;
-    SoundManager.playSFX('assets/audio/raid_alert.mp3');
+    SoundManager.playRaidAlert();
     
     // [New] BGM 98라운드 전환 체크
     bgmManager.checkWave(num);

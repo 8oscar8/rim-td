@@ -177,7 +177,7 @@ export class EncounterManager {
   applyCatharsis() {
     this.app.state.mood = Math.min(100, (this.app.state.mood || 0) + 60);
     this.app.ui.addMiniNotification("정신을 차렸습니다! 카타르시스 효과로 무드가 대폭 상승합니다. (+60%)", "jackpot");
-    SoundManager.playSFX('assets/audio/LetterArriveGood.ogg', 0.8);
+    SoundManager.playSuccess();
   }
 
   // [New] 정신 이상 이벤트 강제 발생 로직 (무드 25% 이하 시 체크)
@@ -199,7 +199,7 @@ export class EncounterManager {
     const selected = breakEvents[Math.floor(Math.random() * breakEvents.length)];
     
     // 효과음 및 모달 표시
-    SoundManager.playSFX('assets/audio/LetterArrive.ogg', 0.8);
+    SoundManager.playSFX('assets/audio/LetterArrive.ogg', 0.8, SoundManager.PRIORITY.MEDIUM);
     setTimeout(() => {
         this.showEventModal({ name: selected.name, desc: selected.desc, type: 'negative' });
         this.executeEvent({ id: selected.id, desc: selected.desc, isMentalBreak: true });
@@ -302,9 +302,9 @@ export class EncounterManager {
 
     // [Sound] 이벤트 타입에 따라 사운드를 먼저 재생하여 긴장감 조성
     if (selected.type === 'negative') {
-        SoundManager.playSFX('assets/audio/bad_alert.mp3', 0.8);
+        SoundManager.playBadAlert();
     } else {
-        SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg', 0.8);
+        SoundManager.playSuccess();
     }
 
     // 소리가 먼저 나고 약간(500ms) 뒤에 팝업 표시 및 게임 일시정지
@@ -350,7 +350,7 @@ export class EncounterManager {
     if (!this.modal) return;
     
     // [Sound] 히든 인카운터 발생 알림
-    SoundManager.playSFX('assets/audio/히든인카운터수락시.ogg', 0.9);
+    SoundManager.playSFX('assets/audio/히든인카운터수락시.ogg', 0.9, SoundManager.PRIORITY.HIGH);
     
     this.modalTitle.innerText = event.name;
     this.modalTitle.style.color = "#fbbf24"; // 선택형은 황금색
@@ -699,7 +699,7 @@ export class EncounterManager {
   // 16. 곤충 군락 (다양한 곤충형 적 스폰)
   handleInfestation() {
     if (this.app.waveManager) {
-        SoundManager.playSFX('assets/audio/곤충군락소리.ogg', 0.8);
+        SoundManager.playSFX('assets/audio/곤충군락소리.ogg', 0.8, SoundManager.PRIORITY.MEDIUM);
         this.app.waveManager.spawnInfestation();
     }
   }
