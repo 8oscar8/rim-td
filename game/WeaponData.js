@@ -48,7 +48,7 @@ export const WEAPON_DB = {
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.8, ap: 0.3, effect: null, range: 310 },
   '빔 그레이저': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 30, spd: 0.25, ap: 0.6, effect: 'multi_bullet', isTrueDamage: true, range: 9999, attackSound: 'assets/audio/weaponsound/ChargeShotA.ogg' },
   '빔 리피터': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 55, burst: 1, spd: 0.5, ap: 1.0, effect: 'instant_multi', isTrueDamage: true, range: 9999, attackSound: 'assets/audio/weaponsound/ChargeShotA.ogg' },
-  '신경석궁': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 120, spd: 0.4, ap: 0.4, effect: 'toxic_stun', range: 190, attackSound: 'assets/audio/weaponsound/BowA.ogg' }
+  '신경석궁': { type: 'ranged', tech: 'advanced', grade: 'Mythic', dmg: 120, spd: 0.4, ap: 0.4, effect: 'toxic_stun', range: 190, attackSound: 'assets/audio/신경석궁.ogg' }
 };
 
 // 소모성 아이템 DB (타워로 건설 불가, 인벤토리에서 사용)
