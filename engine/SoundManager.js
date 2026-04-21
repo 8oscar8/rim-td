@@ -70,8 +70,8 @@ export class SoundManager {
       if (voice.audio) {
         const base = voice.baseVol || 0.6;
         let mult = uiMult;
-        // [New] 무기 및 적 사망 소리 증폭 계수 적용
-        if (voice.category === 'weapon') mult = weaponMult * 2.0; 
+        // [New] 무기(2.5배) 및 적 사망(1.5배) 소리 증폭 계수 적용
+        if (voice.category === 'weapon') mult = weaponMult * 2.5; 
         else if (voice.category === 'enemy') mult = enemyMult * 1.5;
         
         voice.audio.volume = Math.max(0, Math.min(1, base * mult));
@@ -174,7 +174,7 @@ export class SoundManager {
       const audio = new Audio(encodePath(src));
       
       let mult = this.volumes.ui;
-      if (category === 'weapon') mult = this.volumes.weapon * 2.0; // 무기 소리 2배 증폭
+      if (category === 'weapon') mult = this.volumes.weapon * 2.5; // 무기 소리 2.5배 증폭
       else if (category === 'enemy') mult = this.volumes.enemy * 1.5; // 적 사망 소리 1.5배 증폭
       
       audio.volume = Math.max(0, Math.min(1, baseVol * this.volumes.master * mult));
