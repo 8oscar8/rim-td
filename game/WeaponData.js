@@ -42,7 +42,7 @@ export const WEAPON_DB = {
   '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 180, spd: 0.4, ap: 0.3, effect: 'aoe_knockback', range: 100 },
 
   '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: 'armor_break', shred: 20, range: 480 },
-  '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 75, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280 },
+  '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 75, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280, attackSound: 'assets/audio/차지라이플.ogg' },
   '차지 랜스': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 280, spd: 0.2, ap: 0.9, effect: 'armor_break', shred: 15, range: 340 },
 
   '미니건': { type: 'ranged', tech: 'advanced', grade: 'Legendary', dmg: 120, burst: 25, spd: 0.8, ap: 0.3, effect: null, range: 310 },
