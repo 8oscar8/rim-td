@@ -41,7 +41,7 @@ export const WEAPON_DB = {
   '돌격소총(AR)': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 40, burst: 3, spd: 0.4, ap: 0.25, effect: null, range: 310, attackSound: 'assets/audio/돌격소총.ogg' },
   '전투 산탄총': { type: 'ranged', tech: 'advanced', grade: 'Rare', dmg: 180, spd: 0.4, ap: 0.3, effect: 'aoe_knockback', range: 100, attackSound: 'assets/audio/전투산탄총.ogg' },
 
-  '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: 'armor_break', shred: 20, range: 480 },
+  '저격소총': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 350, spd: 0.18, ap: 0.8, effect: 'armor_break', shred: 20, range: 480, attackSound: 'assets/audio/고급저격총.ogg' },
   '차지 라이플': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 75, burst: 3, spd: 0.4, ap: 0.5, effect: null, range: 280, attackSound: 'assets/audio/차지라이플.ogg' },
   '차지 랜스': { type: 'ranged', tech: 'advanced', grade: 'Epic', dmg: 280, spd: 0.2, ap: 0.9, effect: 'armor_break', shred: 15, range: 340, attackSound: 'assets/audio/weaponsound/ChargeShotA.ogg' },
 
