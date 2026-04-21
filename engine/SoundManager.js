@@ -132,8 +132,8 @@ export class SoundManager {
       // 자동 카테고리 분류 (기존 코드와의 호환성을 위함)
       if (src.includes('죽음소리') || src.includes('사망사운드') || src.includes('몹피격음')) {
           category = 'enemy';
-      } else if (src.includes('weaponsound') || src.includes('.ogg') && !src.includes('긍정적') && !priority === this.PRIORITY.MEDIUM) {
-          // .ogg 중 무기 폴더에 있거나 UI가 아닌 소리들은 무기로 추정
+      } else if (src.includes('weaponsound') || (src.includes('.ogg') && !src.includes('긍정적') && priority !== this.PRIORITY.MEDIUM)) {
+          // .ogg 파일 중 무기 폴더에 있거나 UI(MEDIUM)가 아닌 소리들은 무기로 추정
           if (!category || category === 'ui') category = 'weapon';
       }
 

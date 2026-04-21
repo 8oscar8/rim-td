@@ -289,7 +289,7 @@ export class Tower {
       } else if (this.weaponData.attackSound.includes('GunShotA.ogg')) {
         fireVol = 0.8;
       }
-      SoundManager.playSFX(this.weaponData.attackSound, fireVol);
+      SoundManager.playSFX(this.weaponData.attackSound, fireVol, SoundManager.PRIORITY.LOW, 'weapon');
     }
 
     if (isRanged) {

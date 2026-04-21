@@ -256,7 +256,7 @@ export class Enemy {
         const soundPath = (this.type === 'mech') 
           ? 'assets/audio/몹피격음/기계원거리피격시.ogg' 
           : 'assets/audio/몹피격음/유기체원거리피격시.ogg';
-        SoundManager.playSFX(soundPath, 0.4); // 볼륨 0.4로 적절하게 설정
+        SoundManager.playSFX(soundPath, 0.4, SoundManager.PRIORITY.LOW, 'enemy'); // 볼륨 0.4로 적절하게 설정
         this.bossHitCount = 0;
       }
     }
@@ -277,13 +277,13 @@ export class Enemy {
 
     // 종족별 사망 사운드 분기
     if (this.type === 'mech') {
-      SoundManager.playSFX('assets/audio/기계 사망사운드.ogg');
+      SoundManager.playSFX('assets/audio/기계 사망사운드.ogg', 0.6, SoundManager.PRIORITY.LOW, 'enemy');
     } else if (this.type === 'none' || this.type === 'None') {
       // 유기체도 기계도 아닌 특별한 존재 (예: 공허계 존재)
-      SoundManager.playSFX('assets/audio/none죽음소리.ogg');
+      SoundManager.playSFX('assets/audio/none죽음소리.ogg', 0.6, SoundManager.PRIORITY.LOW, 'enemy');
     } else {
       // 'organic' 등 일반 유기체 사망 사운드 재생
-      SoundManager.playSFX('assets/audio/유기체 사망사운드.ogg');
+      SoundManager.playSFX('assets/audio/유기체 사망사운드.ogg', 0.6, SoundManager.PRIORITY.LOW, 'enemy');
     }
   }
 
