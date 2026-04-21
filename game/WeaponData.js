@@ -33,7 +33,7 @@ export const WEAPON_DB = {
   '시원한 은행가는 길': { type: 'ranged', tech: 'advanced', grade: 'Hidden', dmg: 350, spd: 0.15, ap: 0.5, effect: 'capitalist_rocket', range: 280 },
 
   '장궁': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 17, spd: 0.28, ap: 0.2, effect: 'arrow', range: 300, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
-  '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260 },
+  '리볼버': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 18, spd: 0.5, ap: 0.2, effect: 'knockback', range: 260, attackSound: 'assets/audio/weaponsound/revolver.ogg' },
   '볼트액션 소총': { type: 'ranged', tech: 'advanced', grade: 'Uncommon', dmg: 24, spd: 0.3, ap: 0.3, effect: null, range: 370 },
   '투창 다발': { type: 'ranged', tech: 'primitive', grade: 'Uncommon', dmg: 25, spd: 0.2, ap: 0.3, effect: 'arrow', range: 200, attackSound: 'assets/audio/weaponsound/BowA.ogg' },
 
