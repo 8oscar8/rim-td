@@ -265,8 +265,11 @@ export class Enemy {
     // 종족별 사망 사운드 분기
     if (this.type === 'mech') {
       SoundManager.playSFX('assets/audio/기계 사망사운드.ogg');
+    } else if (this.type === 'none' || this.type === 'None') {
+      // 유기체도 기계도 아닌 특별한 존재 (예: 공허계 존재)
+      SoundManager.playSFX('assets/audio/none죽음소리.ogg');
     } else {
-      // 'organic', 'none' 등은 유기체 사망 사운드 재생
+      // 'organic' 등 일반 유기체 사망 사운드 재생
       SoundManager.playSFX('assets/audio/유기체 사망사운드.ogg');
     }
   }
