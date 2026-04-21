@@ -2042,9 +2042,18 @@ class App {
 
     // 2. 배속 조절 (1, 2, 3)
     if (key === '1' || key === '2' || key === '3') {
+        // [Tutorial Lock] 튜토리얼 중에는 시간 제어 불가
+        if (this.tutorial && !this.tutorial.overlay.classList.contains('hidden')) return;
+
         let speed = parseInt(key);
         if (speed === 3) speed = 4; // 3 누르면 4배속으로 변경
         this.state.timeScale = speed;
+
+        // [Sound] 단축키 배속 설정 소리 추가
+        if (speed === 1) SoundManager.playSFX('assets/audio/ClockTickingNormal.ogg');
+        else if (speed === 2) SoundManager.playSFX('assets/audio/ClockTickingFast.ogg');
+        else if (speed === 4) SoundManager.playSFX('assets/audio/ClockTickingSuperFast.ogg');
+
         this.ui.updateDisplays(this.state);
         return;
     }
