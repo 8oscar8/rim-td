@@ -238,7 +238,7 @@ export class SoundManager {
   }
 
   static playBadAlert() {
-    this.playSFX('assets/audio/Quest_Failed_01a.ogg', 1.0, this.PRIORITY.MEDIUM);
+    this.playSFX('assets/audio/bad_alert.mp3', 1.0, this.PRIORITY.MEDIUM);
   }
 
   static playBuy() {
