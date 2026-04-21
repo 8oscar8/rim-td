@@ -928,6 +928,7 @@ class App {
     }
 
     // [처치 실패] 기존의 가혹한 기술 퇴행 패널티
+    SoundManager.playSFX('assets/audio/Quest_Failed_01a.ogg');
     // 1. 파견/생산 기술 일괄 하락 (-1)
     const prodTypes = ['logging', 'mining', 'farming', 'trade', 'education', 'artisan'];
     const koProd = {
@@ -1688,6 +1689,7 @@ class App {
    * [Hidden Reward] 제국 근위대의 가호 (영구 공속 +20%)
    */
   applyImperialBuff() {
+    SoundManager.playSFX('assets/audio/Quest_Succeeded_01a.ogg');
     this.ui.showNotification("근위대의 가호", "제국 근위대의 시련을 이겨냈습니다! 모든 아군의 공격 속도가 영구적으로 20% 상승합니다.", "Legendary");
     // GameState에 반영하거나 Tower.js에서 체크하도록 설정
     this.state.imperialBuff = true; 
@@ -1712,7 +1714,7 @@ class App {
     }
 
     // 2. 사운드 및 배치 모드 실행
-    SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
+    SoundManager.playSFX('assets/audio/Quest_Succeeded_01a.ogg');
     this.startPlacement(result);
   }
 
@@ -1767,7 +1769,7 @@ class App {
         });
     }
     
-    SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
+    SoundManager.playSFX('assets/audio/Quest_Succeeded_01a.ogg');
   }
 
   /**
@@ -1807,7 +1809,7 @@ class App {
       }
       
       if (result) this.startPlacement(result);
-      SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
+      SoundManager.playSFX('assets/audio/Quest_Succeeded_01a.ogg');
   }
 
   /**

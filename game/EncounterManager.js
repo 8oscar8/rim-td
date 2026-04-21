@@ -349,6 +349,9 @@ export class EncounterManager {
   showChoiceModal(event, onAccept, onReject) {
     if (!this.modal) return;
     
+    // [Sound] 히든 인카운터 발생 알림
+    SoundManager.playSFX('assets/audio/히든인카운터수락시.ogg', 0.9);
+    
     this.modalTitle.innerText = event.name;
     this.modalTitle.style.color = "#fbbf24"; // 선택형은 황금색
     this.modalText.innerText = event.desc;

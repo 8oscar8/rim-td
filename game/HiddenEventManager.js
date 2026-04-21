@@ -123,11 +123,13 @@ export class HiddenEventManager {
           eventData,
           () => {
               // [수락] 습격 시작
+              SoundManager.playSFX('assets/audio/Quest_Concluded_01a.ogg');
               this.app.ui.addMiniNotification("약탈이 시작되었습니다! 모든 전리품을 확보하십시오.", "Legendary");
               this.app.waveManager.spawnCaravanRaid();
           },
           () => {
               // [거절] 시 무작위 보상 지급 (평화적 해결 보상)
+              SoundManager.playSFX('assets/audio/Cancel5.ogg');
               const silver = 100 + Math.floor(Math.random() * 200);
               const food = 50 + Math.floor(Math.random() * 100);
               
@@ -154,11 +156,13 @@ export class HiddenEventManager {
           eventData,
           () => {
               // [수락] 근위대 기습 시작
+              SoundManager.playSFX('assets/audio/Quest_Concluded_01a.ogg');
               this.app.ui.addMiniNotification("제국의 정예병들이 전입했습니다!", "Legendary");
               this.app.waveManager.spawnImperialGuardAmbush();
           },
           () => {
               // [거절]
+              SoundManager.playSFX('assets/audio/Cancel5.ogg');
               this.app.encounterManager.showEventModal({
                   name: "시련 거부",
                   desc: "제국은 당신의 비겁함에 실망하며 조용히 물러갔습니다. 아무런 보상도, 패널티도 없습니다.",
@@ -178,11 +182,13 @@ export class HiddenEventManager {
           eventData,
           () => {
               // [수락] 알파 트럼보 스폰
+              SoundManager.playSFX('assets/audio/Quest_Concluded_01a.ogg');
               this.app.ui.addMiniNotification("사냥이 시작되었습니다!", "Legendary");
               this.app.waveManager.spawnSpecialBoss('AlphaThrumbo');
           },
           () => {
               // [거절]
+              SoundManager.playSFX('assets/audio/Cancel5.ogg');
               this.app.encounterManager.showEventModal({
                   name: "사양함",
                   desc: "알파 트럼보는 정착지를 무시하고 유유히 지평선 너머로 사라졌습니다.",
@@ -202,11 +208,13 @@ export class HiddenEventManager {
           eventData,
           () => {
               // [수락] 모노리스 스폰
+              SoundManager.playSFX('assets/audio/Quest_Concluded_01a.ogg');
               this.app.ui.addMiniNotification("공허의 에너지가 실체화됩니다!", "Legendary");
               this.app.waveManager.spawnSpecialBoss('DarkMonolith');
           },
           () => {
               // [거절] 공용 패널티 함수 호출
+              SoundManager.playSFX('assets/audio/Cancel5.ogg');
               if (this.app.applyVoidPunishment) {
                   this.app.applyVoidPunishment("거절");
               }
@@ -224,6 +232,7 @@ export class HiddenEventManager {
           eventData,
           () => {
               // [수락] 유닛 10개 무작위 파괴
+              SoundManager.playSFX('assets/audio/Quest_Concluded_01a.ogg');
               this.app.ui.addMiniNotification("피의 계약이 성사되었습니다.", "failure");
               
               for (let i = 0; i < 10; i++) {
@@ -242,6 +251,7 @@ export class HiddenEventManager {
           },
           () => {
               // [거절]
+              SoundManager.playSFX('assets/audio/Cancel5.ogg');
               this.app.encounterManager.showEventModal({
                   name: "유혹을 떨쳐냄",
                   desc: "칼날은 당신의 확고한 의지에 실망했는지, 기괴한 비명을 지르며 공허 속으로 사라졌습니다.",
