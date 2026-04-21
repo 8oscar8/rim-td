@@ -447,9 +447,9 @@ export class WaveManager {
     
     // 곤충 종류 정의
     const insectTypes = [
-        { name: '메가스카라브', hpMul: 0.5, spdMul: 1.5, size: 10, color: '#94a3b8' },
-        { name: '스펠로피드', hpMul: 1.0, spdMul: 1.1, size: 15, color: '#475569' },
-        { name: '메가스파이더', hpMul: 2.2, spdMul: 0.8, size: 22, color: '#1e293b' }
+        { name: '메카스카라브', hpMul: 0.5, spdMul: 1.5, size: 10, color: '#94a3b8', img: 'special_메가스카라브.webp' },
+        { name: '스펠로피드', hpMul: 1.0, spdMul: 1.1, size: 15, color: '#475569', img: 'special_스펠로피드.webp' },
+        { name: '메가스파이더', hpMul: 2.2, spdMul: 0.8, size: 22, color: '#1e293b', img: 'special_메가스파이더.webp' }
     ];
 
     const count = { val: 0 };
@@ -476,7 +476,7 @@ export class WaveManager {
             'organic',
             false,
             armor,
-            null
+            config.img // 곤충 이미지 적용
         );
         insect.level = this.waveNumber; // 레벨 정보 추가
         

@@ -67,6 +67,15 @@ export class SpriteManager {
       }
     });
 
+    // [New] 특수 인카운터 몬스터 이미지 로드
+    const specialMonsters = ['메가스카라브.webp', '메가스파이더.webp', '스펠로피드.webp', '알파트럼보.webp'];
+    specialMonsters.forEach(filename => {
+        const img = new Image();
+        img.src = `assets/specialmonster/${filename}`;
+        img.onerror = () => this.handleError(img);
+        this.images[`special_${filename}`] = img;
+    });
+
     this.colors = {
       awful: '#808080',
       normal: '#ffffff',

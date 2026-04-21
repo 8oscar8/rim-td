@@ -322,7 +322,9 @@ export class Enemy {
     // 몬스터 본체 렌더링 (이미지가 있으면 이미지, 없으면 도형)
     let renderedImage = false;
     if (this.img) {
-      const imgObj = SpriteManager.getImage(`monster_${this.img}`);
+      // special_ 접두사가 있으면 그대로 사용, 없으면 monster_ 접두사 추가
+      const imgKey = this.img.startsWith('special_') ? this.img : `monster_${this.img}`;
+      const imgObj = SpriteManager.getImage(imgKey);
       if (imgObj && imgObj.complete && imgObj.naturalHeight !== 0) {
         ctx.save();
         const size = this.radius * (this.isBoss ? 7.0 : 5.5);
