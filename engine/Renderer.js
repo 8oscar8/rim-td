@@ -50,25 +50,25 @@ export class Renderer {
     
     this.ctx.save();
     
-    // 전체 투명도 설정 (배경 질감 투과를 위함)
-    this.ctx.globalAlpha = 0.2;
+    // 전체 투명도 설정 (배경 질감 투과를 유지하되 가시성 상향)
+    this.ctx.globalAlpha = 0.5;
     
     // 캔버스 중앙 계산
     const centerX = this.width / 2;
     const centerY = this.height / 2;
     const radius = 320;
 
-    // 원형 트랙 그리기 (황무지 최적화 색상 레시피 적용)
+    // 원형 트랙 그리기 (황무지 최적화 색상 레시피 수정 적용)
     this.ctx.beginPath();
     this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
     
-    // 메인 색상 (Tan)
-    this.ctx.strokeStyle = 'rgba(210, 180, 140, 0.15)';
+    // 메인 색상 (Tan) - 투명도 상향
+    this.ctx.strokeStyle = 'rgba(210, 180, 140, 0.4)';
     this.ctx.lineWidth = 45;
     this.ctx.stroke();
 
-    // 테두리 색상 (은은한 흰색)
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    // 테두리 색상 (은은한 흰색) - 투명도 상향
+    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
     this.ctx.lineWidth = 2;
     this.ctx.stroke();
     
