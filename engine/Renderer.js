@@ -40,8 +40,16 @@ export class Renderer {
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     if (this.bgImageLoaded) {
-      // 배경 이미지가 로드되었으면 그 위에 덮어씌움
-      this.ctx.drawImage(this.bgImage, 0, 0, this.width, this.height);
+      // [Optimization] 이미지 비율을 유지하며 화면을 꽉 채움 (CSS의 background-size: cover와 동일)
+      const scale = Math.max(this.width / this.bgImage.width, this.height / this.bgImage.height);
+      const drawWidth = this.bgImage.width * scale;
+      const drawHeight = this.bgImage.height * scale;
+      
+      // 중앙 정렬하여 그리기
+      const offsetX = (this.width - drawWidth) / 2;
+      const offsetY = (this.height - drawHeight) / 2;
+      
+      this.ctx.drawImage(this.bgImage, offsetX, offsetY, drawWidth, drawHeight);
     }
   }
 
