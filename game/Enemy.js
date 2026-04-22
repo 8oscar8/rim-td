@@ -209,7 +209,7 @@ export class Enemy {
       }
     }
 
-    if (effect === 'max_hp_percent') {
+    if (effect === 'max_hp_percent' && this.name !== '타이난') {
       finalDamage = (this.maxHp * 0.015) + amount;
     } else {
       // 트루 데미지일 경우 방어력 무시
