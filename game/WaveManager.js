@@ -182,9 +182,9 @@ export class WaveManager {
     const enemy = new Enemy(this.waypoints, this.currentEnemyHp, this.currentReward, type, false, armor, img);
     if (name) enemy.name = name;
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
-    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName) => {
-      // 7번째 인자인 shooterName이 정확히 전달되도록 수정
-      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName);
+    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
+      // 8번째 인자인 isItem이 소실되지 않도록 원본 메서드에 그대로 전달
+      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
       if (died) {
           this.enemiesKilledInWave++;
           this.onEnemyDeath(enemy);
@@ -227,8 +227,8 @@ export class WaveManager {
     enemy.name = bossName;
 
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
-    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName) => {
-      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName);
+    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
+      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
       if (died) {
           this.enemiesKilledInWave++;
           this.onEnemyDeath(enemy);
@@ -308,8 +308,8 @@ export class WaveManager {
 
     if (boss) {
         const originalDeath = boss.takeDamage.bind(boss);
-        boss.takeDamage = (amount, ap, effect, shooterGrade) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade);
+        boss.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
+            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
             if (died && window.gameCore) {
                 this.onEnemyDeath(boss);
                 if (type === 'ImperialGuard') window.gameCore.applyImperialBuff();
@@ -337,8 +337,8 @@ export class WaveManager {
       boss.shield = boss.shieldMax;
       
       const originalDeath = boss.takeDamage.bind(boss);
-      boss.takeDamage = (amount, ap, effect, shooterGrade) => {
-          const died = originalDeath(amount, ap, effect, shooterGrade);
+      boss.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
+          const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
           if (died && window.gameCore) {
               this.onEnemyDeath(boss);
               window.gameCore.applyImperialBuff(); // 성공 보상
@@ -358,8 +358,8 @@ export class WaveManager {
           guard.shield = guard.shieldMax;
           
           const gDeath = guard.takeDamage.bind(guard);
-          guard.takeDamage = (a, ap, e, s) => {
-              const d = gDeath(a, ap, e, s);
+          guard.takeDamage = (a, ap, e, s, sh, it, sn, item) => {
+              const d = gDeath(a, ap, e, s, sh, it, sn, item);
               if (d) this.onEnemyDeath(guard);
               return d;
           };
@@ -408,8 +408,8 @@ export class WaveManager {
         };
 
         const originalDeath = trumbo.takeDamage.bind(trumbo);
-        trumbo.takeDamage = (a, ap, e, s) => {
-            const d = originalDeath(a, ap, e, s);
+        trumbo.takeDamage = (a, ap, e, s, sh, it, sn, item) => {
+            const d = originalDeath(a, ap, e, s, sh, it, sn, item);
             if (d) {
                 this.onEnemyDeath(trumbo);
                 trumbosLeft--;
@@ -435,8 +435,8 @@ export class WaveManager {
         guard.armor += 50;
 
         const gDeath = guard.takeDamage.bind(guard);
-        guard.takeDamage = (a, ap, e, s) => {
-            const d = gDeath(a, ap, e, s);
+        guard.takeDamage = (a, ap, e, s, sh, it, sn, item) => {
+            const d = gDeath(a, ap, e, s, sh, it, sn, item);
             if (d) this.onEnemyDeath(guard);
             return d;
         };
@@ -479,8 +479,8 @@ export class WaveManager {
         animal.speed *= 1.6; // 매우 빠름
         
         const originalDeath = animal.takeDamage.bind(animal);
-        animal.takeDamage = (amount, ap, effect, shooterGrade) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade);
+        animal.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
+            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
             if (died) this.onEnemyDeath(animal);
             return died;
         };
@@ -540,8 +540,8 @@ export class WaveManager {
         insect.color = config.color;
 
         const originalDeath = insect.takeDamage.bind(insect);
-        insect.takeDamage = (amount, ap, effect, shooterGrade) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade);
+        insect.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
+            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
             if (died) this.onEnemyDeath(insect);
             return died;
         };

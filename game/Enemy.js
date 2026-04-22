@@ -221,11 +221,11 @@ export class Enemy {
       finalDamage = amount * damageMultiplier * (this.isBoss ? Enemy.bossBonus : 1.0);
     }
 
-    // [New] 최고 딜량 및 총 딜량 기록 업데이트 (아이템 데미지는 제외하여 타워의 기록만 보존)
-    if (s && s.stats) {
+    // [New] 최고 딜량 및 총 딜량 기록 업데이트 (소모성 아이템 데미지는 제외하여 타워의 순수 기록만 보존)
+    if (s && s.stats && !isItem) {
         s.stats.totalDamageDealt += finalDamage; // [New] 누적 총 피해량 합산
         
-        if (!isItem && finalDamage > s.stats.maxDamage) {
+        if (finalDamage > s.stats.maxDamage) {
             s.stats.maxDamage = Math.floor(finalDamage);
             s.stats.maxDamageUnit = shooterName;
         }
