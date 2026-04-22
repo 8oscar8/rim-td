@@ -1988,6 +1988,12 @@ class App {
         // 기존 기본값에 덮어쓰기 (새로 추가된 설정 항목이 누락되지 않도록 함)
         this.state.settings = { ...this.state.settings, ...parsed };
         this.ui.syncSettingsToUI(this.state.settings);
+        
+        // [New] 저장된 배경 설정에 따라 배경 교체
+        const bgType = this.state.settings.environmentBackground || 'arid';
+        const bgPath = bgType === 'arid' ? 'assets/배경화면/user_choice_1.png' : 'assets/배경화면/user_choice_2.png';
+        this.renderer.setBackground(bgPath);
+
         console.log("[Settings] 브라우저에서 설정을 성공적으로 불러왔습니다.");
       } catch (e) {
         console.error("[Settings] 설정 로드 중 오류 발생:", e);

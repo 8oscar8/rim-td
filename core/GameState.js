@@ -116,7 +116,8 @@ export class GameState {
         weaponVolume: 0.5,
         uiVolume: 0.5,
         enemyVolume: 0.5,
-        showNotifications: true
+        showNotifications: true,
+        environmentBackground: 'arid' // 'arid' 또는 'lush'
     };
   }
 

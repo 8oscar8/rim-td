@@ -124,6 +124,9 @@ export class UIManager {
     this.lbCloseBtn = document.getElementById('lb-modal-close-btn');
     this.settingLbBtn = document.getElementById('settings-lb-btn');
     this.settingGiveUpBtn = document.getElementById('settings-giveup-btn');
+    
+    // [New] 배경 선택 버튼
+    this.bgChoiceBtns = document.querySelectorAll('.bg-choice-btn');
   }
 
   initEvents() {
@@ -236,6 +239,31 @@ export class UIManager {
             this.addMiniNotification(`알림 팝업이 ${isChecked ? '활성화' : '비활성화'}되었습니다.`, 'info');
         };
     }
+
+    // [New] 배경 선택 버튼 이벤트 연동
+    this.bgChoiceBtns.forEach(btn => {
+        btn.onclick = () => {
+            const bgType = btn.getAttribute('data-bg'); // 'arid' 또는 'lush'
+            
+            // 1. 설정 값 변경
+            this.app.state.settings.environmentBackground = bgType;
+            
+            // 2. 실제 배경 이미지 교체
+            const bgPath = bgType === 'arid' ? 'assets/배경화면/user_choice_1.png' : 'assets/배경화면/user_choice_2.png';
+            this.app.renderer.setBackground(bgPath);
+            
+            // 3. UI 버튼 상태 업데이트
+            this.bgChoiceBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // 4. 설정 저장 및 알림
+            if (this.app.saveSettings) this.app.saveSettings();
+            this.addMiniNotification(`환경 배경이 ${bgType === 'arid' ? 'Arid Wasteland' : 'Lush Shrubland'}으로 변경되었습니다.`, 'info');
+            
+            // [Sound] 클릭 효과음
+            SoundManager.playClick();
+        };
+    });
 
     // 작업자 배정 이벤트 (v2)
     this.workPlusBtns.forEach(btn => {
@@ -2437,6 +2465,13 @@ export class UIManager {
 
     if (this.settingShowNotif && settings.showNotifications !== undefined) {
       this.settingShowNotif.checked = settings.showNotifications;
+    }
+
+    if (this.bgChoiceBtns && settings.environmentBackground) {
+        this.bgChoiceBtns.forEach(btn => {
+            const bg = btn.getAttribute('data-bg');
+            btn.classList.toggle('active', bg === settings.environmentBackground);
+        });
     }
   }
 

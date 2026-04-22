@@ -1334,6 +1334,39 @@ input[type=range] {
     cursor: pointer;
 }
 
+/* [New] 배경 선택 버튼 스타일 */
+.setting-row-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.bg-choice-btn {
+    flex: 1;
+    background: #2d2f33;
+    border: 1px solid #555;
+    color: #888;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.bg-choice-btn:hover {
+    background: #3d4044;
+    border-color: #888;
+    color: #fff;
+}
+
+.bg-choice-btn.active {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
 .settings-actions {
     margin-top: 30px;
     display: flex;

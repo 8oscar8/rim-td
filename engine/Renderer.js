@@ -9,11 +9,19 @@ export class Renderer {
 
     // 인게임 배경 이미지 로드
     this.bgImage = new Image();
-    this.bgImage.src = 'map.png';
+    this.bgImage.src = 'assets/배경화면/user_choice_1.png';
     this.bgImageLoaded = false;
     this.bgImage.onload = () => {
       this.bgImageLoaded = true;
     };
+  }
+
+  /**
+   * 배경 이미지를 실시간으로 교체합니다.
+   */
+  setBackground(path) {
+    this.bgImageLoaded = false;
+    this.bgImage.src = path;
   }
 
   resize() {
