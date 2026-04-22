@@ -262,8 +262,8 @@ export class WaveManager {
         muffalo.speed *= 0.6;
         
         const originalDeath = muffalo.takeDamage.bind(muffalo);
-        muffalo.takeDamage = (amount, ap, effect, shooterGrade) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade);
+        muffalo.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
+            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
             if (died && typeof window.gameCore !== 'undefined') {
                 this.onEnemyDeath(muffalo);
                 window.gameCore.state.addResource('component', 2);
