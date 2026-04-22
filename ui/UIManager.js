@@ -123,6 +123,7 @@ export class UIManager {
     this.lbModal = document.getElementById('leaderboard-modal');
     this.lbCloseBtn = document.getElementById('lb-modal-close-btn');
     this.settingLbBtn = document.getElementById('settings-lb-btn');
+    this.settingGiveUpBtn = document.getElementById('settings-giveup-btn');
   }
 
   initEvents() {
@@ -178,6 +179,15 @@ export class UIManager {
         this.settingLbBtn.onclick = () => {
             this.app.toggleSettings(); // 설정 창 닫기
             this.showLeaderboardOnly();
+        };
+    }
+    // [New] 포기하기 버튼
+    if (this.settingGiveUpBtn) {
+        this.settingGiveUpBtn.onclick = () => {
+            if (confirm("정말로 정착지를 포기하시겠습니까? (현재까지의 기록으로 결과창이 표시됩니다)")) {
+                this.app.toggleSettings(); // 설정 창 닫기
+                this.app.handleGameOver("정착지 포기 (플레이어 포기)", false);
+            }
         };
     }
     if (this.lbCloseBtn) {
