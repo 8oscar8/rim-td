@@ -889,6 +889,10 @@ class App {
         } else if (bName.includes('제국 근위대')) {
             timedOutBoss.active = false;
             this.handleImperialGuardFailure();
+        } else if (bName.includes('머팔로')) {
+            // [Bug Fix] 상단 습격 머팔로는 탈출하더라도 게임 오버가 아님
+            timedOutBoss.active = false;
+            // 탈출 성공(유저 실패) 시 배상 청구 로직은 Enemy.js의 onRaidTimeout에서 이미 호출됨
         } else {
             this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
         }
