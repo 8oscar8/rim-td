@@ -258,7 +258,7 @@ export class UIManager {
             
             // 4. 설정 저장 및 알림
             if (this.app.saveSettings) this.app.saveSettings();
-            this.addMiniNotification(`환경 배경이 ${bgType === 'arid' ? 'Arid Wasteland' : 'Lush Shrubland'}으로 변경되었습니다.`, 'info');
+            this.addMiniNotification(`배경화면이 ${bgType === 'arid' ? 'Arid Wasteland' : 'Lush Shrubland'}으로 변경되었습니다.`, 'info');
             
             // [Sound] 클릭 효과음
             SoundManager.playClick();
