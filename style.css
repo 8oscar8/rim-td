@@ -1577,3 +1577,23 @@ input[type=range] {
 #lb-list-main::-webkit-scrollbar-thumb:hover {
     background: #60a5fa; /* 호버 시 더 밝은 파랑 */
 }
+
+/* ==========================================
+   [New] 커스텀 확인 모달 (Confirm Modal)
+   ========================================== */
+#confirm-modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 20000; /* 설정 모달(15000)보다 위에 표시 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+#confirm-modal .modal-content {
+    border: 2px solid var(--accent-red);
+    width: 380px;
+}

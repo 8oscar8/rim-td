@@ -184,10 +184,14 @@ export class UIManager {
     // [New] 포기하기 버튼
     if (this.settingGiveUpBtn) {
         this.settingGiveUpBtn.onclick = () => {
-            if (confirm("정말로 정착지를 포기하시겠습니까? (현재까지의 기록으로 결과창이 표시됩니다)")) {
-                this.app.toggleSettings(); // 설정 창 닫기
-                this.app.handleGameOver("정착지 포기 (플레이어 포기)", false);
-            }
+            this.showCustomConfirm(
+                "정착지 포기", 
+                "정말로 정착지를 포기하시겠습니까? (현재까지의 기록으로 결과창이 표시됩니다)", 
+                () => {
+                    this.app.toggleSettings(); // 설정 창 닫기
+                    this.app.handleGameOver("정착지 포기 (플레이어 포기)", false);
+                }
+            );
         };
     }
     if (this.lbCloseBtn) {
@@ -2447,5 +2451,32 @@ export class UIManager {
           // [Sound] 리더보드 열 때 효과음
           SoundManager.playSFX('assets/audio/click.mp3', 0.8, SoundManager.PRIORITY.MEDIUM);
       }
+  }
+
+  /**
+   * 브라우저의 confirm() 대신 사용하는 게임 스타일 커스텀 확인 창
+   */
+  showCustomConfirm(title, message, onConfirm) {
+    const modal = document.getElementById('confirm-modal');
+    const titleEl = document.getElementById('confirm-title');
+    const msgEl = document.getElementById('confirm-message');
+    const yesBtn = document.getElementById('confirm-yes-btn');
+    const noBtn = document.getElementById('confirm-no-btn');
+
+    if (!modal || !titleEl || !msgEl || !yesBtn || !noBtn) return;
+
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+    modal.classList.remove('hidden');
+
+    const close = () => modal.classList.add('hidden');
+
+    yesBtn.onclick = () => {
+        close();
+        onConfirm();
+    };
+    noBtn.onclick = () => {
+        close();
+    };
   }
 }

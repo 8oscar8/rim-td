@@ -743,6 +743,18 @@
         <div class="pointer-arrow">▼</div>
     </div>
 
+    <!-- [New] 커스텀 확인 모달 (Custom Confirm Modal) -->
+    <div id="confirm-modal" class="hidden">
+        <div class="modal-content">
+            <h2 id="confirm-title">확인</h2>
+            <p id="confirm-message" style="margin-bottom: 30px;">정말로 진행하시겠습니까?</p>
+            <div class="confirm-btns" style="display: flex; gap: 15px; justify-content: center;">
+                <button id="confirm-yes-btn" class="modal-choice-btn accept">예</button>
+                <button id="confirm-no-btn" class="modal-choice-btn reject">아니오</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="main.js"></script>
     <!-- [New] 독립형 리더보드 모달 (Leaderboard Only) -->
     <div id="leaderboard-modal" class="hidden">
