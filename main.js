@@ -1454,8 +1454,7 @@ class App {
         targets.forEach(en => {
             en.flashTimer = 0.5;
             // 즉사 로직 (보상 처리 포함) - 8번째 인자에 isItem=true 전달하여 기록 제외
-            const died = en.takeDamage(99999999, 1.0, 'instakill', 'Legendary', 0, true, '궤도 폭격', true);
-            if (died) this.handleEnemyDeath(en);
+            en.takeDamage(99999999, 1.0, 'instakill', 'Legendary', 0, true, '궤도 폭격', true);
         });
         this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
         SoundManager.playSFX('assets/audio/특수무기사용시/궤도폭격.ogg');

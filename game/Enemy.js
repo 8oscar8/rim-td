@@ -275,6 +275,9 @@ export class Enemy {
     if (!this.active) return;
     this.active = false;
 
+    // [New] 사망 콜백 실행 (도트 데미지 등 모든 사망 케이스 대응)
+    if (this.onDie) this.onDie(this);
+
     // 종족별 사망 사운드 분기
     if (this.type === 'mech') {
       SoundManager.playSFX('assets/audio/기계 사망사운드.ogg', 0.6, SoundManager.PRIORITY.LOW, 'enemy');
