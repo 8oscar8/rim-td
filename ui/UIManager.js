@@ -628,7 +628,9 @@ export class UIManager {
       
       // 기존 등급 클래스 제거 및 신규 추가
       banner.className = 'grade-banner'; // 초기화
-      const gradeClass = grade.toLowerCase() === 'hidden' ? 'hidden-grade' : grade.toLowerCase();
+      // [Fix] 연출 클래스도 명칭 매핑(Legendary <-> Mythic)을 따르도록 수정
+      const finalGrade = displayGrade.toLowerCase();
+      const gradeClass = finalGrade === 'hidden' ? 'hidden-grade' : finalGrade;
       banner.classList.add(gradeClass);
       
       banner.classList.remove('hidden');

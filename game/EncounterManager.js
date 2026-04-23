@@ -541,9 +541,9 @@ export class EncounterManager {
 
     if (result.weaponData) {
         this.app.startPlacement(result);
-        event.desc = `유적 깊숙한 곳에서 빛나는 상자를 발견했습니다. \n\n득템: 신화 등급의 [${pName}]`;
+        event.desc = `유적 깊숙한 곳에서 빛나는 상자를 발견했습니다. \n\n득템: 전설 등급의 [${pName}]`;
         this.modalText.innerText = event.desc;
-        this.app.ui.showNotification("신화적 유물 발견", `${pName}을(를) 획득했습니다!`, "Mythic");
+        this.app.ui.showNotification("전설적 유물 발견", `${pName}을(를) 획득했습니다!`, "Legendary");
     }
   }
 
