@@ -35,6 +35,7 @@ class App {
     SpriteManager.init();
     SoundManager.init();
     window.SoundManager = SoundManager; // 콘솔 디버깅용 전역 바인딩
+    window.GachaSystem = GachaSystem; // [New] 콘솔에서 무기 생성을 위한 전역 바인딩
     
     // 2. 경로(Waypoints) 초기화 (나중에 init에서 정교화)
     this.waypoints = [];
