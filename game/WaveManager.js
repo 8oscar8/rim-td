@@ -226,6 +226,11 @@ export class WaveManager {
     const enemy = new Enemy(this.waypoints, bossHp, bossReward, type, true, armor, img);
     enemy.name = bossName;
 
+    // [Balance] 최종 보스 타이난 초재생 기믹: 550초간 총 2,000만의 추가 체력 제공 (초당 36,364)
+    if (enemy.name === '타이난') {
+        enemy.hpRegen = 36364;
+    }
+
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
       const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);

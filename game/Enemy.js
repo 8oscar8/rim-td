@@ -74,8 +74,8 @@ export class Enemy {
 
     if (this.flashTimer > 0) this.flashTimer -= dt;
 
-    // 재생 로직 처리 (독소 효과에 의해 억제될 수 있음)
-    if (this.hpRegen > 0 && this.hp < this.maxHp && this.toxinRegenBlock <= 0) {
+    // 재생 로직 처리 (독소 효과 및 스턴에 의해 억제될 수 있음)
+    if (this.hpRegen > 0 && this.hp < this.maxHp && this.toxinRegenBlock <= 0 && this.stunTimer <= 0) {
       this.hp = Math.min(this.maxHp, this.hp + this.hpRegen * dt);
     }
     
