@@ -61,10 +61,16 @@ export class Enemy {
     this.selected = false;
     this.flashTimer = 0;
     this.bossHitCount = 0; // [New] 보스 피격 사운드 제어용 카운터
+    this.tynanStunImmunity = 0; // 타이난 전용 면역 타이머 추가
   }
 
   update(dt) {
     if (!this.active) return;
+
+    // 타이난 전용 스턴 면역 타이머 업데이트
+    if (this.tynanStunImmunity > 0) {
+        this.tynanStunImmunity -= dt;
+    }
     
     // 진행 방향 업데이트
     if (this.x !== this.lastX) {
@@ -299,6 +305,29 @@ export class Enemy {
       // [Balance Up] 방어력은 원래 수치의 최대 15%까지만 보존 가능 (85%까지 파쇄 가능)
       const minArmor = Math.floor(this.initialArmor * 0.15);
       this.armor = Math.max(minArmor, this.armor - shred);
+    }
+
+    const isTynan = (this.name === 'Tynan Sylvester' || this.name === '타이난');
+    // [핵심 밸런스 로직]
+    // 정신충격창(psychic_stun)은 면역을 무시하도록 설정
+    if (isTynan && effect !== 'psychic_stun' && effect !== null) {
+      if (this.tynanStunImmunity > 0) return; // 면역 상태면 스턴 무시
+      // 일반 스턴, 신경석궁(toxic_stun), EMP, 수류탄 등 처리
+      if (effect === 'stun' || effect === 'toxic_stun' || effect === 'frag_stun' || effect === 'emp' || (effect && effect.includes('knockback'))) {
+        this.stunTimer = 1.0;         // 스턴 지속 시간 (1.0초)
+        this.tynanStunImmunity = 2.5; // 전체 주기 (2.5초 : 스턴 1초 + 면역 1.5초)
+        
+        // 독성 데미지 같은 부가 효과는 씹히지 않게 처리
+        if (effect === 'toxic_stun') {
+          this.activeDots.push({ damagePerSec: amount, duration: 6.0 });
+        }
+        return;
+      } else if (effect === 'stun_long') {
+        // 전설의 꽁치검 같은 긴 스턴 처리
+        this.stunTimer = 1.0; 
+        this.tynanStunImmunity = 3.5; 
+        return;
+      }
     }
 
     if (effect === 'stun') {
