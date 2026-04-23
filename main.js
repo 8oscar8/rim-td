@@ -1083,7 +1083,10 @@ class App {
     const woodRes = this.state.wood || 0;
     const bareHands = this.units.filter(u => u.weaponName === '맨손/목재' && !u.isBlueprint);
 
-    if (woodRes >= 999 && bareHands.length >= 9) {
+    const has999Club = this.units.some(u => u.weaponName === '999강 나무몽둥이') || 
+                      (this.pendingGachaResult && this.pendingGachaResult.weaponName === '999강 나무몽둥이');
+
+    if (woodRes >= 999 && bareHands.length >= 9 && !has999Club) {
         // [Trigger Event]
         const event = {
             name: "전설의 999몽둥이 등장",
