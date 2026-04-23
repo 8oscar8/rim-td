@@ -145,15 +145,15 @@ export class WaveManager {
       if (this.nextWaveTimer <= 0) {
           // [New] 타임아웃 패널티: 제한 시간 내 섬멸 실패 시 처리
           if (!this.isWaveCompleted && window.gameCore) {
-              // 100라운드 보스전 실패 시 즉시 게임 오버 처리
-              if (this.waveNumber >= this.maxWaves) {
-                  window.gameCore.handleGameOver("최종 보스 섬멸 실패! 정착지가 파괴되었습니다.");
-              } else {
+              // 100라운드 보스전은 보스 개별 타이머를 따르므로 일반 타이머 종료 시 아무것도 하지 않음
+              if (this.waveNumber < this.maxWaves) {
                   window.gameCore.state.mood = Math.max(0, window.gameCore.state.mood - 10);
                   window.gameCore.ui.addMiniNotification("제한 시간 내 적을 섬멸하지 못했습니다! 정착민 무드 -10%", "failure");
+                  this.startNextWave();
               }
+          } else if (this.isWaveCompleted) {
+              this.startNextWave();
           }
-          this.startNextWave();
       }
     }
   }
