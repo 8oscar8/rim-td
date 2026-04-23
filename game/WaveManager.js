@@ -120,9 +120,9 @@ export class WaveManager {
             this.spawnBossEnemy(enemiesList);
           }
         } 
-        else if (this.enemiesKilledInWave >= this.totalEnemiesInWave && !this.isWaveCompleted) {
+        else if (this.enemiesKilledInWave >= this.totalEnemiesInWave && !this.isWaveCompleted && enemiesList.length === 0) {
           this.isWaveCompleted = true;
-          // [New] 최종 라운드 클리어 시 즉시 종료 처리 (카운트다운 방지)
+          // [Fix] 최종 라운드 클리어 시 필드가 완전히 비었을 때만 종료 처리 (보스 처치 확인)
           if (this.waveNumber >= this.maxWaves) {
               this.gameFinished = true;
               this.nextWaveTimer = 0;
@@ -143,10 +143,16 @@ export class WaveManager {
 
       this.nextWaveTimer -= dt;
       if (this.nextWaveTimer <= 0) {
-          // [New] 타임아웃 패널티: 제한 시간 내 섬멸 실패 시 무드 -10
+          // [New] 타임아웃 패널티: 제한 시간 내 섬멸 실패 시 처리
           if (!this.isWaveCompleted && window.gameCore) {
-              window.gameCore.state.mood = Math.max(0, window.gameCore.state.mood - 10);
-              window.gameCore.ui.addMiniNotification("제한 시간 내 적을 섬멸하지 못했습니다! 정착민 무드 -10%", "failure");
+              // 100라운드 보스전 실패 시 즉시 게임 오버 처리 (무드 0으로 설정)
+              if (this.waveNumber >= this.maxWaves) {
+                  window.gameCore.state.mood = 0;
+                  window.gameCore.ui.addMiniNotification("최종 보스 섬멸 실패! 정착지가 파괴되었습니다...", "failure");
+              } else {
+                  window.gameCore.state.mood = Math.max(0, window.gameCore.state.mood - 10);
+                  window.gameCore.ui.addMiniNotification("제한 시간 내 적을 섬멸하지 못했습니다! 정착민 무드 -10%", "failure");
+              }
           }
           this.startNextWave();
       }
