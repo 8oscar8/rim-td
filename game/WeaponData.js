@@ -7,7 +7,7 @@ export const WEAPON_DB = {
   '곤봉': { type: 'blunt', tech: 'primitive', grade: 'Common', dmg: 14, spd: 0.5, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/작은둔기휘두르는소리.ogg', attackVolume: 0.7 },
   '철퇴': { type: 'blunt', tech: 'primitive', grade: 'Uncommon', dmg: 35, spd: 0.5, ap: 0, effect: null, attackSound: 'assets/audio/weaponsound/작은둔기휘두르는소리.ogg', attackVolume: 0.7 },
   '전투망치': { type: 'blunt', tech: 'advanced', grade: 'Rare', dmg: 110, spd: 0.38, ap: 0.2, effect: 'melee_aoe', range: 60, attackSound: 'assets/audio/둔기휘두르는소리.ogg' },
-  '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Legendary', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None', attackSound: 'assets/audio/둔기휘두르는소리.ogg' },
+  '제우스망치': { type: 'blunt', tech: 'advanced', grade: 'Mythic', dmg: 550, spd: 0.33, ap: 0.5, effect: 'stun', fixedMaterial: 'None', attackSound: 'assets/audio/둔기휘두르는소리.ogg' },
   '엘텍스 지팡이': { type: 'blunt', tech: 'advanced', grade: 'Mythic', dmg: 35, spd: 0.38, ap: 0, range: 150, effect: 'aura_cd', fixedMaterial: 'None' },
   '999강 나무몽둥이': { type: 'blunt', tech: 'primitive', grade: 'Hidden', dmg: 9999, spd: 2.0, ap: 1.0, range: 180, effect: 'knockback', fixedMaterial: 'Wood', attackSound: 'assets/audio/weaponsound/맨손주먹.ogg' },
 
@@ -19,7 +19,7 @@ export const WEAPON_DB = {
   '장검': { type: 'sharp', tech: 'primitive', grade: 'Rare', dmg: 40, spd: 0.7, ap: 0, effect: 'melee_aoe', range: 70, attackSound: 'assets/audio/weaponsound/칼소리.ogg' },
   '파괴용 도끼': { type: 'sharp', tech: 'advanced', grade: 'Rare', dmg: 85, spd: 0.45, ap: 0.5, effect: 'armor_break', shred: 6, attackSound: 'assets/audio/weaponsound/칼소리.ogg' },
   '트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Epic', dmg: 110, spd: 0.6, ap: 0.3, effect: 'knockback', fixedMaterial: 'None', attackSound: 'assets/audio/트럼보뿔.ogg' },
-  '플라즈마검': { type: 'sharp', tech: 'advanced', grade: 'Legendary', dmg: 95, spd: 0.7, ap: 0.3, effect: null, shred: 15, fixedMaterial: 'None', attackSound: 'assets/audio/플라즈마검.ogg' },
+  '플라즈마검': { type: 'sharp', tech: 'advanced', grade: 'Mythic', dmg: 95, spd: 0.7, ap: 0.3, effect: null, shred: 15, fixedMaterial: 'None', attackSound: 'assets/audio/플라즈마검.ogg' },
   '단분자검': { type: 'sharp', tech: 'advanced', grade: 'Mythic', dmg: 135, spd: 0.9, ap: 0.95, effect: null, fixedMaterial: 'None', attackSound: 'assets/audio/단분자검.ogg' },
   '알파 트럼보 뿔': { type: 'sharp', tech: 'primitive', grade: 'Hidden', dmg: 250, spd: 1.1, ap: 0.5, effect: 'instakill', fixedMaterial: 'None', attackSound: 'assets/audio/트럼보뿔.ogg' },
   '결속 단분자검': { type: 'sharp', tech: 'advanced', grade: 'Hidden', dmg: 300, spd: 1.3, ap: 1.0, effect: 'max_hp_percent', fixedMaterial: 'None', attackSound: 'assets/audio/결속단분자검.ogg' },
