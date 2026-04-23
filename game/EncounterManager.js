@@ -182,6 +182,11 @@ export class EncounterManager {
 
   // [New] 정신 이상 이벤트 강제 발생 로직 (무드 25% 이하 시 체크)
   triggerMentalBreak() {
+    // 이미 정신 이상이 진행 중이면 중첩 방지
+    if (this.activeEvents.some(e => e.isMentalBreak)) {
+        return;
+    }
+
     // 25% 확률로 정신적 한계를 극복함 (이겨냄)
     if (Math.random() < 0.25) {
         // [New] 황금색 신화 등급 연출로 극복함 표시!
